@@ -1,5 +1,5 @@
 <?php 
-
+namespace ResponsiveFileManager;
 /**
  * Class Response
  * Simplified copy of Symfony/Http-Foundation Response

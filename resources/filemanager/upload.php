@@ -1,20 +1,21 @@
 <?php
+require_once __DIR__.'/boot.php';
+require_once __DIR__.'/UploadHandler.php';
+require_once __DIR__.'/include/mime_type_lib.php';
+
+$config = \Config::get('rfm');
+
+use ResponsiveFileManager\RFM;
+use ResponsiveFileManager\UploadHandler;
 
 try {
-    if (!isset($config)) {
-        $config = include 'config/config.php';
-    }
-
-    include 'include/utils.php';
 
     if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager") {
-        response(trans('forbidden') . AddErrorLocation(), 403)->send();
+        response(RFM::fm_trans('forbidden') . RFM::AddErrorLocation(), 403)->send();
         exit;
     }
 
-    include 'include/mime_type_lib.php';
-
-    $ftp = ftp_con($config);
+    $ftp = RFM::ftp_con($config);
 
     if ($ftp) {
         $source_base = $config['ftp_base_folder'] . $config['upload_dir'];
@@ -34,8 +35,8 @@ try {
 
     $fldr = rawurldecode(trim(strip_tags($_POST['fldr']), "/") . "/");
 
-    if (!checkRelativePath($fldr)) {
-        response(trans('wrong path') . AddErrorLocation())->send();
+    if (!RFM::checkRelativePath($fldr)) {
+        response(RFM::fm_trans('wrong path') . RFM::AddErrorLocation())->send();
         exit;
     }
 
@@ -55,13 +56,12 @@ try {
             //TODO switch to array
             $cycle = false;
         }
-        $path = fix_dirname($path) . '/';
+        $path = RFM::fix_dirname($path) . '/';
     }
 
-    require('UploadHandler.php');
     $messages = null;
-    if (trans("Upload_error_messages") !== "Upload_error_messages") {
-        $messages = trans("Upload_error_messages");
+    if (RFM::fm_trans("Upload_error_messages") !== "Upload_error_messages") {
+        $messages = RFM::fm_trans("Upload_error_messages");
     }
 
     // make sure the length is limited to avoid DOS attacks
@@ -116,7 +116,7 @@ try {
     } else {
         $filename = $_FILES['files']['name'][0];
     }
-    $_FILES['files']['name'][0] = fix_filename($filename, $config);
+    $_FILES['files']['name'][0] = RFM::fix_filename($filename, $config);
 
     if(!$_FILES['files']['type'][0]){
         $_FILES['files']['type'][0] = $mime_type;
@@ -124,14 +124,14 @@ try {
     }
     // LowerCase
     if ($config['lower_case']) {
-        $_FILES['files']['name'][0] = fix_strtolower($_FILES['files']['name'][0]);
+        $_FILES['files']['name'][0] = RFM::fix_strtolower($_FILES['files']['name'][0]);
     }
-    if (!checkresultingsize($_FILES['files']['size'][0])) {
+    if (!RFM::checkresultingsize($_FILES['files']['size'][0])) {
     	if ( !isset($upload_handler->response['files'][0]) ) {
             // Avoid " Warning: Creating default object from empty value ... "
             $upload_handler->response['files'][0] = new stdClass();
         }
-        $upload_handler->response['files'][0]->error = sprintf(trans('max_size_reached'), $config['MaxSizeTotal']) . AddErrorLocation();
+        $upload_handler->response['files'][0]->error = sprintf(RFM::fm_trans('max_size_reached'), $config['MaxSizeTotal']) . RFM::AddErrorLocation();
         echo json_encode($upload_handler->response);
         exit();
     }
@@ -175,7 +175,7 @@ try {
         $uploadConfig['upload_dir'] = $config['ftp_temp_folder'];
     }
 
-    //print_r($_FILES);die();
+    // print_r($_FILES);die();
     $upload_handler = new UploadHandler($uploadConfig, true, $messages);
 } catch (Exception $e) {
     $return = array();
@@ -193,6 +193,6 @@ try {
         echo json_encode(array("files" => $return));
         return;
     }
-
+    dd($e);
     echo json_encode(array("error" => $e->getMessage()));
 }

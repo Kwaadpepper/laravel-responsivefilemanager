@@ -2,26 +2,16 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Contracts\Foundation\Application;
 use Orchestra\Testbench\TestCase;
+use Kwaadpepper\ResponsiveFileManager\FileManagerServiceProvider;
 
 class UnitTests extends TestCase
 {
     /**
-     * Define environment setup.
-     *
-     * @param  \Illuminate\Foundation\Application  $app
-     * @return void
+     * @var ServiceProvider
      */
-    protected function getEnvironmentSetUp($app)
-    {
-        // Setup default database to use sqlite :memory:
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
-        ]);
-    }
+    protected $service_provider;
 
     /**
      * Setup the test environment.
@@ -30,7 +20,48 @@ class UnitTests extends TestCase
     {
         parent::setUp();
 
-        // Your code here
+        // create dummy app
+        $this->createApplication();
+        $this->service_provider = new FileManagerServiceProvider($this->app);
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_be_constructed()
+    {
+        $this->assertInstanceOf(FileManagerServiceProvider::class, $this->service_provider);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_nothing_in_the_register_method()
+    {
+        $this->assertNull($this->service_provider->register());
+    }
+
+    /**
+     * @test
+     */
+    public function it_performs_a_boot_method()
+    {
+        $this->application_mock->shouldReceive('publishes')
+                               ->once()
+                               ->with([
+                                   'resources/filemanager/ajax_calls.php',
+                               ])
+                               ->andReturnNull();
+
+        $this->application_mock->shouldReceive('mergeConfigFrom')
+                               ->once()
+                               ->withArgs([
+                                   '/config/rfm.php',
+                                   'greatthing',
+                               ])
+                               ->andReturnNull();
+
+        $this->service_provider->boot();
     }
 
     /**
@@ -44,8 +75,25 @@ class UnitTests extends TestCase
         $this->get('/filemanager/img/ico/ac3.jpg')->assertStatus(200);
     }
 
+    /**
+     * Load package service provider
+     * @param  \Illuminate\Foundation\Application $app
+     * @return lasselehtinen\MyPackage\MyPackageServiceProvider
+     */
     protected function getPackageProviders($app)
     {
-        return ['Kwaadpepper\ResponsiveFileManager\FileManagerServiceProvider'];
+        return [FileManagerServiceProvider::class];
+    }
+
+    /**
+     * Load package alias
+     * @param  \Illuminate\Foundation\Application $app
+     * @return array
+     */
+    protected function getPackageAliases($app)
+    {
+        return [
+            'MyPackage' => MyPackageFacade::class,
+        ];
     }
 }

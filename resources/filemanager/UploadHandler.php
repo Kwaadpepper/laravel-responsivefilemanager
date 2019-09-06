@@ -1,4 +1,7 @@
 <?php
+namespace ResponsiveFileManager;
+
+use ResponsiveFileManager\RFM;
 /*
  * jQuery File Upload Plugin PHP Class
  * https://github.com/blueimp/jQuery-File-Upload
@@ -1472,7 +1475,7 @@ class UploadHandler
             if(isset($this->options['config']['image_watermark']) && $this->options['config']['image_watermark']){
                 require_once('include/php_image_magician.php');
 
-                $magicianObj = new imageLib($targetFile);
+                $magicianObj = new \imageLib($targetFile);
                 $magicianObj -> addWatermark($this->options['config']['image_watermark'], $this->options['config']['image_watermark_position'],  $this->options['config']['image_watermark_padding']);
 
                 $magicianObj -> saveImage($targetFile);
@@ -1480,21 +1483,21 @@ class UploadHandler
 
 
 
-            $thumbResult = create_img($targetFile, $targetFileThumb, 122, 91);
+            $thumbResult = RFM::create_img($targetFile, $targetFileThumb, 122, 91);
 
             if ( $thumbResult!==true)
             {
                 if($thumbResult === false){
-                    $res['files'][0]->error = trans("Not enough Memory");
+                    $res['files'][0]->error = RFM::fm_trans("Not enough Memory");
                 }else{
                     $res['files'][0]->error = $thumbResult;
                 }
             }
             else
             {
-                if( !$this->options['ftp'] && ! new_thumbnails_creation($targetPath,$targetFile,$_FILES['files']['name'][0],$this->options['config']['current_path'],$this->options['config']))
+                if( !$this->options['ftp'] && ! RFM::new_thumbnails_creation($targetPath,$targetFile,$_FILES['files']['name'][0],$this->options['config']['current_path'],$this->options['config']))
                 {
-                    $res['files'][0]->error = trans("Not enough Memory");
+                    $res['files'][0]->error = RFM::fm_trans("Not enough Memory");
                 }
                 else
                 {
@@ -1525,7 +1528,7 @@ class UploadHandler
                         // new dims and create
                         $srcWidth = $this->options['config']['image_resizing_width'];
                         $srcHeight = $this->options['config']['image_resizing_height'];
-                        create_img($targetFile, $targetFile, $this->options['config']['image_resizing_width'], $this->options['config']['image_resizing_height'], $this->options['config']['image_resizing_mode']);
+                        RFM::create_img($targetFile, $targetFile, $this->options['config']['image_resizing_width'], $this->options['config']['image_resizing_height'], $this->options['config']['image_resizing_mode']);
                     }
 
                     //max resizing limit control
@@ -1545,7 +1548,7 @@ class UploadHandler
                         if ($this->options['config']['image_max_width'] == 0) $srcWidth = $this->options['config']['image_max_height']*$srcWidth/$srcHeight;
                     }
 
-                    if ($resize){ create_img($targetFile, $targetFile, $srcWidth, $srcHeight, $this->options['config']['image_max_mode']); }
+                    if ($resize){ RFM::create_img($targetFile, $targetFile, $srcWidth, $srcHeight, $this->options['config']['image_max_mode']); }
                 }
             }
         }

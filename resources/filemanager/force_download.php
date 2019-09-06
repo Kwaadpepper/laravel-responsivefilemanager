@@ -1,26 +1,27 @@
 <?php
+require_once __DIR__.'/boot.php';
+require_once __DIR__.'/include/mime_type_lib.php';
 
-$config = include 'config/config.php';
+$config = \Config::get('rfm');
 
-include 'include/utils.php';
-include 'include/mime_type_lib.php';
+use ResponsiveFileManager\RFM;
 
 if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager") {
-    response(trans('forbidden') . AddErrorLocation(), 403)->send();
+    RFM::response(RFM::fm_trans('forbidden') . RFM::AddErrorLocation(), 403)->send();
     exit;
 }
 
-if (!checkRelativePath($_POST['path']) || strpos($_POST['path'], '/') === 0) {
-    response(trans('wrong path') . AddErrorLocation(), 400)->send();
+if (!RFM::checkRelativePath($_POST['path']) || strpos($_POST['path'], '/') === 0) {
+    RFM::response(RFM::fm_trans('wrong path') . RFM::AddErrorLocation(), 400)->send();
     exit;
 }
 
 if (strpos($_POST['name'], '/') !== false) {
-    response(trans('wrong path') . AddErrorLocation(), 400)->send();
+    RFM::response(RFM::fm_trans('wrong path') . RFM::AddErrorLocation(), 400)->send();
     exit;
 }
 
-$ftp = ftp_con($config);
+$ftp = RFM::ftp_con($config);
 
 if ($ftp) {
     $path = $config['ftp_base_url'] . $config['upload_dir'] . $_POST['path'];
@@ -31,8 +32,8 @@ if ($ftp) {
 $name = $_POST['name'];
 $info = pathinfo($name);
 
-if (!check_extension($info['extension'], $config)) {
-    response(trans('wrong extension') . AddErrorLocation(), 400)->send();
+if (!RFM::check_extension($info['extension'], $config)) {
+    RFM::response(RFM::fm_trans('wrong extension') . RFM::AddErrorLocation(), 400)->send();
     exit;
 }
 
@@ -49,7 +50,7 @@ if ($ftp) {
     readfile($file_path);
 } elseif (is_file($file_path) && is_readable($file_path)) {
     if (!file_exists($path . $name)) {
-        response(trans('File_Not_Found') . AddErrorLocation(), 404)->send();
+        RFM::response(RFM::fm_trans('File_Not_Found') . RFM::AddErrorLocation(), 404)->send();
         exit;
     }
 
@@ -63,7 +64,7 @@ if ($ftp) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime_type = finfo_file($finfo, $file_path);
     } else {
-        $mime_type = get_file_mime_type($file_path);
+        $mime_type = RFM::get_file_mime_type($file_path);
     }
 
 
