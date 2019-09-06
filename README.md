@@ -1,21 +1,73 @@
 # Laravel-ResponsiveFileManager
 
-Include in TinyMCE or CKEDITOR
+### Corrections are made in order to :
+  - Prevent collisions
+  - Fix small errors
+  - Adapt to Laravel
+
+**If you have some corrections, recommendations or anything else to say please let me know. Don't hesitate to make PR if you done something cool you wan't to share**
+
+#
+
+## Include in TinyMCE or CKEDITOR
+
+#### Responsive File Manager Documentation
 https://responsivefilemanager.com/index.php#documentation-section
 
-File manager modified for Laravel Integration
+#
 
+***!IMPORTANT: if you are using htaccess protection, make sure your $GLOBALS PHP_AUTH_USER/PHP_AUTH_USER are defined in your webserver config***
 
-php artisan vendor:publish --provider="Kwaadpepper\ResponsiveFileManager\FileManagerServiceProvider"
+### **How to Install ?**
 
-Change upload Dir for specific user !
-storage_path('app/public/UserName')
+#### *Install on your project*
 
-All configs included
+    composer require kwaadpepper/laravel-responsivefilemanager
 
-Include script in head ```{{ filemanager_javascript }}```
-Get Filemanager config Value ```{{ @filemanager_get_config('config_value') }}```
+    php artisan vendor:publish --provider="Kwaadpepper\ResponsiveFileManager\FileManagerServiceProvider"
 
+Now there is a new configuration file ```rfm.php```
 
-To make private folder use
-.htaccess with "Deny from all"
+Install in ```config/app.php```
+
+    'providers' => [
+            /*
+             * Laravel Framework Service Providers...
+             */
+            ...
+            // Responsive File Manager
+            Kwaadpepper\ResponsiveFileManager\FileManagerServiceProvider::class
+    ],
+
+All configs included to work out of the box.
+Files are meant to be stored in public folder.
+
+#### *Include JS*
+
+*Replace #MYTEXTAREAJS with your textarea input*
+
+    <script src='{{ asset('/vendor/unisharp/laravel-ckeditor/ckeditor.js') }}'></script>
+    <script>
+        $(document).ready(function() {
+            if($("#MYTEXTAREAID").length) {
+                CKEDITOR.replace( 'postBody', {
+                    filebrowserBrowseUrl : '@filemanager_get_resource(dialog.php)?type=2&editor=ckeditor&fldr=',
+                    filebrowserUploadUrl : '@filemanager_get_resource(dialog.php)?type=2&editor=ckeditor&fldr=',
+                    filebrowserImageBrowseUrl : '@filemanager_get_resource(dialog.php)?type=1&editor=ckeditor&fldr=',
+                    language : '<?php App::getLocale() ?>'
+                });
+            }
+        })
+    </script>
+
+#### To make private folder use .htaccess with ```Deny from all```
+
+**TODO :**
+
+ - private key setup
+ - more corrections on JS side
+ - Test with tinyMCE
+ - Include commercial support
+ - Test and debug FTP fonctionnality
+ - MultiUser and Auth Support
+ - publish package
