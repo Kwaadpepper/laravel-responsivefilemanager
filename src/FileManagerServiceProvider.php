@@ -15,6 +15,8 @@ class FileManagerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        
+        // Add package routes.
         $this->loadRoutesFrom(__DIR__.'/routes.php');
 
         /**
@@ -27,9 +29,13 @@ class FileManagerServiceProvider extends ServiceProvider
 
         $FM_PUBLISH[__DIR__.$FMPRIVPATH.'config/config.php'] = config_path('rfm.php');
 
+        $FM_SCRIPT = [
+            'plugin.min.js'
+        ];
+
         $FM_CSS =   ['jquery.fileupload-noscript.css',
                     'jquery.fileupload-ui-noscript.css',
-                    'query.fileupload-ui.css',
+                    'jquery.fileupload-ui.css',
                     'jquery.fileupload.css',
                     'rtl-style.css',
                     'style.css'];
@@ -43,10 +49,10 @@ class FileManagerServiceProvider extends ServiceProvider
         
         $FM_IMG =   ['clipboard_apply.png','clipboard_clear.png','copy.png','cut.png',
                     'date.png','dimension.png','down.png','download.png','duplicate.png',
-                    'edit_img.png','file_edit.png','glyphicons-halfling-white.png','glyphicons-halflings.png','info.png',
-                    'key.png','label.png','loading.png','logo.png','preview.png',
-                    'processing.png','rename.png','size.png','sort.png','storing_animation.png',
-                    'trans.png','up.png' ,'upload.png','url.png','zip.png'];
+                    'edit_img.png','file_edit.png','glyphicons-halflings-white.png','glyphicons-halflings.png','info.png',
+                    'key.png','label.png','loading.gif','logo.png','preview.png',
+                    'processing.gif','rename.png','size.png','sort.png','storing_animation.gif',
+                    'trans.jpg','up.png' ,'upload.png','url.png','zip.png'];
 
         $FM_ICO =   ['ac3.jpg','c4d.jpg','dxf.jpg','html.jpg','mov.jpg','odp.jpg','pdf.jpg','sql.jpg','webm.jpg',
                     'accdb.jpg','css.jpg','favicon.ico','iso.jpg','mp3.jpg','ods.jpg','png.jpg','stp.jpg','wma.jpg',
@@ -68,55 +74,50 @@ class FileManagerServiceProvider extends ServiceProvider
         
         $FM_SVG = ['icon-a.svg',  'icon-b.svg',  'icon-c.svg',  'icon-d.svg',  'svg.svg'];
 
+        $FMVENDOR_PREP = [
+            '/' => $FM_SCRIPT,
+            'css/' => $FM_CSS,
+            'js/' => $FM_JS,
+            'img/' => $FM_IMG,
+            'img/ico/' => $FM_ICO,
+            'img/ico_dark/' => $FM_ICO_DARK,
+        ];
+        $FM_VENDOR = [];
 
-        foreach ($FM_CSS as $css_file) {
-            $FM_PUBLISH[__DIR__.$FMPRIVPATH.'css/'.$css_file] = public_path($FMPUBPATH.'css/'.$css_file);
+        foreach ($FMVENDOR_PREP as $folder_path => $file_table) {
+            foreach ($file_table as $file) {
+                $FMVENDOR[$file] = $FMPUBPATH.$folder_path.$file;
+            }
         }
 
-        foreach ($FM_JS as $js_file) {
-            $FM_PUBLISH[__DIR__.$FMPRIVPATH.'js/'.$js_file] = public_path($FMPUBPATH.'js/'.$js_file);
-        }
+        $FM_PUBLISH[__DIR__.$FMPRIVPATH.'config/config.php'] = config_path('rfm.php');
 
-        foreach ($FM_IMG as $img_file) {
-            $FM_PUBLISH[__DIR__.$FMPRIVPATH.'img/'.$img_file] = public_path($FMPUBPATH.'img/'.$img_file);
-        }
-
-        foreach ($FM_ICO as $img_file) {
-            $FM_PUBLISH[__DIR__.$FMPRIVPATH.'img/ico/'.$img_file] = public_path($FMPUBPATH.'img/ico/'.$img_file);
-        }
-
-        foreach ($FM_ICO_DARK as $img_file) {
-            $FM_PUBLISH[__DIR__.$FMPRIVPATH.'img/ico_dark/'.$img_file] = public_path($FMPUBPATH.'img/ico_dark/'.$img_file);
-        }
-
-        foreach ($FM_SVG as $img_file) {
-            $FM_PUBLISH[__DIR__.$FMPRIVPATH.'svg/'.$img_file] = public_path($FMPUBPATH.'svg/'.$img_file);
-        }
+        $FM_PUBLISH[__DIR__.$FMPRIVPATH.'/plugin.min.js'] = public_path($FMPUBPATH.'/plugin.min.js');
+        $FM_PUBLISH[__DIR__.$FMPRIVPATH.'/css'] = public_path($FMPUBPATH.'/css');
+        $FM_PUBLISH[__DIR__.$FMPRIVPATH.'/img'] = public_path($FMPUBPATH.'/img');
+        $FM_PUBLISH[__DIR__.$FMPRIVPATH.'/js'] = public_path($FMPUBPATH.'/js');
+        $FM_PUBLISH[__DIR__.$FMPRIVPATH.'/svg'] = public_path($FMPUBPATH.'/svg');
+        $FM_PUBLISH[__DIR__.$FMPRIVPATH.'/lang'] = public_path($FMPUBPATH.'/lang');
 
         $this->publishes($FM_PUBLISH);
 
         /**
          * Blade print
          */
-        $inc = "<script src=\"{{ asset('".$FMPUBPATH."js/include.js') }}\" ></script>";
-        Blade::directive('filemanager_javascript', function ($expression) {
-            return "<?php echo \"".$inc."\"; ?>";
+
+        Blade::directive('external_filemanager_path', function () use ($FMPUBPATH) {
+            return $FMPUBPATH.'/';
+        });
+
+        Blade::directive('filemanager_get_resource', function ($file) use ($FMVENDOR) {
+            $r = parse_url(route('FM'.$file), PHP_URL_PATH);
+            if($r) return $r;
+            if(isset($FMVENDOR[$file])) return $FMVENDOR[$file];
+            if(config('app.debug')) throw new \Exception('unkow file '.$file.' in Reponsive File Manager');
         });
 
         Blade::directive('filemanager_get_config', function ($expression) {
             return config($expression);
         });
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        config([
-            'config/config.php',
-        ]);
     }
 }

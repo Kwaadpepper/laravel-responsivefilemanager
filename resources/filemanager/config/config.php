@@ -1,16 +1,18 @@
 <?php
+
 $version = "9.14.0";
 if (session_id() == '') {
     session_start();
 }
 
-mb_internal_encoding('UTF-8');
-mb_http_output('UTF-8');
-mb_http_input('UTF-8');
-mb_language('uni');
-mb_regex_encoding('UTF-8');
-ob_start('mb_output_handler');
-date_default_timezone_set('Europe/Rome');
+define('FM_mb_internal_encoding', 'UTF-8');
+define('FM_mb_http_output', 'UTF-8');
+define('FM_mb_http_input', 'UTF-8');
+define('FM_mb_language', 'uni');
+define('FM_mb_regex_encoding', 'UTF-8');
+define('FM_ob_start', 'mb_output_handler');
+define('FM_date_default_timezone_set', 'Europe/Rome');
+// define('setlocale', 'en_US');
 setlocale(LC_CTYPE, 'en_US'); //correct transliteration
 
 /*
@@ -39,7 +41,7 @@ define('USE_ACCESS_KEYS', false); // TRUE or FALSE
 |--------------------------------------------------------------------------
 */
 
-define('DEBUG_ERROR_MESSAGE', false); // TRUE or FALSE
+define('DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +59,25 @@ define('DEBUG_ERROR_MESSAGE', false); // TRUE or FALSE
 |    |   |   |   |   |- plugin.min.js
 */
 
+// CHANGE HERE FILES AND THUMBS PATH
+// path from public folder !!Accessible to All!!
+$upload_dir = 'uploads/files/';
+$thumbs_upload_dir = 'uploads/files/';
+$current_path = 'uploads/files/';
+$thumbs_base_path = 'uploads/thumbs/';
+
+// TRY AUTO GENERATE FOLDER
+create_folder($upload_dir);
+create_folder($current_path);
+create_folder($thumbs_upload_dir);
+create_folder($thumbs_base_path);
+
 $config = array(
+
+    /**
+     * Set version in config instead of global var $config
+     */
+    'version' => $version,
 
     /*
     |--------------------------------------------------------------------------
@@ -76,7 +96,7 @@ $config = array(
     | with start and final /
     |
     */
-    'upload_dir' => '/source/',
+    'upload_dir' => '/'.$upload_dir,
     /*
     |--------------------------------------------------------------------------
     | relative path from filemanager folder to upload folder
@@ -85,7 +105,7 @@ $config = array(
     | with final /
     |
     */
-    'current_path' => '../source/',
+    'current_path' => $current_path,
 
     /*
     |--------------------------------------------------------------------------
@@ -96,7 +116,7 @@ $config = array(
     | DO NOT put inside upload folder
     |
     */
-    'thumbs_base_path' => '../thumbs/',
+    'thumbs_base_path' => $thumbs_base_path,
 
     /*
     |--------------------------------------------------------------------------
@@ -107,7 +127,7 @@ $config = array(
     | DO NOT put inside upload folder
     |
     */
-    'thumbs_upload_dir' => '/thumbs/',
+    'thumbs_upload_dir' => '/'.$thumbs_upload_dir,
 
 
     /*
@@ -228,7 +248,7 @@ $config = array(
     | default language file name
     |--------------------------------------------------------------------------
     */
-    'default_language' => "en_EN",
+    'default_language' => "fr_FR",
 
     /*
     |--------------------------------------------------------------------------
@@ -427,13 +447,13 @@ $config = array(
     'header.border'                        => '0px',
 
     // main icons
-    'menu.normalIcon.path'                 => 'svg/icon-d.svg',
+    'menu.normalIcon.path'                 => '/vendor/responsivefilemanager'.'/svg/icon-d.svg',
     'menu.normalIcon.name'                 => 'icon-d',
-    'menu.activeIcon.path'                 => 'svg/icon-b.svg',
+    'menu.activeIcon.path'                 => '/vendor/responsivefilemanager'.'/svg/icon-b.svg',
     'menu.activeIcon.name'                 => 'icon-b',
-    'menu.disabledIcon.path'               => 'svg/icon-a.svg',
+    'menu.disabledIcon.path'               => '/vendor/responsivefilemanager'.'/svg/icon-a.svg',
     'menu.disabledIcon.name'               => 'icon-a',
-    'menu.hoverIcon.path'                  => 'svg/icon-c.svg',
+    'menu.hoverIcon.path'                  => '/vendor/responsivefilemanager'.'/svg/icon-c.svg',
     'menu.hoverIcon.name'                  => 'icon-c',
     'menu.iconSize.width'                  => '24px',
     'menu.iconSize.height'                 => '24px',
@@ -443,9 +463,9 @@ $config = array(
     'submenu.partition.color'              => '#000000',
 
     // submenu icons
-    'submenu.normalIcon.path'              => 'svg/icon-d.svg',
+    'submenu.normalIcon.path'              => '/vendor/responsivefilemanager'.'/svg/icon-d.svg',
     'submenu.normalIcon.name'              => 'icon-d',
-    'submenu.activeIcon.path'              => 'svg/icon-b.svg',
+    'submenu.activeIcon.path'              => '/vendor/responsivefilemanager'.'/svg/icon-b.svg',
     'submenu.activeIcon.name'              => 'icon-b',
     'submenu.iconSize.width'               => '32px',
     'submenu.iconSize.height'              => '32px',
@@ -617,3 +637,37 @@ return array_merge(
         ),
     )
 );
+
+/**
+* Needed to autogenerate folder
+* Create directory for images and/or thumbnails
+*
+* @param  string  $path
+* @param  string  $path_thumbs
+*/
+function create_folder($path = null, $path_thumbs = null,$ftp = null,$config = null)
+{
+	if($ftp){
+		return $ftp->mkdir($path) || $ftp->mkdir($path_thumbs);
+	}else{
+		if(file_exists($path) || file_exists($path_thumbs)){
+			return false;
+		}
+		$oldumask = umask(0);
+        $permission = 0755;
+        $output = false;
+		if(isset($config['folderPermission'])){
+			$permission = $config['folderPermission'];
+		}
+		if ($path && !file_exists($path))
+		{
+			$output = mkdir($path, $permission, true);
+		} // or even 01777 so you get the sticky bit set
+		if ($path_thumbs)
+		{
+			$output = mkdir($path_thumbs, $permission, true) or die("$path_thumbs cannot be found");
+		} // or even 01777 so you get the sticky bit set
+		umask($oldumask);
+		return $output;
+	}
+}

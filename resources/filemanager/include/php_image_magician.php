@@ -1,4 +1,5 @@
 <?php
+use ResponsiveFileManager\RFM;
 # ========================================================================#
 #
 #  This work is licensed under the Creative Commons Attribution 3.0 Unported
@@ -224,7 +225,7 @@ class imageLib {
 
 		// *** Save the image file name. Only store this incase you want to display it
 		$this->fileName = $fileName;
-		$this->fileExtension = fix_strtolower(strrchr($fileName, '.'));
+		$this->fileExtension = RFM::fix_strtolower(strrchr($fileName, '.'));
 
 		// *** Open up the file
 		$this->image = $this->openImage($fileName);
@@ -321,7 +322,7 @@ class imageLib {
 
 		// *** We can pass in an array of options to change the crop position
 		$cropPos = 'm';
-		if (is_array($option) && fix_strtolower($option[0]) == 'crop')
+		if (is_array($option) && RFM::fix_strtolower($option[0]) == 'crop')
 		{
 			$cropPos = $option[1];         # get the crop option
 		}
@@ -514,7 +515,7 @@ class imageLib {
 		#       black borders.
 		#
 	{
-		$pos = fix_strtolower($pos);
+		$pos = RFM::fix_strtolower($pos);
 
 		// *** If co-ords have been entered
 		if (strstr($pos, 'x'))
@@ -944,7 +945,7 @@ class imageLib {
 	{
 		if (is_array($option))
 		{
-			if (fix_strtolower($option[0]) == 'crop' && count($option) == 2)
+			if (RFM::fix_strtolower($option[0]) == 'crop' && count($option) == 2)
 			{
 				return 'crop';
 			}
@@ -963,7 +964,7 @@ class imageLib {
 
 		if (is_string($option))
 		{
-			return fix_strtolower($option);
+			return RFM::fix_strtolower($option);
 		}
 
 		return $option;
@@ -1429,7 +1430,7 @@ class imageLib {
 			if (is_string($value))
 			{
 
-				$value = fix_strtolower($value);
+				$value = RFM::fix_strtolower($value);
 
 				switch ($value)
 				{
@@ -1488,7 +1489,7 @@ class imageLib {
 		$isTransparent = false;
 		if ( ! is_array($bgColor))
 		{
-			if (fix_strtolower($bgColor) == 'transparent')
+			if (RFM::fix_strtolower($bgColor) == 'transparent')
 			{
 				$isTransparent = true;
 			}
@@ -1605,7 +1606,7 @@ class imageLib {
 
 
 		// *** Convert color
-		if (fix_strtolower($bgColor) != 'transparent')
+		if (RFM::fix_strtolower($bgColor) != 'transparent')
 		{
 			$rgbArray = $this->formatColor($bgColor);
 			$r0 = $rgbArray['r'];
@@ -1701,7 +1702,7 @@ class imageLib {
 				$t = $a / 128.0;
 
 				// *** Create color
-				if (fix_strtolower($bgColor) == 'transparent')
+				if (RFM::fix_strtolower($bgColor) == 'transparent')
 				{
 					$myColour = imagecolorallocatealpha($rgb, $r, $g, $b, $a);
 				}
@@ -1744,7 +1745,7 @@ class imageLib {
 		# Notes:
 		#
 	{
-		$side = fix_strtolower($side);
+		$side = RFM::fix_strtolower($side);
 
 		// *** Convert color
 		$rgbArray = $this->formatColor($bgColor);
@@ -2502,7 +2503,7 @@ class imageLib {
 		$y = $posArray['height'];
 
 		// *** Set watermark opacity
-		if (fix_strtolower(strrchr($watermarkImage, '.')) == '.png')
+		if (RFM::fix_strtolower(strrchr($watermarkImage, '.')) == '.png')
 		{
 
 			$opacity = $this->invertTransparency($opacity, 100);
@@ -2537,7 +2538,7 @@ class imageLib {
 		#
 		#
 	{
-		$pos = fix_strtolower($pos);
+		$pos = RFM::fix_strtolower($pos);
 
 		// *** If co-ords have been entered
 		if (strstr($pos, 'x'))
@@ -2721,7 +2722,7 @@ class imageLib {
 
 		// *** Get extension / image type
 		$extension = mime_content_type($file);
-		$extension = fix_strtolower($extension);
+		$extension = RFM::fix_strtolower($extension);
 		$extension = str_replace('image/', '', $extension);
 		switch ($extension)
 		{
@@ -2815,7 +2816,7 @@ class imageLib {
 
 		// *** Get extension
 		$extension = strrchr($savePath, '.');
-		$extension = fix_strtolower($extension);
+		$extension = RFM::fix_strtolower($extension);
 
 		$error = '';
 
@@ -3202,7 +3203,7 @@ class imageLib {
 		}
 		else
 		{
-			if (fix_strtolower($value) == 'transparent')
+			if (RFM::fix_strtolower($value) == 'transparent')
 			{
 
 				$rgbArray = array(
