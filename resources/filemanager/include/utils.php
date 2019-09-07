@@ -1,8 +1,6 @@
 <?php
 namespace ResponsiveFileManager;
 
-use ResponsiveFileManager\Response;
-
 if (!isset($_SESSION['RF']) || $_SESSION['RF']["verify"] != "RESPONSIVEfilemanager")
 {
 	die('forbiden');
@@ -439,7 +437,7 @@ class RFM {
 	*/
 	public static function folder_info($path,$count_hidden=true)
 	{
-		$config = \Config::get('rfm');
+		$config = config('rfm');
 		$total_size = 0;
 		$files = scandir($path);
 		$cleanPath = rtrim($path, '/') . '/';
@@ -481,7 +479,7 @@ class RFM {
 	*/
 	public static function filescount($path,$count_hidden=true)
 	{
-		$config = \Config::get('rfm');
+		$config = config('rfm');
 		$total_count = 0;
 		$files = scandir($path);
 		$cleanPath = rtrim($path, '/') . '/';
@@ -519,7 +517,7 @@ class RFM {
 	*/
 	public static function checkresultingsize($sizeAdded)
 	{
-		$config = \Config::get('rfm');
+		$config = config('rfm');
 
 		if ($config['MaxSizeTotal'] !== false && is_int($config['MaxSizeTotal'])) {
 			list($sizeCurrentFolder,$fileCurrentNum,$foldersCurrentCount) = self::folder_info($config['current_path'],false);

@@ -40,7 +40,7 @@ mb_regex_encoding(FM_mb_regex_encoding);
 ob_start(FM_ob_start);
 date_default_timezone_set(FM_date_default_timezone_set);
 
-$config = Config::get('rfm');
+$config = config('rfm');
 
 /**
  * Language init

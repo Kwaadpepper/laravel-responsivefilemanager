@@ -3,8 +3,8 @@
 $_SESSION['RF']["verify"] = "RESPONSIVEfilemanager";
 
 require_once __DIR__.'/boot.php';
-$config = \Config::get('rfm');
-$version = \Config::get('rfm.version');
+$config = config('rfm');
+$version = config('rfm.version');
 
 use ResponsiveFileManager\RFM;
 
