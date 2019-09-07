@@ -1309,7 +1309,7 @@ class RFM {
 	*/
 	public static function AddErrorLocation()
 	{
-		if (defined('DEBUG_ERROR_MESSAGE') and DEBUG_ERROR_MESSAGE) {
+		if (defined('FM_DEBUG_ERROR_MESSAGE') and FM_DEBUG_ERROR_MESSAGE) {
 			$pile=debug_backtrace();
 			return " (@".$pile[0]["file"]."#".$pile[0]["line"].")";
 		}

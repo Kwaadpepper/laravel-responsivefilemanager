@@ -14,7 +14,7 @@ $time = time();
 $vendor_path = asset('vendor/responsivefilemanager').'/';
 
 
-if (USE_ACCESS_KEYS == true){
+if (FM_USE_ACCESS_KEYS == true){
 	if (!isset($_GET['akey'], $config['access_keys']) || empty($config['access_keys'])){
 		die('Access Denied!');
 	}

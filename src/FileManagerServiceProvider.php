@@ -3,11 +3,14 @@
 namespace Kwaadpepper\ResponsiveFileManager;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
 use Blade;
 
 class FileManagerServiceProvider extends ServiceProvider
 {
+    protected $commands = [
+        'Kwaadpepper\ResponsiveFileManager\RFMGenerate'
+    ];
+
     /**
      * Bootstrap any application services.
      *
@@ -109,6 +112,11 @@ class FileManagerServiceProvider extends ServiceProvider
             return $FMPUBPATH.'/';
         });
 
+        Blade::directive('filemanager_get_key', function () {
+            $o = isset(config('rfm.access_keys')[0]) ? config('rfm.access_keys')[0] : '';
+            return urlencode($o);
+        });
+
         Blade::directive('filemanager_get_resource', function ($file) use ($FMVENDOR) {
             $r = parse_url(route('FM'.$file), PHP_URL_PATH);
             if($r) return $r;
@@ -132,8 +140,6 @@ class FileManagerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        config([
-            'config/config.php', // add your new config file here!
-        ]);
+        $this->commands($this->commands);
     }
 }

@@ -21,8 +21,8 @@ $version = "9.14.0";
 |
 */
 
-!defined('USE_ACCESS_KEYS') ??
-    define('USE_ACCESS_KEYS', false); // TRUE or FALSE
+if(!defined('FM_USE_ACCESS_KEYS'))
+    define('FM_USE_ACCESS_KEYS', true); // TRUE or FALSE
 
 /*
 |--------------------------------------------------------------------------
@@ -30,8 +30,8 @@ $version = "9.14.0";
 |--------------------------------------------------------------------------
 */
 
-!defined('DEBUG_ERROR_MESSAGE') ??
-    define('DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
+if(!defined('FM_DEBUG_ERROR_MESSAGE'))
+    define('FM_DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
 
 /*
 |--------------------------------------------------------------------------
@@ -191,7 +191,7 @@ $config = array(
     |
     */
 
-    'access_keys' => array(),
+    'access_keys' => array(env('RFM_KEY')),
 
     //--------------------------------------------------------------------------------------------------------
     // YOU CAN COPY AND CHANGE THESE VARIABLES INTO FOLDERS config.php FILES TO CUSTOMIZE EACH FOLDER OPTIONS
