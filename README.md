@@ -1,3 +1,7 @@
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
+[![GitHub version](https://badge.fury.io/gh/kwaadpepper%2Flaravel-responsivefilemanager.svg)](https://badge.fury.io/gh/kwaadpepper%2Flaravel-responsivefilemanager)
+
 # Laravel-ResponsiveFileManager
 
 ### Corrections are made in order to :
