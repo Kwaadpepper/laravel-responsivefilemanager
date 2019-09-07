@@ -3,6 +3,16 @@ require_once __DIR__.'/include/utils.php';
 
 use ResponsiveFileManager\RFM;
 
+define('FM_mb_internal_encoding', 'UTF-8');
+define('FM_mb_http_output', 'UTF-8');
+define('FM_mb_http_input', 'UTF-8');
+define('FM_mb_language', 'uni');
+define('FM_mb_regex_encoding', 'UTF-8');
+define('FM_ob_start', 'mb_output_handler');
+define('FM_date_default_timezone_set', 'Europe/Rome');
+// define('setlocale', 'en_US');
+setlocale(LC_CTYPE, 'en_US'); //correct transliteration
+
 // ALLOW Crossscript for resource load
 header("content-type: text/html; charset=UTF-8");
 header("Access-Control-Allow-Origin: https://code.jquery.com");
@@ -20,11 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
         header("Access-Control-Allow-Headers:        {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
 
     exit(0);
-}
-
-// Verifier Session par rapport a l'api laravel
-if (session_id() == '') {
-    session_start();
 }
 
 mb_internal_encoding(FM_mb_internal_encoding);
