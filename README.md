@@ -39,6 +39,10 @@ Install in ```config/app.php```
             Kwaadpepper\ResponsiveFileManager\FileManagerServiceProvider::class
     ],
 
+Generate private key for url identification
+
+    php artisan rfm:generate
+
 All configs included to work out of the box.
 Files are meant to be stored in public folder.
 
@@ -51,9 +55,9 @@ Files are meant to be stored in public folder.
         $(document).ready(function() {
             if($("#MYTEXTAREAID").length) {
                 CKEDITOR.replace( 'postBody', {
-                    filebrowserBrowseUrl : '@filemanager_get_resource(dialog.php)?type=2&editor=ckeditor&fldr=',
-                    filebrowserUploadUrl : '@filemanager_get_resource(dialog.php)?type=2&editor=ckeditor&fldr=',
-                    filebrowserImageBrowseUrl : '@filemanager_get_resource(dialog.php)?type=1&editor=ckeditor&fldr=',
+                    filebrowserBrowseUrl : '@filemanager_get_resource(dialog.php)?akey=@filemanager_get_key()&type=2&editor=ckeditor&fldr=',
+                    filebrowserUploadUrl : '@filemanager_get_resource(dialog.php)?akey=@filemanager_get_key()&type=2&editor=ckeditor&fldr=',
+                    filebrowserImageBrowseUrl : '@filemanager_get_resource(dialog.php)?akey=@filemanager_get_key()&type=1&editor=ckeditor&fldr=',
                     language : '<?php App::getLocale() ?>'
                 });
             }
@@ -64,10 +68,11 @@ Files are meant to be stored in public folder.
 
 **TODO :**
 
- - private key setup
- - more corrections on JS side
- - Test with tinyMCE
- - Include commercial support
- - Test and debug FTP fonctionnality
- - MultiUser and Auth Support
- - publish package
+ - [x] private key setup
+ - [ ] more corrections on JS side
+ - [ ] Test with tinyMCE
+ - [ ] Include commercial support
+ - [ ] Test and debug FTP fonctionnality
+ - [ ] MultiUser and Auth Support
+ - [ ] publish package
+ 
