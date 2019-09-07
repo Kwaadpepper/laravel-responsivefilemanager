@@ -2,7 +2,7 @@
 require_once __DIR__.'/boot.php';
 require_once __DIR__.'/include/mime_type_lib.php';
 
-$config = \Config::get('rfm');
+$config = config('rfm');
 
 use ResponsiveFileManager\RFM;
 

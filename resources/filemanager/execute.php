@@ -2,7 +2,7 @@
 require_once __DIR__.'/boot.php';
 require_once __DIR__.'/include/utils.php';
 
-$config = \Config::get('rfm');
+$config = config('rfm');
 
 use ResponsiveFileManager\RFM;
 
