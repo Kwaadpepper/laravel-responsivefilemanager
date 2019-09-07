@@ -1,19 +1,7 @@
 <?php
 
 $version = "9.14.0";
-if (session_id() == '') {
-    session_start();
-}
 
-define('FM_mb_internal_encoding', 'UTF-8');
-define('FM_mb_http_output', 'UTF-8');
-define('FM_mb_http_input', 'UTF-8');
-define('FM_mb_language', 'uni');
-define('FM_mb_regex_encoding', 'UTF-8');
-define('FM_ob_start', 'mb_output_handler');
-define('FM_date_default_timezone_set', 'Europe/Rome');
-// define('setlocale', 'en_US');
-setlocale(LC_CTYPE, 'en_US'); //correct transliteration
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +21,8 @@ setlocale(LC_CTYPE, 'en_US'); //correct transliteration
 |
 */
 
-define('USE_ACCESS_KEYS', false); // TRUE or FALSE
+!defined('USE_ACCESS_KEYS') ??
+    define('USE_ACCESS_KEYS', false); // TRUE or FALSE
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +30,8 @@ define('USE_ACCESS_KEYS', false); // TRUE or FALSE
 |--------------------------------------------------------------------------
 */
 
-define('DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
+!defined('DEBUG_ERROR_MESSAGE') ??
+    define('DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
 
 /*
 |--------------------------------------------------------------------------
@@ -65,12 +55,6 @@ $upload_dir = 'uploads/files/';
 $thumbs_upload_dir = 'uploads/files/';
 $current_path = 'uploads/files/';
 $thumbs_base_path = 'uploads/thumbs/';
-
-// TRY AUTO GENERATE FOLDER
-create_folder($upload_dir);
-create_folder($current_path);
-create_folder($thumbs_upload_dir);
-create_folder($thumbs_base_path);
 
 $config = array(
 
@@ -645,7 +629,7 @@ return array_merge(
 * @param  string  $path
 * @param  string  $path_thumbs
 */
-function create_folder($path = null, $path_thumbs = null,$ftp = null,$config = null)
+$create_folder = function ($path = null, $path_thumbs = null,$ftp = null,$config = null)
 {
 	if($ftp){
 		return $ftp->mkdir($path) || $ftp->mkdir($path_thumbs);
@@ -669,5 +653,11 @@ function create_folder($path = null, $path_thumbs = null,$ftp = null,$config = n
 		} // or even 01777 so you get the sticky bit set
 		umask($oldumask);
 		return $output;
-	}
-}
+    }
+};
+
+// TRY AUTO GENERATE FOLDER
+create_folder($upload_dir);
+create_folder($current_path);
+create_folder($thumbs_upload_dir);
+create_folder($thumbs_base_path);
