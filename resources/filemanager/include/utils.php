@@ -1,10 +1,6 @@
 <?php
 namespace ResponsiveFileManager;
 
-if (!isset($_SESSION['RF']) || $_SESSION['RF']["verify"] != "RESPONSIVEfilemanager")
-{
-	die('forbiden');
-}
 require_once dirname(__FILE__) . '/Response.php';
 
 class RFM {
