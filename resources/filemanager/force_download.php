@@ -6,8 +6,12 @@ $config = config('rfm');
 
 use ResponsiveFileManager\RFM;
 
-if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager") {
-    RFM::response(RFM::fm_trans('forbidden') . RFM::AddErrorLocation(), 403)->send();
+/**
+ * Check RF session
+ */
+if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager")
+{
+	RFM::response(RFM::fm_trans('forbidden') . RFM::AddErrorLocation(), 403)->send();
     exit;
 }
 

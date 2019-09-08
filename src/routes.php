@@ -9,9 +9,11 @@ $FM_ROUTES =    ['index.php' => ['get'],
                 'upload.php' => ['get', 'post']];
 
 // Routes For Responsive API and Web (dialog.php)
-foreach ($FM_ROUTES as $file => $method) {
-    Route::match($method, $FM_ROUTE_PREFIX.$file, function() use($file) {
-        include(__DIR__ . '/../resources/filemanager/'.$file);
-        return ;
-    })->name('FM'.$file);
-}
+Route::group(['middleware' => 'web'], function () use($FM_ROUTE_PREFIX, $FM_ROUTES) {
+    foreach ($FM_ROUTES as $file => $method) {
+        Route::match($method, $FM_ROUTE_PREFIX.$file, function() use($file) {
+            include(__DIR__ . '/../resources/filemanager/'.$file);
+            return ;
+        })->name('FM'.$file);
+    }
+});

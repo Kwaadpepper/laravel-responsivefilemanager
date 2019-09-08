@@ -43,6 +43,19 @@ Install in ```config/app.php```
             Kwaadpepper\ResponsiveFileManager\FileManagerServiceProvider::class
     ],
 
+In ```HTTP/Kernel.php``` need to use StartSession, can also use and is recommended CSRF Token
+
+    protected $middlewareGroups = [
+        ...
+        'web' => [
+            ...
+            \Illuminate\Session\Middleware\StartSession::class,
+            // Responsive File Manager supports CSRF Token usage
+            \App\Http\Middleware\VerifyCsrfToken::class
+        ]
+        ...
+    ];
+
 Generate private key for url identification
 
     php artisan rfm:generate

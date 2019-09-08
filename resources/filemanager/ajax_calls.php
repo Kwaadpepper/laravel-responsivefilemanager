@@ -5,15 +5,20 @@ $version = config('rfm.version');
 
 use ResponsiveFileManager\RFM;
 
-if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager") {
-    RFM::response(RFM::fm_trans('forbidden').RFM::AddErrorLocation())->send();
-    exit;
-}
 $languages = include __DIR__.'/lang/languages.php';
 
-if (isset($_SESSION['RF']['language']) && file_exists(__DIR__.'/lang/' . basename($_SESSION['RF']['language']) . '.php')) {
-    if (array_key_exists($_SESSION['RF']['language'], $languages)) {
-        include __DIR__.'/lang/' . basename($_SESSION['RF']['language']) . '.php';
+/**
+ * Check RF session
+ */
+if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager")
+{
+	RFM::response(RFM::fm_trans('forbidden') . RFM::AddErrorLocation(), 403)->send();
+    exit;
+}
+
+if (session()->exists('RF.language') && file_exists(__DIR__.'/lang/' . basename(session('RF.language')) . '.php')) {
+    if (array_key_exists(session('RF.language'), $languages)) {
+        include __DIR__.'/lang/' . basename(session('RF.language')) . '.php';
     } else {
         RFM::response(RFM::fm_trans('Lang_Not_Found').RFM::AddErrorLocation())->send();
         exit;
@@ -51,7 +56,7 @@ if (isset($_GET['action'])) {
 
         case 'view':
             if (isset($_GET['type'])) {
-                $_SESSION['RF']["view_type"] = $_GET['type'];
+                session()->put('RF.view_type', $_GET['type']);
             } else {
                 RFM::response(RFM::fm_trans('view type number missing').RFM::AddErrorLocation())->send();
                 exit;
@@ -61,7 +66,7 @@ if (isset($_GET['action'])) {
         case 'filter':
             if (isset($_GET['type'])) {
                 if (isset($config['remember_text_filter']) && $config['remember_text_filter']) {
-                    $_SESSION['RF']["filter"] = $_GET['type'];
+                    session()->put('RF.filter', $_GET['type']);
                 }
             } else {
                 RFM::response(RFM::fm_trans('view type number missing').RFM::AddErrorLocation())->send();
@@ -71,12 +76,12 @@ if (isset($_GET['action'])) {
 
         case 'sort':
             if (isset($_GET['sort_by'])) {
-                $_SESSION['RF']["sort_by"] = $_GET['sort_by'];
+                session()->put('RF.sort_by', $_GET['sort_by']);
             }
 
 			if (isset($_GET['descending']))
 			{
-				$_SESSION['RF']["descending"] = $_GET['descending'];
+				session()->put('RF.descending', $_GET['descending']);
 			}
 			break;
 		case 'save_img':
@@ -398,12 +403,12 @@ if (isset($_GET['action'])) {
                 }
             }
 
-            $_SESSION['RF']['clipboard']['path'] = $_POST['path'];
-            $_SESSION['RF']['clipboard_action'] = $_POST['sub_action'];
+            session()->put('RF.clipboard.path', $_POST['path']);
+            session()->put('RF.clipboard_action', $_POST['sub_action']);
             break;
         case 'clear_clipboard':
-            $_SESSION['RF']['clipboard'] = null;
-            $_SESSION['RF']['clipboard_action'] = null;
+            session()->put('RF.clipboard.path', null);
+            session()->put('RF.clipboard_action', null);
             break;
         case 'chmod':
             if ($ftp) {
@@ -519,7 +524,7 @@ if (isset($_GET['action'])) {
                 exit;
             }
 
-            $curr = $_SESSION['RF']['language'];
+            $curr = session('RF.language');
 
             $ret = '<select id="new_lang_select">';
             foreach ($languages as $code => $name) {
@@ -539,7 +544,7 @@ if (isset($_GET['action'])) {
                     RFM::response(RFM::fm_trans('Lang_Not_Found').RFM::AddErrorLocation())->send();
                     exit;
                 } else {
-                    $_SESSION['RF']['language'] = $choosen_lang;
+                    session()->put('RF.language', $choosen_lang);
                 }
             }
 

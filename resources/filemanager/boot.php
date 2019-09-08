@@ -45,9 +45,9 @@ $config = config('rfm');
 /**
  * Language init
  */
-if ( ! isset($_SESSION['RF']['language'])
-	|| file_exists('lang/' . basename($_SESSION['RF']['language']) . '.php') === false
-	|| ! is_readable('lang/' . basename($_SESSION['RF']['language']) . '.php')
+if ( ! session()->exists('RF.language')
+	|| file_exists('lang/' . basename(session('RF.language')) . '.php') === false
+	|| ! is_readable('lang/' . basename(session('RF.language')) . '.php')
 )
 {
 	$lang = $config['default_language'];
@@ -66,7 +66,7 @@ if ( ! isset($_SESSION['RF']['language'])
 	}
 
 	// add lang file to session for easy include
-	$_SESSION['RF']['language'] = $lang;
+	session()->put('RF.language', $lang);
 }
 else
 {
@@ -76,8 +76,8 @@ else
 		$languages = include __DIR__.'/../lang/languages.php';
 	}
 
-	if(array_key_exists($_SESSION['RF']['language'],$languages)){
-		$lang = $_SESSION['RF']['language'];
+	if(array_key_exists(session('RF.language'),$languages)){
+		$lang = session('RF.language');
 	}else{
 		RFM::response('Lang_Not_Found'.AddErrorLocation())->send();
 		exit;

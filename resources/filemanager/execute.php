@@ -1,14 +1,16 @@
 <?php
 require_once __DIR__.'/boot.php';
-require_once __DIR__.'/include/utils.php';
 
 $config = config('rfm');
 
 use ResponsiveFileManager\RFM;
 
-
-if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager") {
-    RFM::response(RFM::fm_trans('forbidden') . RFM::AddErrorLocation())->send();
+/**
+ * Check RF session
+ */
+if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager")
+{
+	RFM::response(RFM::fm_trans('forbidden') . RFM::AddErrorLocation(), 403)->send();
     exit;
 }
 
@@ -17,10 +19,10 @@ if (!RFM::checkRelativePath($_POST['path'])) {
     exit;
 }
 
-if (isset($_SESSION['RF']['language']) && file_exists(__DIR__.'/lang/' . basename($_SESSION['RF']['language']) . '.php')) {
+if (session()->exists('RF.language') && file_exists(__DIR__.'/lang/' . basename(session('RF.language')) . '.php')) {
     $languages = include __DIR__.'/lang/languages.php';
-    if (array_key_exists($_SESSION['RF']['language'], $languages)) {
-        include __DIR__.'/lang/' . basename($_SESSION['RF']['language']) . '.php';
+    if (array_key_exists(session('RF.language'), $languages)) {
+        include __DIR__.'/lang/' . basename(session('RF.language')) . '.php';
     } else {
         RFM::response(RFM::fm_trans('Lang_Not_Found') . RFM::AddErrorLocation())->send();
         exit;
@@ -325,15 +327,15 @@ if (isset($_GET['action'])) {
             break;
 
         case 'paste_clipboard':
-            if (!isset($_SESSION['RF']['clipboard_action'], $_SESSION['RF']['clipboard']['path'])
-                || $_SESSION['RF']['clipboard_action'] == ''
-                || $_SESSION['RF']['clipboard']['path'] == '') {
+            if (!(session()->exists('RF.clipboard_action') && session()->exists('RF.clipboard.path'))
+                || session('RF.clipboard_action') == ''
+                || session('RF.clipboard.path') == '') {
                 RFM::response()->send();
                 exit;
             }
 
-            $action = $_SESSION['RF']['clipboard_action'];
-            $data = $_SESSION['RF']['clipboard'];
+            $action = session('RF.clipboard_action');
+            $data = session('RF.clipboard');
 
 
             if ($ftp) {
@@ -421,8 +423,8 @@ if (isset($_GET['action'])) {
 			}
 
             // cleanup
-            $_SESSION['RF']['clipboard']['path'] = null;
-            $_SESSION['RF']['clipboard_action'] = null;
+            session()->put('RF.clipboard.path', null);
+            session()->put('RF.clipboard_action', null);
 
             break;
 

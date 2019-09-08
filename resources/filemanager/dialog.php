@@ -1,6 +1,8 @@
 <?php
+session()->start();
 
-$_SESSION['RF']["verify"] = "RESPONSIVEfilemanager";
+// Autorise user when first visiting dialog.php
+session()->put('RF.verify', "RESPONSIVEfilemanager");
 
 require_once __DIR__.'/boot.php';
 $config = config('rfm');
@@ -33,14 +35,14 @@ if (isset($_POST['submit'])) {
 
     list($preferred_language) = array_values(array_filter(array(
         isset($_GET['lang']) ? $_GET['lang'] : null,
-        isset($_SESSION['RF']['language']) ? $_SESSION['RF']['language'] : null,
+        session()->has('RF.language') ? session('RF.language') : null,
         $config['default_language']
     )));
 
     if (array_key_exists($preferred_language, $available_languages)) {
-        $_SESSION['RF']['language'] = $preferred_language;
+        session()->put('RF.language', $preferred_language);
     } else {
-        $_SESSION['RF']['language'] = $config['default_language'];
+        session()->put('RF.language', $config['default_language']);
     }
 }
 
@@ -48,14 +50,14 @@ $subdir_path = '';
 
 if (isset($_GET['fldr']) && !empty($_GET['fldr'])) {
     $subdir_path = rawurldecode(trim(strip_tags($_GET['fldr']), "/"));
-} elseif (isset($_SESSION['RF']['fldr']) && !empty($_SESSION['RF']['fldr'])) {
-    $subdir_path = rawurldecode(trim(strip_tags($_SESSION['RF']['fldr']), "/"));
+} elseif (session()->exists('RF.fldr') && !session()->has('RF.fldr')) {
+    $subdir_path = rawurldecode(trim(strip_tags(session('RF.fldr')), "/"));
 }
 
 if (RFM::checkRelativePath($subdir_path)) {
     $subdir = strip_tags($subdir_path) . "/";
-    $_SESSION['RF']['fldr'] = $subdir_path;
-    $_SESSION['RF']["filter"] = '';
+    session()->put('RF.fldr', $subdir_path);
+    session()->put('RF.filter', '');
 } else {
     $subdir = '';
 }
@@ -90,16 +92,16 @@ if ($config['show_total_size']) {
 /***
  * SUB-DIR CODE
  ***/
-if (!isset($_SESSION['RF']["subfolder"])) {
-    $_SESSION['RF']["subfolder"] = '';
+if (!session()->exists('RF.subfolder')) {
+    session()->put('RF.subfolder', '');
 }
 $rfm_subfolder = '';
 
-if (!empty($_SESSION['RF']["subfolder"])
-    && strpos($_SESSION['RF']["subfolder"], "/") !== 0
-    && strpos($_SESSION['RF']["subfolder"], '.') === FALSE
+if (!session()->exists('RF.subfolder')
+    && strpos(session('RF.subfolder'), "/") !== 0
+    && strpos(session('RF.subfolder'), '.') === FALSE
 ) {
-    $rfm_subfolder = $_SESSION['RF']['subfolder'];
+    $rfm_subfolder = session('RF.subfolder');
 }
 
 if ($rfm_subfolder != "" && $rfm_subfolder[strlen($rfm_subfolder) - 1] != "/") {
@@ -171,12 +173,12 @@ if (isset($_GET['multiple'])) {
 
 if (isset($_GET['callback'])) {
     $callback = strip_tags($_GET['callback']);
-    $_SESSION['RF']["callback"] = $callback;
+    session()->put('RF.callback', $callback);
 } else {
     $callback = 0;
 
-    if (isset($_SESSION['RF']["callback"])) {
-        $callback = $_SESSION['RF']["callback"];
+    if (session()->exists('RF.callback', $callback)) {
+        $callback = session('RF.callback');
     }
 }
 
@@ -189,25 +191,25 @@ $crossdomain = isset($_GET['crossdomain']) ? strip_tags($_GET['crossdomain']) : 
 $crossdomain=!!$crossdomain;
 
 //view type
-if(!isset($_SESSION['RF']["view_type"]))
+if(!session()->exists('RF.view_type'))
 {
     $view = $config['default_view'];
-    $_SESSION['RF']["view_type"] = $view;
+    session()->put('RF.view_type', $view);
 }
 
 if (isset($_GET['view']))
 {
     $view = fix_get_params($_GET['view']);
-    $_SESSION['RF']["view_type"] = $view;
+    session()->put('RF.view_type', $view);
 }
 
-$view = $_SESSION['RF']["view_type"];
+$view = session('RF.view_type');
 
 //filter
 $filter = "";
-if(isset($_SESSION['RF']["filter"]))
+if(session()->exists('RF.filter'))
 {
-    $filter = $_SESSION['RF']["filter"];
+    $filter = session('RF.filter');
 }
 
 if(isset($_GET["filter"]))
@@ -215,26 +217,28 @@ if(isset($_GET["filter"]))
     $filter = RFM::fix_get_params($_GET["filter"]);
 }
 
-if (!isset($_SESSION['RF']['sort_by']))
+if (!session()->exists('RF.sort_by'))
 {
-    $_SESSION['RF']['sort_by'] = 'name';
+    session()->put('RF.sort_by', 'name');
 }
 
 if (isset($_GET["sort_by"])) {
-    $sort_by = $_SESSION['RF']['sort_by'] = RFM::fix_get_params($_GET["sort_by"]);
+    session()->put('RF.sort_by', RFM::fix_get_params($_GET["sort_by"]));
+    $sort_by = session('RF.sort_by');
 } else {
-    $sort_by = $_SESSION['RF']['sort_by'];
+    $sort_by = session('RF.sort_by');
 }
 
 
-if (!isset($_SESSION['RF']['descending'])) {
-    $_SESSION['RF']['descending'] = TRUE;
+if (!session()->exists('RF.descending')) {
+    session()->put('RF.descending', true);
 }
 
 if (isset($_GET["descending"])) {
-    $descending = $_SESSION['RF']['descending'] = RFM::fix_get_params($_GET["descending"]) == 1;
+    session()->put('RF.descending', RFM::fix_get_params($_GET["descending"]) == 1);
+    $descending = session('RF.descending');
 } else {
-    $descending = $_SESSION['RF']['descending'];
+    $descending = session('RF.descending');
 }
 
 $boolarray = array(false => 'false', true => 'true');
@@ -319,6 +323,7 @@ $get_params = http_build_query($get_params);
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
         <meta name="robots" content="noindex,nofollow">
+        <meta name="csrf-token" content="<?php echo csrf_token(); ?>">
         <title>Responsive FileManager</title>
         <link rel="shortcut icon" href="<?php echo $vendor_path; ?>img/ico/favicon.ico">
         <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
@@ -431,7 +436,7 @@ $get_params = http_build_query($get_params);
     <input type="hidden" id="lang_files" value="<?php echo RFM::fm_trans('Files');?>" />
     <input type="hidden" id="lang_folders" value="<?php echo RFM::fm_trans('Folders');?>" />
     <input type="hidden" id="lang_files_on_clipboard" value="<?php echo RFM::fm_trans('Files_ON_Clipboard');?>" />
-    <input type="hidden" id="clipboard" value="<?php echo ((isset($_SESSION['RF']['clipboard']['path']) && trim($_SESSION['RF']['clipboard']['path']) != null) ? 1 : 0);?>" />
+    <input type="hidden" id="clipboard" value="<?php echo ((session()->has('RF.clipboard.path') && trim(session('RF.clipboard.path')) != null) ? 1 : 0);?>" />
     <input type="hidden" id="lang_clear_clipboard_confirm" value="<?php echo RFM::fm_trans('Clear_Clipboard_Confirm');?>" />
     <input type="hidden" id="lang_file_permission" value="<?php echo RFM::fm_trans('File_Permission');?>" />
     <input type="hidden" id="chmod_files_allowed" value="<?php if($config['chmod_files']) echo 1; else echo 0;?>" />
@@ -1109,7 +1114,7 @@ $files = $sorted;
                 $no_thumb=false;
                 if($src_thumb==""){
                     $no_thumb=true;
-                    if(file_exists('img/'.$config['icon_theme'].'/'.$file_array['extension'].".jpg")){
+                    if(file_exists(__DIR__.'img/'.$config['icon_theme'].'/'.$file_array['extension'].".jpg")){
                         $src_thumb ='img/'.$config['icon_theme'].'/'.$file_array['extension'].".jpg";
                     }else{
                         $src_thumb = "img/".$config['icon_theme']."/default.jpg";
@@ -1160,7 +1165,7 @@ $files = $sorted;
                     <?php if($is_icon_thumb){ ?><div class="filetype"><?php echo $file_array['extension'] ?></div><?php } ?>
                     
                     <div class="img-container">
-                        <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" data-src="<?php echo '/'.$src_thumb;?>">
+                        <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ? $vendor_path : '/').$src_thumb;?>">
                     </div>
                 </div>
                 <div class="img-precontainer-mini <?php if($is_img) echo 'original-thumb' ?>">
@@ -1169,7 +1174,7 @@ $files = $sorted;
                     <div class="filetype <?php echo $file_array['extension'] ?> <?php if(in_array($file_array['extension'], $config['editable_text_file_exts'])) echo 'edit-text-file-allowed' ?> <?php if(!$is_icon_thumb){ echo "hide"; }?>"><?php echo $file_array['extension'] ?></div>
                     <div class="img-container-mini">
                     <?php if($mini_src!=""){ ?>
-                    <img class="<?php echo $show_original_mini ? "original" : "" ?><?php echo $is_icon_thumb_mini ? " icon" : "" ?>" data-src="<?php echo '/'.$mini_src;?>">
+                    <img class="<?php echo $show_original_mini ? "original" : "" ?><?php echo $is_icon_thumb_mini ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ? $vendor_path : '/').$mini_src;?>">
                     <?php } ?>
                     </div>
                 </div>
@@ -1192,6 +1197,7 @@ $files = $sorted;
                     <form action="force_download.php" method="post" class="download-form" id="form<?php echo $nu;?>">
                     <input type="hidden" name="path" value="<?php echo $rfm_subfolder.$subdir?>"/>
                     <input type="hidden" class="name_download" name="name" value="<?php echo $file?>"/>
+                    <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>"/>
 
                     <a title="<?php echo RFM::fm_trans('Download')?>" class="tip-right" href="javascript:void('')" <?php if($config['download_files']) echo "onclick=\"$('#form".$nu."').submit();\"" ?>><i class="icon-download <?php if(!$config['download_files']) echo 'icon-white'; ?>"></i></a>
 
