@@ -513,7 +513,7 @@ if (isset($_GET['action'])) {
 
             break;
         case 'get_lang':
-            if (! file_exists('lang/languages.php')) {
+            if (! file_exists(__DIR__.'/lang/languages.php')) {
                 RFM::response(RFM::fm_trans('Lang_Not_Found').RFM::AddErrorLocation())->send();
                 exit;
             }
@@ -540,7 +540,7 @@ if (isset($_GET['action'])) {
             $choosen_lang = (!empty($_POST['choosen_lang']))? $_POST['choosen_lang']:"en_EN";
 
             if (array_key_exists($choosen_lang, $languages)) {
-                if (! file_exists('lang/' . $choosen_lang . '.php')) {
+                if (! file_exists(__DIR__.'/lang/' . $choosen_lang . '.php')) {
                     RFM::response(RFM::fm_trans('Lang_Not_Found').RFM::AddErrorLocation())->send();
                     exit;
                 } else {
