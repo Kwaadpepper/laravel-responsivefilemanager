@@ -10,7 +10,7 @@ define('FM_mb_language', 'uni');
 define('FM_mb_regex_encoding', 'UTF-8');
 define('FM_ob_start', 'mb_output_handler');
 define('FM_date_default_timezone_set', 'Europe/Rome');
-// define('setlocale', 'en_US');
+define('setlocale', 'en_US');
 setlocale(LC_CTYPE, 'en_US'); //correct transliteration
 
 // ALLOW Crossscript for resource load
@@ -46,8 +46,8 @@ $config = config('rfm');
  * Language init
  */
 if ( ! session()->exists('RF.language')
-	|| file_exists('lang/' . basename(session('RF.language')) . '.php') === false
-	|| ! is_readable('lang/' . basename(session('RF.language')) . '.php')
+	|| file_exists(__DIR__.'/lang/' . basename(session('RF.language')) . '.php') === false
+	|| ! is_readable(__DIR__.'/lang/' . basename(session('RF.language')) . '.php')
 )
 {
 	$lang = $config['default_language'];
@@ -58,11 +58,27 @@ if ( ! session()->exists('RF.language')
 		$lang = trim($lang);
 	}
 
+	if (isset($_GET['langCode']) && $_GET['langCode'] != 'undefined' && $_GET['langCode'] != '')
+	{
+		$lang = RFM::fix_get_params($_GET['langCode']);
+		$lang = trim($lang);
+	}
 	if ($lang != $config['default_language'])
 	{
 		$path_parts = pathinfo($lang);
 		$lang = $path_parts['basename'];
 		$languages = include __DIR__.'/lang/languages.php';
+		$f = false;
+		array_walk(
+			$languages,
+			function ($fulllanguage, $isocode) use (&$lang, &$f) {
+				if(strpos($isocode, $lang) !== false) {
+					$f = true;
+					$lang = $isocode;
+				}
+			}
+		);
+		if(!$f) $lang = $config['default_language'];
 	}
 
 	// add lang file to session for easy include
