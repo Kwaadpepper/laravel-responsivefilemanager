@@ -1092,7 +1092,7 @@ $files = $sorted;
                         $creation_thumb_path = $mini_src = $src_thumb = $thumbs_path. $file;
 
                         if (!file_exists($src_thumb)) {
-                            if (!RFM::create_img($file_path, $creation_thumb_path, 122, 91, 'crop', $config)) {
+                            if (!RFM::create_img(__DIR__.'/'.$file_path, __DIR__.'/'.$creation_thumb_path, 122, 91, 'crop', $config)) {
                                 $src_thumb = $mini_src = "";
                             }
                         }
