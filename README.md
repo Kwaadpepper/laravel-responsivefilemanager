@@ -86,7 +86,8 @@ Files are meant to be stored in public folder.
 **TODO :**
 
  - [x] private key setup
- - [ ] more corrections on JS side
+ - [x] more corrections on JS side
+ - [x] more corrections on languages
  - [ ] Test with tinyMCE
  - [ ] Include commercial support
  - [ ] Test and debug FTP fonctionnality
