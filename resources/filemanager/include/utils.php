@@ -83,6 +83,19 @@ class RFM {
 		}
 	}
 
+	public static function ftp_download_file($ftp, $distant_file_path, $filename, &$local_file_path_to_download) {
+		try {
+			if (($local_file_path_to_download = RFM::tempdir()) == null) return false;
+			$local_file_path_to_download .= '/'.$filename;
+			$fhandle = fopen($local_file_path_to_download, 'w+');
+			if(!$fhandle) return false;
+			return $ftp->fget($fhandle, $distant_file_path, FTP_BINARY);
+		} catch (\Throwable $th) {
+			if (FM_DEBUG_ERROR_MESSAGE) dd($th);
+			return false;
+		}
+	}
+
 	public static function fix_path($path, $config)
 	{
 		$info = pathinfo($path);

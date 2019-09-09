@@ -43,7 +43,7 @@ if (strpos($_POST['name'], '/') !== false) {
 $ftp = RFM::ftp_con($config);
 
 if ($ftp) {
-    $path = $config['ftp_base_url'] . $config['upload_dir'] . $_POST['path'];
+    $path = $config['ftp_base_folder'] .  $config['upload_dir'] . $_POST['path'];
 } else {
     $path = $config['current_path'] . $_POST['path'];
 }
@@ -60,13 +60,19 @@ $file_name = $info['basename'];
 $file_ext = $info['extension'];
 $file_path = $path . $name;
 
-
+$local_file_path_to_download = "";
 // make sure the file exists
-if ($ftp) {
+if (RFM::ftp_download_file($ftp, $file_path, $file_name.'.'.$file_ext, $local_file_path_to_download)) {
+    header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');
     header("Content-Transfer-Encoding: Binary");
-    header("Content-disposition: attachment; filename=\"" . $file_name . "\"");
-    readfile($file_path);
+    header('Content-Disposition: attachment; filename="'.basename($file_name).'"');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($local_file_path_to_download));
+    readfile($local_file_path_to_download);
+    exit;
 } elseif (is_file($file_path) && is_readable($file_path)) {
     if (!file_exists($path . $name)) {
         RFM::response(RFM::fm_trans('File_Not_Found') . RFM::AddErrorLocation(), 404)->send();
