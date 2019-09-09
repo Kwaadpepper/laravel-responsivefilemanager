@@ -75,6 +75,14 @@ class RFM {
 		}
 	}
 
+	public static function ftp_is_dir($ftp, $path) {
+		try {
+			return $ftp->chdir($path);
+		} catch (\Throwable $th) {
+			return false; 
+		}
+	}
+
 	public static function fix_path($path, $config)
 	{
 		$info = pathinfo($path);
@@ -551,8 +559,7 @@ class RFM {
 	public static function create_folder($path = null, $path_thumbs = null,$ftp = null,$config = null)
 	{
 		if($ftp){
-			$ftp->mkdir($path);
-			$ftp->mkdir($path_thumbs);
+			return $ftp->mkdir($path) && $ftp->mkdir($path_thumbs);
 		}else{
 			if(file_exists($path) || file_exists($path_thumbs)){
 				return false;

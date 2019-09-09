@@ -68,9 +68,7 @@ while ($cycle && $i < $max_cycles) {
     $path = RFM::fix_dirname($path) . "/";
 }
 
-function returnPaths($_path, $_name, $config)
-{
-    global $ftp;
+$returnPaths = function ($_path, $_name, $config) use($ftp) {
     $path = $config['current_path'] . $_path;
     $path_thumb = $config['thumbs_base_path'] . $_path;
     $name = null;
@@ -86,7 +84,7 @@ function returnPaths($_path, $_name, $config)
         }
     }
     return array($path, $path_thumb, $name);
-}
+};
 
 if(isset($_POST['paths'])){
 	$paths = $paths_thumb = $names = array();
@@ -100,7 +98,7 @@ if(isset($_POST['paths'])){
 		if(isset($_POST['names'][$key])){
 			$name = $_POST['names'][$key];
 		}
-		list($path,$path_thumb,$name) = returnPaths($path,$name,$config);
+		list($path,$path_thumb,$name) = $returnPaths($path,$name,$config);
 		$paths[] = $path;
 		$paths_thumb[] = $path_thumb;
 		$names = $name;
@@ -110,7 +108,7 @@ if(isset($_POST['paths'])){
 	if(isset($_POST['name'])){
 		$name = $_POST['name'];
 	}
-	list($path,$path_thumb,$name) = returnPaths($_POST['path'],$name,$config);
+	list($path,$path_thumb,$name) = $returnPaths($_POST['path'],$name,$config);
 
 }
 
@@ -170,7 +168,7 @@ if (isset($_GET['action'])) {
 
 				$name = RFM::fix_filename($_POST['name'],$config);
 				$path .= $name;
-				$path_thumb .= $name;
+                $path_thumb .= $name;
 				$res = RFM::create_folder(RFM::fix_path($path,$config),RFM::fix_path($path_thumb,$config),$ftp,$config);
 				if(!$res){
 					RFM::response(RFM::fm_trans('Rename_existing_folder').RFM::AddErrorLocation())->send();
@@ -179,7 +177,7 @@ if (isset($_GET['action'])) {
 			break;
 		case 'rename_folder':
 			if ($config['rename_folders']){
-                if(!is_dir($path)) {
+                if((!$ftp && !is_dir($path)) || !RFM::ftp_is_dir($ftp, $path)) {
                     RFM::response(RFM::fm_trans('wrong path').RFM::AddErrorLocation())->send();
                     exit;
                 }
