@@ -1,3 +1,18 @@
+/**
+ * @author Alberto Peripolli https://responsivefilemanager.com/#contact-section
+ * @source https://github.com/trippo/ResponsiveFilemanager
+ * 
+ * Licenced under Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) 
+ * https://creativecommons.org/licenses/by-nc/3.0/
+ * 
+ * This work is licensed under the Creative Commons 
+ * Attribution-NonCommercial 3.0 Unported License.
+ * To view a copy of this license, visit 
+ * http://creativecommons.org/licenses/by-nc/3.0/ or send a 
+ * letter to Creative Commons, 444 Castro Street, Suite 900, 
+ * Mountain View, California, 94041, USA.
+ */
+
 var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, apply_any, apply_video, apply_link, apply_file_rename, apply_file_duplicate, apply_folder_rename;
 ! function(y, n, a) {
     "use strict";
