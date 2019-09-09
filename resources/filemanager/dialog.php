@@ -1084,7 +1084,8 @@ $files = $sorted;
                         $file_path=$file_path1;
                     }
                 }else{
-                    $file_path = $config['ftp_base_url'].$config['upload_dir'].$rfm_subfolder.$subdir.$file;
+                    // $file_path = $config['ftp_base_url'].$config['upload_dir'].$rfm_subfolder.$subdir.$file;
+                    $file_path = $vendor_path."img/".$config['icon_theme']."/default.jpg";
                 }
 
                 $is_img=false;
@@ -1100,7 +1101,13 @@ $files = $sorted;
 
                     $img_width = $img_height = "";
                     if($ftp){
-                        $mini_src = $src_thumb = $config['ftp_base_url'].$config['ftp_thumbs_dir'].$subdir. $file;
+                        /**
+                         * Can't preview for now images with FTP since not necessarely available through HTTP
+                         * disabling for now
+                         * TODO: cache FTP thumbnails for preview
+                         */
+                        // $mini_src = $src_thumb = $config['ftp_base_url'].$config['ftp_thumbs_dir'].$subdir. $file;
+                        $mini_src = $src_thumb = $vendor_path."img/".$config['icon_theme']."/default.jpg";
                         $creation_thumb_path = "/".$config['ftp_base_folder'].$config['ftp_thumbs_dir'].$subdir. $file;
                     }else{
 
@@ -1130,9 +1137,9 @@ $files = $sorted;
                 if($src_thumb==""){
                     $no_thumb=true;
                     if(file_exists(__DIR__.'img/'.$config['icon_theme'].'/'.$file_array['extension'].".jpg")){
-                        $src_thumb ='img/'.$config['icon_theme'].'/'.$file_array['extension'].".jpg";
+                        $src_thumb =  $vendor_path.'img/'.$config['icon_theme'].'/'.$file_array['extension'].".jpg";
                     }else{
-                        $src_thumb = "img/".$config['icon_theme']."/default.jpg";
+                        $src_thumb =  $vendor_path."img/".$config['icon_theme']."/default.jpg";
                     }
                     $is_icon_thumb=true;
                 }
@@ -1180,7 +1187,7 @@ $files = $sorted;
                     <?php if($is_icon_thumb){ ?><div class="filetype"><?php echo $file_array['extension'] ?></div><?php } ?>
                     
                     <div class="img-container">
-                        <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ? $vendor_path : '/').$src_thumb;?>">
+                        <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ? $vendor_path : '').$src_thumb;?>">
                     </div>
                 </div>
                 <div class="img-precontainer-mini <?php if($is_img) echo 'original-thumb' ?>">
@@ -1217,7 +1224,7 @@ $files = $sorted;
                     <a title="<?php echo RFM::fm_trans('Download')?>" class="tip-right" href="javascript:void('')" <?php if($config['download_files']) echo "onclick=\"$('#form".$nu."').submit();\"" ?>><i class="icon-download <?php if(!$config['download_files']) echo 'icon-white'; ?>"></i></a>
 
                     <?php if($is_img && $src_thumb!=""){ ?>
-                    <a class="tip-right preview" title="<?php echo RFM::fm_trans('Preview')?>" data-featherlight="/<?php echo $src;?>"  href="#"><i class=" icon-eye-open"></i></a>
+                    <a class="tip-right preview" title="<?php echo RFM::fm_trans('Preview')?>" data-featherlight="<?php echo $src;?>"  href="#"><i class=" icon-eye-open"></i></a>
                     <?php }elseif(($is_video || $is_audio) && in_array($file_array['extension'],$config['jplayer_exts'])){ ?>
                     <a class="tip-right modalAV <?php if($is_audio){ echo "audio"; }else{ echo "video"; } ?>"
                     title="<?php echo RFM::fm_trans('Preview')?>" data-url="ajax_calls.php?action=media_preview&title=<?php echo $filename;?>&file=<?php echo $rfm_subfolder.$subdir.$file;?>"

@@ -148,6 +148,7 @@ see ```USE AS STAND-ALONE FILE MANAGER``` in Responsible [File Manager Doc](http
  - [x] Test with tinyMCE
  - [x] Include commercial support
  - [ ] Test and debug FTP fonctionnality
+ - [ ] TODO: cache FTP thumbnails for preview (images only)
  - [ ] MultiUser and Auth Support
  - [ ] publish package
  
