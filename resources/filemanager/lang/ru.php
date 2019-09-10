@@ -143,4 +143,5 @@ return array(
     'GB' => "GB",
     'TB' => "TB",
     'total size' => "Общий размер",
+    'ftp_cant_chmod' => "Can't chmod on a Windows FTP server"
 );

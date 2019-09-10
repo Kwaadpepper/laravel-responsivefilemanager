@@ -144,4 +144,5 @@ return array(
     'GB' => "Go",
     'TB' => "To",
     'total size' => "Taille totale",
+    'ftp_cant_chmod' => "Impossible de changer les droits de fichier de façon Unix (chmod) sur un serveur FTP Windows"
 );
