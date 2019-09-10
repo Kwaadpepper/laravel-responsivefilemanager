@@ -299,13 +299,14 @@ class RFM {
 		$new_path = $info['dirname'] . "/" . $name . "." . $info['extension'];
 		if($ftp){
 			try{
-				$tmp = time().$name . "." . $info['extension'];
+				$tmp = self::tempdir().'/'.time().$name . "." . $info['extension'];
+				// dd($tmp, "/".$old_path);
 				$ftp->get($tmp, "/".$old_path, FTP_BINARY);
 				$ftp->put("/".$new_path, $tmp, FTP_BINARY);
 				unlink($tmp);
 				return true;
 
-			}catch(FtpClient\FtpException $e){
+			}catch(\Exception $e){
 				return null;
 			}
 		}else{
