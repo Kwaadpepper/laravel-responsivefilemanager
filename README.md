@@ -147,7 +147,7 @@ see ```USE AS STAND-ALONE FILE MANAGER``` in Responsible [File Manager Doc](http
  - [x] more corrections on languages
  - [x] Test with tinyMCE
  - [x] Include commercial support
- - [ ] Test and debug FTP fonctionnality
+ - [o] Test and debug FTP fonctionnality (Alpha Still need debug some functionallities like preview)
  - [ ] TODO: cache FTP thumbnails for preview (images only)
  - [ ] MultiUser and Auth Support
  - [ ] publish package
