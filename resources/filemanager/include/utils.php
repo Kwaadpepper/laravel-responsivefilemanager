@@ -35,8 +35,9 @@ class RFM {
 		return true;
 	}
 
-	private static function url_exists($url){
+	public static function url_exists($url, $ftp = null){
 		if (!$fp = curl_init($url)) return false;
+		if($ftp) return $ftp->size($url) == -1 ? false : true;
 		return true;
 	}
 	
