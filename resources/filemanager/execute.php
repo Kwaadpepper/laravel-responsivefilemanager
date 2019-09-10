@@ -391,15 +391,29 @@ if (isset($_GET['action'])) {
                     $ftp->put(DIRECTORY_SEPARATOR . $path, $tmp, FTP_BINARY);
                     unlink($tmp);
 
-                    if (url_exists($data['path_thumb'])) {
+                    if (RFM::url_exists($data['path_thumb'], $ftp)) {
                         $tmp = time() . basename($data['path_thumb']);
                         @$ftp->get($tmp, $data['path_thumb'], FTP_BINARY);
                         @$ftp->put(DIRECTORY_SEPARATOR . $path_thumb, $tmp, FTP_BINARY);
                         unlink($tmp);
                     }
                 } elseif ($action == 'cut') {
-                    $ftp->rename($data['path'], DIRECTORY_SEPARATOR . $path);
-                    if (url_exists($data['path_thumb'])) {
+                    if (RFM::url_exists($data['path'], $ftp)) {
+                        $i = 0;
+                        $path = pathinfo($path);
+                        $rn = function($i, $path) { return $path['dirname'].'/'.$path['filename'].($i > 0 ? '('.$i.')' : '').'.'.$path['extension']; };
+                        do { $rpath = $rn($i, $path); }
+                        while($i++ < 99 && RFM::url_exists(DIRECTORY_SEPARATOR . $rpath, $ftp));
+                        $path = $rpath;
+                        @$ftp->rename($data['path'], DIRECTORY_SEPARATOR . $path);
+                    }
+                    if (RFM::url_exists($data['path_thumb'], $ftp)) {
+                        $i = 0;
+                        $path_thumb = pathinfo($path_thumb);
+                        $rn = function($i, $path_thumb) { return $path_thumb['dirname'].'/'.$path_thumb['filename'].($i > 0 ? '('.$i.')' : '').'.'.$path_thumb['extension']; };
+                        do { $rpath_thumb = $rn($i, $path_thumb); }
+                        while($i++ < 99 && RFM::url_exists(DIRECTORY_SEPARATOR . $rpath_thumb, $ftp));
+                        $path_thumb = $rpath_thumb;
                         @$ftp->rename($data['path_thumb'], DIRECTORY_SEPARATOR . $path_thumb);
                     }
                 }
