@@ -485,7 +485,16 @@ if (isset($_GET['action'])) {
             $mode = "0" . $mode;
             $mode = octdec($mode);
             if ($ftp) {
-                $ftp->chmod($mode, "/" . $path);
+                try {
+                    $ftp->chmod($mode, "/" . $path);
+                } catch (\Throwable $th) {
+                    if($th->getMessage() === "ftp_chmod(): Command not implemented for that parameter") {
+                        RFM::response(sprintf(RFM::fm_trans('ftp_cant_chmod'), 'chmod') . RFM::AddErrorLocation())->send();
+                        exit;
+                    } else {
+                        throw $th;
+                    }
+                }
             } else {
                 RFM::rchmod($path, $mode, $rec_option);
             }
