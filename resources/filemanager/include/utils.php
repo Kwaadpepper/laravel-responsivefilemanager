@@ -339,7 +339,7 @@ class RFM {
 		if($ftp){
 			try{
 				return $ftp->rename("/".$old_path, "/".$new_path);
-			}catch(FtpClient\FtpException $e){
+			}catch(\Exception $e){
 				return false;
 			}
 		}else{
