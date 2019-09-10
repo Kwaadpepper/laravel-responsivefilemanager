@@ -31,7 +31,7 @@ if(!defined('FM_USE_ACCESS_KEYS'))
 */
 
 if(!defined('FM_DEBUG_ERROR_MESSAGE'))
-    define('FM_DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
+    define('FM_DEBUG_ERROR_MESSAGE', false); // TRUE or FALSE
 
 /*
 |--------------------------------------------------------------------------
