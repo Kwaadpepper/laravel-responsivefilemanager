@@ -1187,7 +1187,7 @@ $files = $sorted;
                     <?php if($is_icon_thumb){ ?><div class="filetype"><?php echo $file_array['extension'] ?></div><?php } ?>
                     
                     <div class="img-container">
-                        <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ? $vendor_path : '').$src_thumb;?>">
+                        <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ? $vendor_path : '/').$src_thumb;?>">
                     </div>
                 </div>
                 <div class="img-precontainer-mini <?php if($is_img) echo 'original-thumb' ?>">
