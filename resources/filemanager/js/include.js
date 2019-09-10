@@ -1001,7 +1001,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             jQuery(this).attr("alt", a + " thumbnails")
         });
         var l = e.find("a.preview");
-        void 0 !== (t = l.attr("data-url")) && t && l.attr("data-url", t.replace(encodeURIComponent(i), encodeURIComponent(a + n))), e.parent().attr("data-name", a + n), e.attr("data-name", a + n), e.find(".name_download").val(a + n);
+        void 0 !== (t = l.attr("data-url")) && t && l.attr("data-url", t.replace(encodeURIComponent(i), encodeURIComponent(a + n))), e.parent().attr("data-name", a + n), e.attr("data-name", a + n), e.attr("data-path", a + n), e.find(".name_download").val(a + n);
         var o = e.attr("data-path").replace(i, a + n);
         e.attr("data-path", o)
     }, apply_folder_rename = function(e, a) {
