@@ -27,8 +27,7 @@ use ResponsiveFileManager\RFM;
 
 $time = time();
 
-
-$vendor_path = asset('vendor/responsivefilemanager').'/';
+$vendor_path = parse_url(asset('vendor/responsivefilemanager').'/')['path'];
 
 
 if (FM_USE_ACCESS_KEYS == true){
@@ -1058,7 +1057,7 @@ $files = $sorted;
                     $filename = $file;
                 }
                 if(!$ftp){
-                    $file_path=$config['current_path'].$rfm_subfolder.$subdir.$file;
+                    $file_path='/'.$config['current_path'].$rfm_subfolder.$subdir.$file;
                     //check if file have illegal caracter
 
                     if($file!=RFM::fix_filename($file,$config)){
@@ -1187,7 +1186,7 @@ $files = $sorted;
                     <?php if($is_icon_thumb){ ?><div class="filetype"><?php echo $file_array['extension'] ?></div><?php } ?>
                     
                     <div class="img-container">
-                        <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ? $vendor_path : '/').$src_thumb;?>">
+                        <img class="<?php echo $show_original ? "original" : "" ?><?php echo $is_icon_thumb ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ?  '' : '').$src_thumb;?>">
                     </div>
                 </div>
                 <div class="img-precontainer-mini <?php if($is_img) echo 'original-thumb' ?>">
@@ -1196,7 +1195,7 @@ $files = $sorted;
                     <div class="filetype <?php echo $file_array['extension'] ?> <?php if(in_array($file_array['extension'], $config['editable_text_file_exts'])) echo 'edit-text-file-allowed' ?> <?php if(!$is_icon_thumb){ echo "hide"; }?>"><?php echo $file_array['extension'] ?></div>
                     <div class="img-container-mini">
                     <?php if($mini_src!=""){ ?>
-                    <img class="<?php echo $show_original_mini ? "original" : "" ?><?php echo $is_icon_thumb_mini ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ? $vendor_path : '/').$mini_src;?>">
+                    <img class="<?php echo $show_original_mini ? "original" : "" ?><?php echo $is_icon_thumb_mini ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ? '' : '').$mini_src;?>">
                     <?php } ?>
                     </div>
                 </div>
