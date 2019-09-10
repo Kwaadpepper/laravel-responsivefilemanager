@@ -62,7 +62,7 @@ $file_path = $path . $name;
 
 $local_file_path_to_download = "";
 // make sure the file exists
-if (RFM::ftp_download_file($ftp, $file_path, $file_name.'.'.$file_ext, $local_file_path_to_download)) {
+if ($ftp && RFM::ftp_download_file($ftp, $file_path, $file_name.'.'.$file_ext, $local_file_path_to_download)) {
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');
     header("Content-Transfer-Encoding: Binary");
