@@ -56,7 +56,11 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         contextActions: {
 
             copy_url: function($trigger) {
-                var m = getLink($trigger);
+                if (jQuery('#ftp').val() == true) {
+                    var m = $trigger.attr('data-path');
+                } else {
+                    var m = getLink($trigger);
+                }
 
                 bootbox.alert(
                     'URL:<br/>' +
