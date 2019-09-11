@@ -147,8 +147,14 @@ see ```USE AS STAND-ALONE FILE MANAGER``` in Responsible [File Manager Doc](http
  - [x] more corrections on languages
  - [x] Test with tinyMCE
  - [x] Include commercial support
- - [o] Test and debug FTP fonctionnality (Alpha Still need debug some functionallities like preview)
- - [ ] TODO: cache FTP thumbnails for preview (images only)
+ - [x] Test and debug FTP fonctionnality (Alpha Still need debug some functionallities)
+ - [x] TODO: cache FTP thumbnails for preview (images only)
  - [ ] MultiUser and Auth Support
+ - [ ] compile assets
  - [ ] publish package
+
+ ** In the Future **
+- [ ] Rewrite routes to be cleaner (eg :  ajax_calls/{action}/{subaction})
+- [ ] separe properly View from logic ( ex: dialog.php  OMG <(o_O)>)
+
  
