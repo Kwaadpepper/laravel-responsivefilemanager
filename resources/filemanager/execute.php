@@ -177,7 +177,7 @@ if (isset($_GET['action'])) {
 			break;
 		case 'rename_folder':
 			if ($config['rename_folders']){
-                if((!$ftp && !is_dir($path)) || !RFM::ftp_is_dir($ftp, $path)) {
+                if($ftp && !is_dir($path) && !RFM::ftp_is_dir($ftp, $path)) {
                     RFM::response(RFM::fm_trans('wrong path').RFM::AddErrorLocation())->send();
                     exit;
                 }

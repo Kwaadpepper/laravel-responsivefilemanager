@@ -6,6 +6,7 @@ $FM_ROUTES =    ['index.php' => ['get'],
                 'dialog.php' => ['get'],
                 'execute.php' => ['post'],
                 'force_download.php' => ['post'],
+                'fview.php' => ['get'],
                 'upload.php' => ['get', 'post']];
 
 // Routes For Responsive API and Web (dialog.php)

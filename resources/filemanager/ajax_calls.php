@@ -258,11 +258,19 @@ if (isset($_GET['action'])) {
 				$_GET['title'] = RFM::sanitize($_GET['title']);
 			}
 			if($ftp){
-				$preview_file = $config['ftp_base_url'].$config['upload_dir'] . $_GET['file'];
+                $preview_file;
+                if(!RFM::ftp_download_file($ftp, $config['ftp_base_folder'].$config['upload_dir'] . $_GET['file'], $_GET['file'], $preview_file)) {
+                    if(!FM_DEBUG_ERROR_MESSAGE)
+                        throw new NotFoundHttpException();
+                    RFM::response(RFM::fm_trans('FTP ftp_download_file error') . RFM::AddErrorLocation(), 400)->send();
+                    exit;
+                }
+                $info = pathinfo($preview_file);
+                $preview_file = route('FMfview.php').'?ox='.encrypt(['path' => $config['upload_dir'] . $_GET['file'], 'name' => $_GET['file']]);
 			}else{
-				$preview_file = $config['current_path'] . $_GET["file"];
+                $preview_file = $config['current_path'] . $_GET["file"];
+                $info = pathinfo($preview_file);
 			}
-			$info = pathinfo($preview_file);
 			ob_start();
 			?>
 			<div id="jp_container_1" class="jp-video" style="margin:0 auto;">
@@ -631,10 +639,22 @@ if (isset($_GET['action'])) {
                 RFM::response(sprintf(RFM::fm_trans('File_Open_Edit_Not_Allowed'), ($sub_action == 'preview' ? strtolower(RFM::fm_trans('Open')) : strtolower(RFM::fm_trans('Edit')))).RFM::AddErrorLocation())->send();
                 exit;
             }
+            if($ftp) {
+                $preview_file;
+                if(!RFM::ftp_download_file($ftp, $config['ftp_base_folder'].$selected_file, $info['basename'], $preview_file)) {
+                    if(!FM_DEBUG_ERROR_MESSAGE)
+                        throw new NotFoundHttpException();
+                    RFM::response(RFM::fm_trans('FTP ftp_download_file error') . RFM::AddErrorLocation(), 400)->send();
+                    exit;
+                }
+                $selected_file = $preview_file;
+            } else {
+                $preview_file = $config['current_path'] . $_GET["file"];
+            }
             if ($sub_action == 'preview') {
                 if ($preview_mode == 'text') {
                     // get and sanities
-                    $data = file_get_contents($selected_file);
+                    $data = file_get_contents($preview_file);
                     $data = htmlspecialchars(htmlspecialchars_decode($data));
                     $ret = '';
 
