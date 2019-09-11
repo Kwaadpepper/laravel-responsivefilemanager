@@ -1369,7 +1369,7 @@ $files = $sorted;
                 $.ajax({
                     type: "POST",
                     url: "ajax_calls.php?action=save_img",
-                    data: { url: newURL, path:$('#sub_folder').val()+$('#fldr_value').val(), name:$('#tui-image-editor').attr('data-name') }
+                    data: { url: newURL, path:$('#sub_folder').val()+$('#fldr_value').val(), name:$('#tui-image-editor').attr('data-name'), _token: jQuery('meta[name="csrf-token"]').attr('content') }
                 }).done(function( msg ) {
                     exitTUI();
                     d = new Date();
