@@ -573,7 +573,10 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             });
             jQuery('#fileupload').bind('fileuploadsubmit', function(e, data) {
                 // The example input, doesn't have to be part of the upload form:
-                data.formData = { fldr: jQuery('#sub_folder').val() + jQuery('#fldr_value').val() + (data.files[0].relativePath || data.files[0].webkitRelativePath || '') };
+                data.formData = {
+                    fldr: jQuery('#sub_folder').val() + jQuery('#fldr_value').val() + (data.files[0].relativePath || data.files[0].webkitRelativePath || ''),
+                    _token: jQuery('meta[name="csrf-token"]').attr('content')
+                };
             });
             // Load existing files:
             jQuery('#fileupload').addClass('fileupload-processing');
