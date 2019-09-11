@@ -1083,8 +1083,7 @@ $files = $sorted;
                         $file_path=$file_path1;
                     }
                 }else{
-                    // $file_path = $config['ftp_base_url'].$config['upload_dir'].$rfm_subfolder.$subdir.$file;
-                    $file_path = $vendor_path."img/".$config['icon_theme']."/default.jpg";
+                    $file_path = route('FMfview.php').'?ox='.encrypt(['path' => $config['ftp_base_url'].$config['upload_dir'].$rfm_subfolder.$subdir.$file, 'name' => $file]);
                 }
 
                 $is_img=false;
@@ -1105,8 +1104,7 @@ $files = $sorted;
                          * disabling for now
                          * TODO: cache FTP thumbnails for preview
                          */
-                        // $mini_src = $src_thumb = $config['ftp_base_url'].$config['ftp_thumbs_dir'].$subdir. $file;
-                        $mini_src = $src_thumb = $vendor_path."img/".$config['icon_theme']."/default.jpg";
+                        $mini_src = $src_thumb = route('FMfview.php').'?ox='.encrypt(['path' => $config['ftp_base_url'].$config['ftp_thumbs_dir'].$subdir. $file, 'name' => $file]);
                         $creation_thumb_path = "/".$config['ftp_base_folder'].$config['ftp_thumbs_dir'].$subdir. $file;
                     }else{
 
@@ -1223,7 +1221,7 @@ $files = $sorted;
                     <a title="<?php echo RFM::fm_trans('Download')?>" class="tip-right" href="javascript:void('')" <?php if($config['download_files']) echo "onclick=\"$('#form".$nu."').submit();\"" ?>><i class="icon-download <?php if(!$config['download_files']) echo 'icon-white'; ?>"></i></a>
 
                     <?php if($is_img && $src_thumb!=""){ ?>
-                    <a class="tip-right preview" title="<?php echo RFM::fm_trans('Preview')?>" data-featherlight="<?php echo $src;?>"  href="#"><i class=" icon-eye-open"></i></a>
+                    <a class="tip-right preview" title="<?php echo RFM::fm_trans('Preview')?>" data-featherlight="image" href="<?php echo $src;?>"><i class=" icon-eye-open"></i></a>
                     <?php }elseif(($is_video || $is_audio) && in_array($file_array['extension'],$config['jplayer_exts'])){ ?>
                     <a class="tip-right modalAV <?php if($is_audio){ echo "audio"; }else{ echo "video"; } ?>"
                     title="<?php echo RFM::fm_trans('Preview')?>" data-url="ajax_calls.php?action=media_preview&title=<?php echo $filename;?>&file=<?php echo $rfm_subfolder.$subdir.$file;?>"

@@ -396,7 +396,6 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             grid.on('click', '.file-preview-btn', function(e) {
                 var _this = jQuery(this);
 				e.preventDefault();
-				console.log(_this.attr('data-url'));
                 $.ajax({
                     url: _this.attr('data-url'),
                     success: function(data) {
@@ -1907,6 +1906,9 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         var new_path = path_old.replace(old_name, name + extension);
 
         container.attr('data-path', new_path);
+        console.log('refresh');
+        console.log(jQuery('a#refresh'));
+        jQuery('a#refresh')[0].click();
     }
 
     apply_folder_rename = function(container, name) {
@@ -1931,6 +1933,10 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         var index = path_old.lastIndexOf('/');
         var new_path = path_old.substr(0, index + 1) + name;
         container.attr('data-path', new_path);
+
+        console.log('refresh');
+        console.log(jQuery('a#refresh'));
+        jQuery('a#refresh')[0].click();
 
     }
 

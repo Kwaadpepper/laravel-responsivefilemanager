@@ -29,7 +29,7 @@ define('setlocale', 'en_US');
 setlocale(LC_CTYPE, 'en_US'); //correct transliteration
 
 // No Pre output if force download file
-if(basename($_SERVER['REQUEST_URI']) != "force_download.php") {
+if(basename($_SERVER['REQUEST_URI']) == "dialog.php") {
 	// ALLOW Crossscript for resource load
 	header("content-type: text/html; charset=UTF-8");
 	header("Access-Control-Allow-Origin: https://code.jquery.com");
