@@ -33,7 +33,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
     var getLink = function($trigger) {
 
         if (jQuery('#ftp').val() == true) {
-            var m = jQuery('#ftp_base_url').val() + jQuery('#upload_dir').val() + jQuery('#fldr_value').val();
+            var m = jQuery('#upload_dir').val() + jQuery('#fldr_value').val();
 
         } else {
             var m = jQuery('#base_url').val() + jQuery('#cur_dir').val();
@@ -93,7 +93,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 var filename = $trigger.attr('data-name');
                 var filepath = $trigger.attr('data-path');
                 if (jQuery('#ftp').val() == true) {
-                    var full_path = jQuery('#ftp_base_url').val() + jQuery('#upload_dir').val() + jQuery('#fldr_value').val() + filename;
+                    var full_path = jQuery('#upload_dir').val() + jQuery('#fldr_value').val() + filename;
                 } else {
                     var full_path = jQuery('#base_url').val() + jQuery('#upload_dir').val() + filepath;
                 }
@@ -1527,7 +1527,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
             if (is_ftp) {
-                urls.push(encodeURL(jQuery('#ftp_base_url').val() + jQuery('#upload_dir').val() + fldr + file));
+                urls.push(encodeURL(jQuery('#upload_dir').val() + fldr + file));
             } else {
                 urls.push(encodeURL((is_return_relative_url == 1 ? sub_folder + fldr : base_url + path) + file));
             }
