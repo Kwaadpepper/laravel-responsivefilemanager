@@ -429,7 +429,6 @@ $get_params = http_build_query($get_params);
     <input type="hidden" id="lang_duplicate" value="<?php echo RFM::fm_trans('Duplicate');?>" />
     <input type="hidden" id="duplicate" value="<?php if($config['duplicate_files']) echo 1; else echo 0;?>" />
     <input type="hidden" id="base_url" value="<?php echo $config['base_url']?>"/>
-    <input type="hidden" id="ftp_base_url" value="<?php echo $config['ftp_base_url']?>"/>
     <input type="hidden" id="fldr_value" value="<?php echo $subdir;?>"/>
     <input type="hidden" id="sub_folder" value="<?php echo $rfm_subfolder;?>"/>
     <input type="hidden" id="return_relative_url" value="<?php echo $return_relative_url == true ? 1 : 0;?>"/>
@@ -988,7 +987,7 @@ $files = $sorted;
                 $file_prevent_rename = isset($filePermissions[$file]['prevent_rename']) && $filePermissions[$file]['prevent_rename'];
                 $file_prevent_delete = isset($filePermissions[$file]['prevent_delete']) && $filePermissions[$file]['prevent_delete'];
                 }
-                ?><figure data-name="<?php echo $file ?>" data-path="<?php echo $rfm_subfolder.$subdir.$file;?>" class="<?php if($file=="..") echo "back-";?>directory" data-type="<?php if($file!=".."){ echo "dir"; } ?>">
+                ?><figure data-name="<?php echo $file ?>" data-path="<?php echo($ftp?route('FMfview.php').'?ox='.encrypt(['path' => $config['upload_dir'].$rfm_subfolder.$subdir.$file, 'name' => $file]):$rfm_subfolder.$subdir.$file);?>" class="<?php if($file=="..") echo "back-";?>directory" data-type="<?php if($file!=".."){ echo "dir"; } ?>">
                 <?php if($file==".."){ ?>
                     <input type="hidden" class="path" value="<?php echo str_replace('.','',dirname($rfm_subfolder.$subdir));?>"/>
                     <input type="hidden" class="path_thumb" value="<?php echo dirname($thumbs_path)."/";?>"/>
@@ -1083,7 +1082,7 @@ $files = $sorted;
                         $file_path=$file_path1;
                     }
                 }else{
-                    $file_path = route('FMfview.php').'?ox='.encrypt(['path' => $config['ftp_base_url'].$config['upload_dir'].$rfm_subfolder.$subdir.$file, 'name' => $file]);
+                    $file_path = route('FMfview.php').'?ox='.encrypt(['path' => $config['upload_dir'].$rfm_subfolder.$subdir.$file, 'name' => $file]);
                 }
 
                 $is_img=false;
@@ -1104,7 +1103,7 @@ $files = $sorted;
                          * disabling for now
                          * TODO: cache FTP thumbnails for preview
                          */
-                        $mini_src = $src_thumb = route('FMfview.php').'?ox='.encrypt(['path' => $config['ftp_base_url'].$config['ftp_thumbs_dir'].$subdir. $file, 'name' => $file]);
+                        $mini_src = $src_thumb = route('FMfview.php').'?ox='.encrypt(['path' => $config['ftp_thumbs_dir'].$subdir. $file, 'name' => $file]);
                         $creation_thumb_path = "/".$config['ftp_base_folder'].$config['ftp_thumbs_dir'].$subdir. $file;
                     }else{
 
@@ -1171,7 +1170,7 @@ $files = $sorted;
             $file_prevent_delete = isset($filePermissions[$file]['prevent_delete']) && $filePermissions[$file]['prevent_delete'];
             }
             ?>
-            <figure data-name="<?php echo $file ?>" data-path="<?php echo $rfm_subfolder.$subdir.$file;?>" data-type="<?php if($is_img){ echo "img"; }else{ echo "file"; } ?>">
+            <figure data-name="<?php echo $file ?>" data-path="<?php echo($ftp?route('FMfview.php').'?ox='.encrypt(['path' => $config['upload_dir'].$rfm_subfolder.$subdir.$file, 'name' => $file]):$rfm_subfolder.$subdir.$file);?>" data-type="<?php if($is_img){ echo "img"; }else{ echo "file"; } ?>">
             <?php if($config['multiple_selection']){ ?><div class="selector">
                         <label class="cont">
                             <input type="checkbox" class="selection" name="selection[]" value="<?php echo $file;?>">

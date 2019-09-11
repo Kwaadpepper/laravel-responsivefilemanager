@@ -158,8 +158,8 @@ if (isset($_GET['action'])) {
                 RFM::response(RFM::fm_trans('wrong action').RFM::AddErrorLocation())->send();
             }
             if ($ftp) {
-                $path = $config['ftp_base_url'].$config['upload_dir'] . $_POST['path'];
-                $base_folder = $config['ftp_base_url'].$config['upload_dir'] . RFM::fix_dirname($_POST['path']) . "/";
+                $path = $config['upload_dir'] . $_POST['path'];
+                $base_folder = $config['upload_dir'] . RFM::fix_dirname($_POST['path']) . "/";
             } else {
                 $path = $config['current_path'] . $_POST['path'];
                 $base_folder = $config['current_path'] . RFM::fix_dirname($_POST['path']) . "/";
@@ -435,7 +435,7 @@ if (isset($_GET['action'])) {
             break;
         case 'chmod':
             if ($ftp) {
-                $path = $config['ftp_base_url'] . $config['upload_dir'] . $_POST['path'];
+                $path = $config['upload_dir'] . $_POST['path'];
                 if (
                     ($_POST['folder']==1 && $config['chmod_dirs'] === false)
                     || ($_POST['folder']==0 && $config['chmod_files'] === false)
@@ -574,7 +574,7 @@ if (isset($_GET['action'])) {
             break;
         case 'cad_preview':
             if ($ftp) {
-                $selected_file = $config['ftp_base_url'].$config['upload_dir'] . $_GET['file'];
+                $selected_file = $config['upload_dir'] . $_GET['file'];
             } else {
                 $selected_file = $config['current_path'] . $_GET['file'];
 
@@ -604,7 +604,7 @@ if (isset($_GET['action'])) {
             }
 
             if ($ftp) {
-                $selected_file = ($sub_action == 'preview' ? $config['ftp_base_url'].$config['upload_dir'] . $_GET['file'] : $config['ftp_base_url'].$config['upload_dir'] . $_POST['path']);
+                $selected_file = ($sub_action == 'preview' ? $config['upload_dir'] . $_GET['file'] : $config['upload_dir'] . $_POST['path']);
             } else {
                 $selected_file = ($sub_action == 'preview' ? $config['current_path'] . $_GET['file'] : $config['current_path'] . $_POST['path']);
 
