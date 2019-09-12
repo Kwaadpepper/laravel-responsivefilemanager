@@ -194,7 +194,6 @@ try {
         $uploadConfig['upload_dir'] = $config['ftp_temp_folder'];
     }
 
-    // print_r($_FILES);die();
     $upload_handler = new UploadHandler($uploadConfig, true, $messages);
 } catch (Exception $e) {
     $return = array();
@@ -209,9 +208,13 @@ try {
             );
         }
 
+        if(!FM_DEBUG_ERROR_MESSAGE)
+            dd($e, array("files" => $return));
+
         echo json_encode(array("files" => $return));
         return;
     }
-    dd($e);
+    if(!FM_DEBUG_ERROR_MESSAGE)
+        dd($e);
     echo json_encode(array("error" => $e->getMessage()));
 }
