@@ -1132,12 +1132,18 @@ $files = $sorted;
                 $no_thumb=false;
                 if($src_thumb==""){
                     $no_thumb=true;
-                    if(file_exists(__DIR__.'img/'.$config['icon_theme'].'/'.$file_array['extension'].".jpg")){
+                    if(file_exists(__DIR__.'/img/'.$config['icon_theme'].'/'.$file_array['extension'].".jpg")){
                         $src_thumb =  $vendor_path.'img/'.$config['icon_theme'].'/'.$file_array['extension'].".jpg";
                     }else{
                         $src_thumb =  $vendor_path."img/".$config['icon_theme']."/default.jpg";
                     }
                     $is_icon_thumb=true;
+                } else {
+                    // is FTP but not support ted thumbnail generated (only gif,jpeg,png)
+                    if(!preg_match('/(gif|jpe?g|png)$/i', $file_array['extension'])) {
+                        $src_thumb =  $vendor_path.'img/'.$config['icon_theme'].'/'.$file_array['extension'].".jpg";
+                        $is_icon_thumb=true;
+                    }
                 }
                 if($mini_src==""){
                 $is_icon_thumb_mini=false;
