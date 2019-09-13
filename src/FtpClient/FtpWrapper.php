@@ -9,7 +9,7 @@
  *
  * @copyright Nicolas Tallefourtane http://nicolab.net
  */
-namespace FtpClient;
+namespace Kwaadpepper\FtpClient;
 
 /**
  * Wrap the PHP FTP functions
@@ -108,7 +108,7 @@ class FtpWrapper
      * @param  int      $timeout
      * @return resource
      */
-    public function ssl_connect($host, $port = 21, $timeout = 90)
+    public function sslConnect($host, $port = 21, $timeout = 90)
     {
         return ftp_ssl_connect($host, $port, $timeout);
     }

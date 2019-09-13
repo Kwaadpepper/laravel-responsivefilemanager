@@ -2,45 +2,42 @@
 /**
  * @author Alberto Peripolli https://responsivefilemanager.com/#contact-section
  * @source https://github.com/trippo/ResponsiveFilemanager
- * 
- * Licenced under Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) 
+ *
+ * Licenced under Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
  * https://creativecommons.org/licenses/by-nc/3.0/
- * 
- * This work is licensed under the Creative Commons 
+ *
+ * This work is licensed under the Creative Commons
  * Attribution-NonCommercial 3.0 Unported License.
- * To view a copy of this license, visit 
- * http://creativecommons.org/licenses/by-nc/3.0/ or send a 
- * letter to Creative Commons, 444 Castro Street, Suite 900, 
+ * To view a copy of this license, visit
+ * http://creativecommons.org/licenses/by-nc/3.0/ or send a
+ * letter to Creative Commons, 444 Castro Street, Suite 900,
  * Mountain View, California, 94041, USA.
  */
 
-require_once __DIR__.'/boot.php';
-require_once __DIR__.'/include/mime_type_lib.php';
+use Kwaadpepper\ResponsiveFileManager\RFM;
+use Kwaadpepper\ResponsiveFileManager\RFMMimeTypesLib;
 
 $config = config('rfm');
-
-use ResponsiveFileManager\RFM;
 
 /**
  * Check RF session
  */
-if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager")
-{
-	RFM::response(RFM::fm_trans('forbidden') . RFM::AddErrorLocation(), 403)->send();
+if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager") {
+    RFM::response(RFM::fmTrans('forbidden') . RFM::addErrorLocation(), 403)->send();
     exit;
 }
 
 if (!RFM::checkRelativePath($_POST['path']) || strpos($_POST['path'], '/') === 0) {
-    RFM::response(RFM::fm_trans('wrong path') . RFM::AddErrorLocation(), 400)->send();
+    RFM::response(RFM::fmTrans('wrong path') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
 if (strpos($_POST['name'], '/') !== false) {
-    RFM::response(RFM::fm_trans('wrong path') . RFM::AddErrorLocation(), 400)->send();
+    RFM::response(RFM::fmTrans('wrong path') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
-$ftp = RFM::ftp_con($config);
+$ftp = RFM::ftpCon($config);
 
 if ($ftp) {
     $path = $config['ftp_base_folder'] .  $config['upload_dir'] . $_POST['path'];
@@ -51,8 +48,8 @@ if ($ftp) {
 $name = $_POST['name'];
 $info = pathinfo($name);
 
-if (!RFM::check_extension($info['extension'], $config)) {
-    RFM::response(RFM::fm_trans('wrong extension') . RFM::AddErrorLocation(), 400)->send();
+if (!RFM::checkExtension($info['extension'], $config)) {
+    RFM::response(RFM::fmTrans('wrong extension') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
@@ -62,7 +59,7 @@ $file_path = $path . $name;
 
 $local_file_path_to_download = "";
 // make sure the file exists
-if ($ftp && RFM::ftp_download_file($ftp, $file_path, $file_name.'.'.$file_ext, $local_file_path_to_download)) {
+if ($ftp && RFM::ftpDownloadFile($ftp, $file_path, $file_name.'.'.$file_ext, $local_file_path_to_download)) {
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');
     header("Content-Transfer-Encoding: Binary");
@@ -75,7 +72,7 @@ if ($ftp && RFM::ftp_download_file($ftp, $file_path, $file_name.'.'.$file_ext, $
     exit;
 } elseif (is_file($file_path) && is_readable($file_path)) {
     if (!file_exists($path . $name)) {
-        RFM::response(RFM::fm_trans('File_Not_Found') . RFM::AddErrorLocation(), 404)->send();
+        RFM::response(RFM::fmTrans('File_Not_Found') . RFM::addErrorLocation(), 404)->send();
         exit;
     }
 
@@ -89,7 +86,7 @@ if ($ftp && RFM::ftp_download_file($ftp, $file_path, $file_name.'.'.$file_ext, $
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime_type = finfo_file($finfo, $file_path);
     } else {
-        $mime_type = RFM::get_file_mime_type($file_path);
+        $mime_type = RFMMimeTypesLib::getFileMimeType($file_path);
     }
 
 

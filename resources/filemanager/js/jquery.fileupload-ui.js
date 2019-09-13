@@ -422,7 +422,8 @@
                         'DownloadURL',
                         [type, name, url].join(':')
                     );
-                } catch (ignore) {}
+                } catch (ignore) {
+                }
             });
         },
 

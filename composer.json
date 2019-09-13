@@ -7,19 +7,16 @@
           "name": "Jeremy Munsch"
       }
   ],
-  "version": "0.0.3",
+  "version": "0.0.4",
   "keywords": ["laravel", "responsive", "filemanager"],
   "minimum-stability": "dev",
   "require": {
-    "php": ">=5.5.9"
+    "php": ">=7.1"
   },
   "autoload": {
     "psr-4": {
-      "Kwaadpepper\\ResponsiveFileManager\\": "src/"
+      "Kwaadpepper\\ResponsiveFileManager\\": "src/ResponsiveFileManager/",
+      "Kwaadpepper\\FtpClient\\": "src/FtpClient/"
     }
-  },
-  "require-dev": {
-    "orchestra/testbench": "^3.8",
-    "laravel/framework": "5.8.*"
   }
 }

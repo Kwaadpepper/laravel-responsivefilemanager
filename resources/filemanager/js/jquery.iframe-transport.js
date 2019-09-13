@@ -32,8 +32,8 @@
         jsonParse = 'parseJSON';
 
     if ('JSON' in window && 'parse' in JSON) {
-      jsonAPI = JSON;
-      jsonParse = 'parse';
+        jsonAPI = JSON;
+        jsonParse = 'parse';
     }
 
     // The iframe transport accepts four additional options:

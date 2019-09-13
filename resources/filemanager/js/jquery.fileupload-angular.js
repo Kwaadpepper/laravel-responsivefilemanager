@@ -52,7 +52,7 @@
                     // Schedule a new $digest cycle if not already inside of one
                     // and evaluate the given expression:
                     scope.$evalAsync(expression);
-                },
+            },
                 addFileMethods = function (scope, data) {
                     var files = data.files,
                         file = files[0];
@@ -104,7 +104,7 @@
                     scope.$parent.$applyAsync(function () {
                         addFileMethods(scope, data);
                         var method = scope.option('prependFiles') ?
-                                'unshift' : 'push';
+                        'unshift' : 'push';
                         Array.prototype[method].apply(scope.queue, data.files);
                     });
                     data.process(function () {
@@ -298,7 +298,8 @@
                             data.dataType.indexOf('json') === data.dataType.length - 4) {
                         try {
                             data.result = angular.fromJson(data.jqXHR.responseText);
-                        } catch (ignore) {}
+                        } catch (ignore) {
+                        }
                     }
                 }).on([
                     'fileuploadadd',
@@ -430,7 +431,8 @@
                                 elm.prop('href')
                             ].join(':')
                         );
-                    } catch (ignore) {}
+                    } catch (ignore) {
+                    }
                 });
             };
         });

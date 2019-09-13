@@ -2,39 +2,36 @@
 /**
  * @author Alberto Peripolli https://responsivefilemanager.com/#contact-section
  * @source https://github.com/trippo/ResponsiveFilemanager
- * 
- * Licenced under Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) 
+ *
+ * Licenced under Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
  * https://creativecommons.org/licenses/by-nc/3.0/
- * 
- * This work is licensed under the Creative Commons 
+ *
+ * This work is licensed under the Creative Commons
  * Attribution-NonCommercial 3.0 Unported License.
- * To view a copy of this license, visit 
- * http://creativecommons.org/licenses/by-nc/3.0/ or send a 
- * letter to Creative Commons, 444 Castro Street, Suite 900, 
+ * To view a copy of this license, visit
+ * http://creativecommons.org/licenses/by-nc/3.0/ or send a
+ * letter to Creative Commons, 444 Castro Street, Suite 900,
  * Mountain View, California, 94041, USA.
  */
 
-require_once __DIR__.'/boot.php';
-require_once __DIR__.'/UploadHandler.php';
-require_once __DIR__.'/include/mime_type_lib.php';
+use \Exception;
+use \stdClass;
+use Kwaadpepper\ResponsiveFileManager\RFM;
+use Kwaadpepper\ResponsiveFileManager\UploadHandler;
+use Kwaadpepper\ResponsiveFileManager\RFMMimeTypesLib;
 
 $config = config('rfm');
-
-use ResponsiveFileManager\RFM;
-use ResponsiveFileManager\UploadHandler;
 
 /**
  * Check RF session
  */
-if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager")
-{
-	RFM::response(RFM::fm_trans('forbidden') . RFM::AddErrorLocation(), 403)->send();
+if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager") {
+    RFM::response(RFM::fmTrans('forbidden') . RFM::addErrorLocation(), 403)->send();
     exit;
 }
 
 try {
-
-    $ftp = RFM::ftp_con($config);
+    $ftp = RFM::ftpCon($config);
 
     if ($ftp) {
         $source_base = $config['ftp_base_folder'] . $config['upload_dir'];
@@ -55,7 +52,7 @@ try {
     $fldr = rawurldecode(trim(strip_tags($_POST['fldr']), "/") . "/");
 
     if (!RFM::checkRelativePath($fldr)) {
-        response(RFM::fm_trans('wrong path') . RFM::AddErrorLocation())->send();
+        response(RFM::fmTrans('wrong path') . RFM::addErrorLocation())->send();
         exit;
     }
 
@@ -75,12 +72,12 @@ try {
             //TODO switch to array
             $cycle = false;
         }
-        $path = RFM::fix_dirname($path) . '/';
+        $path = RFM::fixDirname($path) . '/';
     }
 
     $messages = null;
-    if (RFM::fm_trans("Upload_error_messages") !== "Upload_error_messages") {
-        $messages = RFM::fm_trans("Upload_error_messages");
+    if (RFM::fmTrans("Upload_error_messages") !== "Upload_error_messages") {
+        $messages = RFM::fmTrans("Upload_error_messages");
     }
 
     // make sure the length is limited to avoid DOS attacks
@@ -89,7 +86,7 @@ try {
         $urlPattern = '/^(https?:\/\/)?([\da-z\.-]+\.[a-z\.]{2,6}|[\d\.]+)([\/?=&#]{1}[\da-z\.-]+)*[\/\?]?$/i';
 
         if (preg_match($urlPattern, $url)) {
-            $temp = tempnam('/tmp','RF');
+            $temp = tempnam('/tmp', 'RF');
 
             $ch = curl_init($url);
             $fp = fopen($temp, 'wb');
@@ -124,9 +121,9 @@ try {
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mime_type = finfo_file($finfo, $_FILES['files']['tmp_name'][0]);
         } else {
-            $mime_type = get_file_mime_type($_FILES['files']['tmp_name'][0]);
+            $mime_type = RFMMimeTypesLib::getFileMimeType($_FILES['files']['tmp_name'][0]);
         }
-        $extension = get_extension_from_mime($mime_type);
+        $extension = RFMMimeTypesLib::getExtensionFromMime($mime_type);
 
         if ($extension == 'so' || $extension == '' || $mime_type == "text/troff") {
             $extension = $info['extension'];
@@ -135,22 +132,21 @@ try {
     } else {
         $filename = $_FILES['files']['name'][0];
     }
-    $_FILES['files']['name'][0] = RFM::fix_filename($filename, $config);
+    $_FILES['files']['name'][0] = RFM::fixGetParams($filename, $config);
 
-    if(!$_FILES['files']['type'][0]){
+    if (!$_FILES['files']['type'][0]) {
         $_FILES['files']['type'][0] = $mime_type;
-
     }
     // LowerCase
     if ($config['lower_case']) {
-        $_FILES['files']['name'][0] = RFM::fix_strtolower($_FILES['files']['name'][0]);
+        $_FILES['files']['name'][0] = RFM::fixStrtolower($_FILES['files']['name'][0]);
     }
     if (!RFM::checkresultingsize($_FILES['files']['size'][0])) {
-    	if ( !isset($upload_handler->response['files'][0]) ) {
+        if (!isset($upload_handler->response['files'][0])) {
             // Avoid " Warning: Creating default object from empty value ... "
             $upload_handler->response['files'][0] = new stdClass();
         }
-        $upload_handler->response['files'][0]->error = sprintf(RFM::fm_trans('max_size_reached'), $config['MaxSizeTotal']) . RFM::AddErrorLocation();
+        $upload_handler->response['files'][0]->error = sprintf(RFM::fmTrans('max_size_reached'), $config['MaxSizeTotal']) . RFM::addErrorLocation();//phpcs:ignore
         echo json_encode($upload_handler->response);
         exit();
     }
@@ -178,7 +174,7 @@ try {
         $uploadConfig['accept_file_types'] = '/\.(?!' . implode('|', $config['ext_blacklist']) . '$)/i';
 
         if ($config['files_without_extension']) {
-            $uploadConfig['accept_file_types'] = '/((\.(?!' . implode('|', $config['ext_blacklist']) . '$))|(^[^.]+$))/i';
+            $uploadConfig['accept_file_types'] = '/((\.(?!' . implode('|', $config['ext_blacklist']) . '$))|(^[^.]+$))/i';//phpcs:ignore
         }
     }
 
@@ -194,7 +190,7 @@ try {
         $uploadConfig['upload_dir'] = $config['ftp_temp_folder'];
     }
 
-    $upload_handler = new UploadHandler($uploadConfig, true, $messages);
+    $upload_handler = new UploadHandler($ftp, $uploadConfig, true, $messages);
 } catch (Exception $e) {
     $return = array();
 
@@ -208,13 +204,15 @@ try {
             );
         }
 
-        if(!FM_DEBUG_ERROR_MESSAGE)
+        if (!FM_DEBUG_ERROR_MESSAGE) {
             dd($e, array("files" => $return));
+        }
 
         echo json_encode(array("files" => $return));
         return;
     }
-    if(!FM_DEBUG_ERROR_MESSAGE)
+    if (!FM_DEBUG_ERROR_MESSAGE) {
         dd($e);
+    }
     echo json_encode(array("error" => $e->getMessage()));
 }

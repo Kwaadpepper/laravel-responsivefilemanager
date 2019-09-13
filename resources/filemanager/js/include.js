@@ -1,19 +1,19 @@
 /**
  * @author Alberto Peripolli https://responsivefilemanager.com/#contact-section
  * @source https://github.com/trippo/ResponsiveFilemanager
- * 
- * Licenced under Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0) 
+ *
+ * Licenced under Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
  * https://creativecommons.org/licenses/by-nc/3.0/
- * 
- * This work is licensed under the Creative Commons 
+ *
+ * This work is licensed under the Creative Commons
  * Attribution-NonCommercial 3.0 Unported License.
- * To view a copy of this license, visit 
- * http://creativecommons.org/licenses/by-nc/3.0/ or send a 
- * letter to Creative Commons, 444 Castro Street, Suite 900, 
+ * To view a copy of this license, visit
+ * http://creativecommons.org/licenses/by-nc/3.0/ or send a
+ * letter to Creative Commons, 444 Castro Street, Suite 900,
  * Mountain View, California, 94041, USA.
  */
 var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, apply_any, apply_video, apply_link, apply_file_rename, apply_file_duplicate, apply_folder_rename;
-(function($, Modernizr, image_editor) {
+(function ($, Modernizr, image_editor) {
     "use strict";
 
     var version = "9.14.0";
@@ -22,19 +22,18 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
     var clipboard = null;
     var checked = 0;
 
-    var delay = (function() {
+    var delay = (function () {
         var timer = 0;
-        return function(callback, ms) {
+        return function (callback, ms) {
             clearTimeout(timer);
             timer = setTimeout(callback, ms);
         };
     })();
 
-    var getLink = function($trigger) {
+    var getLink = function ($trigger) {
 
         if (jQuery('#ftp').val() == true) {
             var m = jQuery('#upload_dir').val() + jQuery('#fldr_value').val();
-
         } else {
             var m = jQuery('#base_url').val() + jQuery('#cur_dir').val();
         }
@@ -55,7 +54,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
         contextActions: {
 
-            copy_url: function($trigger) {
+            copy_url: function ($trigger) {
                 if (jQuery('#ftp').val() == true) {
                     var m = $trigger.attr('data-path');
                 } else {
@@ -73,7 +72,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 );
             },
 
-            unzip: function($trigger) {
+            unzip: function ($trigger) {
                 var m = jQuery('#sub_folder').val() + jQuery('#fldr_value').val() + $trigger.find('a.link').attr('data-file');
                 show_animation();
                 $.ajax({
@@ -83,7 +82,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                         path: m,
                         _token: jQuery('meta[name="csrf-token"]').attr('content')
                     }
-                }).done(function(msg) {
+                }).done(function (msg) {
                     hide_animation();
                     if (msg != "") {
                         bootbox.alert(msg);
@@ -93,7 +92,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 });
             },
 
-            edit_img: function($trigger) {
+            edit_img: function ($trigger) {
                 var filename = $trigger.attr('data-name');
                 var filepath = $trigger.attr('data-path');
                 if (jQuery('#ftp').val() == true) {
@@ -110,10 +109,10 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 tuiElement.removeClass('hide');
             },
 
-            duplicate: function($trigger) {
+            duplicate: function ($trigger) {
                 var old_name = $trigger.find('h4').text().trim();
 
-                bootbox.prompt(jQuery('#lang_duplicate').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function(name) {
+                bootbox.prompt(jQuery('#lang_duplicate').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function (name) {
                     if (name !== null) {
                         name = fix_filename(name);
                         if (name != old_name) {
@@ -123,7 +122,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 }, old_name + " - copy");
             },
 
-            select: function($trigger) {
+            select: function ($trigger) {
                 var url = getLink($trigger);
                 var external = jQuery('#field_id').val();
                 var windowParent;
@@ -140,7 +139,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 }
                 if (external != "") {
                     if (jQuery('#crossdomain').val() == 1) {
-                        windowParent.postMessage({
+                        windowParent.postMessage(
+                            {
                                 sender: 'responsivefilemanager',
                                 url: url,
                                 field_id: external
@@ -160,36 +160,36 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 }
 
             },
-            copy: function($trigger) {
+            copy: function ($trigger) {
                 copy_cut_clicked($trigger, 'copy');
             },
-            cut: function($trigger) {
+            cut: function ($trigger) {
                 copy_cut_clicked($trigger, 'cut');
             },
-            paste: function() {
+            paste: function () {
                 paste_to_this_dir();
             },
-            chmod: function($trigger) {
+            chmod: function ($trigger) {
                 chmod($trigger);
             },
-            edit_text_file: function($trigger) {
+            edit_text_file: function ($trigger) {
                 edit_text_file($trigger);
             }
 
         },
 
-        makeContextMenu: function() {
+        makeContextMenu: function () {
             var fm = this;
 
             $.contextMenu({
                 selector: 'figure:not(.back-directory), .list-view2 figure:not(.back-directory)',
                 autoHide: true,
-                build: function($trigger) {
+                build: function ($trigger) {
 
                     $trigger.addClass('selected');
 
                     var options = {
-                        callback: function(key, options) {
+                        callback: function (key, options) {
                             fm.contextActions[key]($trigger);
                         },
                         items: {}
@@ -329,7 +329,6 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                                 disabled: true
                             };
                         } else {
-
                             options.items.size = {
                                 name: $trigger.find('.file-size').html(),
                                 icon: "size",
@@ -347,20 +346,20 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     return options;
                 },
                 events: {
-                    hide: function() {
+                    hide: function () {
                         jQuery('figure').removeClass('selected');
                     }
                 }
             });
 
-            jQuery(document).on('contextmenu', function(e) {
+            jQuery(document).on('contextmenu', function (e) {
                 if (!jQuery(e.target).is("figure")) {
                     return false;
                 }
             });
         },
 
-        updateMultipleSelectionButtons: function() {
+        updateMultipleSelectionButtons: function () {
             if (checked > 0) {
                 jQuery("#multiple-selection").show(300);
             } else {
@@ -368,10 +367,10 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             }
         },
 
-        bindGridEvents: function() {
+        bindGridEvents: function () {
             var grid = jQuery('ul.grid');
 
-            grid.on('click', '.modalAV', function(e) {
+            grid.on('click', '.modalAV', function (e) {
                 var _this = jQuery(this);
                 e.preventDefault();
 
@@ -391,24 +390,24 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
                 $.ajax({
                     url: _this.attr('data-url'),
-                    success: function(data) {
+                    success: function (data) {
                         bodyPreviewElement.html(data);
                     }
                 });
             });
 
-            grid.on('click', '.file-preview-btn', function(e) {
+            grid.on('click', '.file-preview-btn', function (e) {
                 var _this = jQuery(this);
-				e.preventDefault();
+                e.preventDefault();
                 $.ajax({
                     url: _this.attr('data-url'),
-                    success: function(data) {
+                    success: function (data) {
                         bootbox.modal(data, " " + _this.parent().parent().parent().find('.name').val());
                     }
                 });
             });
 
-            grid.on('click', '.preview', function() {
+            grid.on('click', '.preview', function () {
                 var _this = jQuery(this);
                 if (_this.hasClass('disabled') == false) {
                     jQuery('#full-img').attr('src', decodeURIComponent(_this.attr('data-url')));
@@ -416,13 +415,13 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 return true;
             });
 
-            grid.on('click', '.rename-file', function() {
+            grid.on('click', '.rename-file', function () {
                 var _this = jQuery(this);
                 var file_container = _this.closest('figure');
                 var path = file_container.attr('data-path');
                 var file_title = file_container.find('h4');
                 var old_name = $.trim(file_title.text());
-                bootbox.prompt(jQuery('#rename').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function(name) {
+                bootbox.prompt(jQuery('#rename').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function (name) {
                     if (name !== null) {
                         name = fix_filename(name);
                         if (name != old_name) {
@@ -432,14 +431,14 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 }, old_name);
             });
 
-            grid.on('click', '.rename-folder', function() {
+            grid.on('click', '.rename-folder', function () {
                 var _this = jQuery(this);
                 var file_container = _this.closest('figure');
                 var path = file_container.attr('data-path');
 
                 var file_title = file_container.find('h4');
                 var old_name = $.trim(file_title.text());
-                bootbox.prompt(jQuery('#rename').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function(name) {
+                bootbox.prompt(jQuery('#rename').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function (name) {
                     if (name !== null) {
                         name = fix_filename(name).replace('.', '');
                         if (name != old_name) {
@@ -449,10 +448,10 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 }, old_name);
             });
 
-            grid.on('click', '.delete-file', function() {
+            grid.on('click', '.delete-file', function () {
                 var _this = jQuery(this);
                 var path = _this.closest('figure').attr('data-path');
-                bootbox.confirm(_this.attr('data-confirm'), jQuery('#cancel').val(), jQuery('#ok').val(), function(result) {
+                bootbox.confirm(_this.attr('data-confirm'), jQuery('#cancel').val(), jQuery('#ok').val(), function (result) {
                     if (result == true) {
                         execute_action('delete_file', path, '', '', '');
                         var fil = jQuery('#files_number');
@@ -462,11 +461,11 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 });
             });
 
-            grid.on('click', '.delete-folder', function() {
+            grid.on('click', '.delete-folder', function () {
                 var _this = jQuery(this);
                 var path = _this.closest('figure').attr('data-path');
 
-                bootbox.confirm(_this.attr('data-confirm'), jQuery('#cancel').val(), jQuery('#ok').val(), function(result) {
+                bootbox.confirm(_this.attr('data-confirm'), jQuery('#cancel').val(), jQuery('#ok').val(), function (result) {
                     if (result == true) {
                         execute_action('delete_folder', path, '', '', '');
                         var fol = jQuery('#folders_number');
@@ -476,7 +475,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 });
             });
 
-            function handleFileLink($el) {
+            function handleFileLink($el)
+            {
                 var fun = $el.attr('data-function');
                 if (fun == "apply_multiple") {
                     $el.find('.selection:visible').trigger('click');
@@ -486,12 +486,12 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 }
             }
 
-            jQuery('ul.grid').on('click', '.link', function(e) {
+            jQuery('ul.grid').on('click', '.link', function (e) {
                 e.stopPropagation();
                 handleFileLink(jQuery(this));
             });
 
-            jQuery('ul.grid').on('click', 'div.box', function(e) {
+            jQuery('ul.grid').on('click', 'div.box', function (e) {
 
                 var fileLink = jQuery(this).find(".link");
                 if (fileLink.length !== 0) {
@@ -506,8 +506,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             // End of link handler
         },
 
-        makeFilters: function(js_script) {
-            jQuery('#filter-input').on('keyup', function() {
+        makeFilters: function (js_script) {
+            jQuery('#filter-input').on('keyup', function () {
                 checked = 0;
                 $('.selection:checkbox').removeAttr('checked');
                 FileManager.updateMultipleSelectionButtons();
@@ -518,8 +518,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 var val = fix_filename(jQuery(this).val()).toLowerCase();
                 jQuery(this).val(val);
                 if (js_script) {
-                    delay(function() {
-                        jQuery('li', 'ul.grid ').each(function() {
+                    delay(function () {
+                        jQuery('li', 'ul.grid ').each(function () {
                             var _this = jQuery(this);
                             if (val != "" && _this.attr('data-name').toLowerCase().indexOf(val) == -1) {
                                 _this.hide(100);
@@ -530,12 +530,12 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
                         $.ajax({
                             url: "ajax_calls.php?action=filter&type=" + val
-                        }).done(function(msg) {
+                        }).done(function (msg) {
                             if (msg != "") {
                                 bootbox.alert(msg);
                             }
                         });
-                        delay(function() {
+                        delay(function () {
                             var sortDescending = jQuery('#descending').val() != 0 ? true : false;
                             sortUnorderedList(sortDescending, "." + jQuery('#sort_by').val());
 
@@ -544,14 +544,14 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
                     }, 300);
                 }
-            }).keypress(function(e) {
+            }).keypress(function (e) {
                 if (e.which == 13) {
                     jQuery('#filter').trigger('click');
                 }
             });
 
             // filtering
-            jQuery('#filter').on('click', function() {
+            jQuery('#filter').on('click', function () {
                 var val = fix_filename(jQuery('#filter-input').val());
                 var url = jQuery('#current_url').val();
                 if (url.indexOf("?") >= 0) {
@@ -563,18 +563,19 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             });
         },
 
-        makeUploader: function() {
+        makeUploader: function () {
             jQuery('#fileupload').fileupload({
                 // Uncomment the following to send cross-domain cookies:
                 //xhrFields: {withCredentials: true},
                 url: 'upload.php',
                 maxChunkSize: 2 * 1024 * 1024, // 2 MB
             });
-            jQuery('#fileupload').bind('fileuploaddrop', function(e, data) {
+            jQuery('#fileupload').bind('fileuploaddrop', function (e, data) {
                 jQuery('.uploader').show(200);
-                setTimeout(function() { jQuery('#fileupload > div > div.fileupload-buttonbar > div.text-center > button').click(); }, 200);
+                setTimeout(function () {
+                    jQuery('#fileupload > div > div.fileupload-buttonbar > div.text-center > button').click(); }, 200);
             });
-            jQuery('#fileupload').bind('fileuploadsubmit', function(e, data) {
+            jQuery('#fileupload').bind('fileuploadsubmit', function (e, data) {
                 // The example input, doesn't have to be part of the upload form:
                 data.formData = {
                     fldr: jQuery('#sub_folder').val() + jQuery('#fldr_value').val() + (data.files[0].relativePath || data.files[0].webkitRelativePath || ''),
@@ -589,23 +590,23 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 url: jQuery('#fileupload').fileupload('option', 'url'),
                 dataType: 'json',
                 context: jQuery('#fileupload')[0]
-            }).always(function() {
+            }).always(function () {
                 jQuery(this).removeClass('fileupload-processing');
             });
             // upload btn
-            jQuery('.upload-btn').on('click', function() {
+            jQuery('.upload-btn').on('click', function () {
                 jQuery('.uploader').show(200);
             });
 
-            jQuery('.close-uploader').on('click', function() {
+            jQuery('.close-uploader').on('click', function () {
                 jQuery('.uploader').hide(200);
-                setTimeout(function() {
+                setTimeout(function () {
                     window.location.href = jQuery('#refresh').attr('href') + '&' + new Date().getTime();
                 }, 420);
             });
         },
-        uploadURL: function() {
-            jQuery('#uploadURL').on('click', function(e) {
+        uploadURL: function () {
+            jQuery('#uploadURL').on('click', function (e) {
                 e.preventDefault();
                 var url = jQuery('#url').val();
                 var fldr = jQuery('#fldr_value').val();
@@ -618,10 +619,10 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                         url: url,
                         _token: jQuery('meta[name="csrf-token"]').attr('content')
                     }
-                }).done(function(msg) {
+                }).done(function (msg) {
                     hide_animation();
                     jQuery('#url').val('');
-                }).fail(function(msg) {
+                }).fail(function (msg) {
                     bootbox.alert(jQuery('#lang_error_upload').val());
                     hide_animation();
                     jQuery('#url').val('');
@@ -629,9 +630,9 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             })
         },
 
-        makeSort: function(js_script) {
+        makeSort: function (js_script) {
             // sorting
-            jQuery('input[name=radio-sort]').on('click', function() {
+            jQuery('input[name=radio-sort]').on('click', function () {
                 var li = jQuery(this).attr('data-item');
                 var liElement = jQuery('#' + li);
                 var labelElement = jQuery('.filters label');
@@ -668,7 +669,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 lazyLoad();
             });
             var sortDescending = jQuery('#descending').val();
-            jQuery('.sorter').on('click', function() {
+            jQuery('.sorter').on('click', function () {
                 var _this = jQuery(this);
                 if (jQuery('#sort_by').val() === _this.attr('data-sort')) {
                     sortDescending = sortDescending == 0 ? true : false
@@ -699,7 +700,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
     }
 
-    jQuery(document).ready(function() {
+    jQuery(document).ready(function () {
 
         // Right click menu
         if (active_contextmenu) {
@@ -716,7 +717,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 jQuery('.grid li.' + li).show(300);
             }
         }
-        jQuery('.ff-container').on('click', '.checkmark', function(e) {
+        jQuery('.ff-container').on('click', '.checkmark', function (e) {
 
             e.stopPropagation();
 
@@ -729,11 +730,11 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         })
 
         // preview image
-        jQuery('#full-img').on('click', function() {
+        jQuery('#full-img').on('click', function () {
             jQuery('#previewLightbox').lightbox('hide');
         });
 
-        jQuery('body').on('click', function() {
+        jQuery('body').on('click', function () {
             jQuery('.tip-right').tooltip('hide');
         });
 
@@ -750,33 +751,33 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         FileManager.uploadURL();
 
         // info btn
-        jQuery('#info').on('click', function() {
+        jQuery('#info').on('click', function () {
             bootbox.alert('<div class="text-center"><br/><img src="img/logo.png" alt="responsive filemanager"/><br/><br/><p><strong>RESPONSIVE filemanager v.' + version + '</strong><br/><a href="http://www.responsivefilemanager.com">responsivefilemanager.com</a></p><br/><p>Copyright © <a href="http://www.tecrail.com" alt="tecrail">Tecrail</a> - Alberto Peripolli. All rights reserved.</p><br/><p>License<br/><small><img alt="Creative Commons License" style="border-width:0" src="https://www.responsivefilemanager.com/license.php" /><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/">Creative Commons Attribution-NonCommercial 3.0 Unported License</a>.</small></p></div>');
         });
 
-        jQuery('#change_lang_btn').on('click', function() {
+        jQuery('#change_lang_btn').on('click', function () {
             change_lang();
         });
 
         FileManager.makeUploader();
 
-        jQuery('body').on('keypress', function(e) {
+        jQuery('body').on('keypress', function (e) {
             var c = String.fromCharCode(e.which);
             if (c == "'" || c == '"' || c == "\\" || c == '/') {
                 return false;
             }
         });
 
-        jQuery('ul.grid li figcaption').on('click', 'a[data-toggle="lightbox"]', function() {
+        jQuery('ul.grid li figcaption').on('click', 'a[data-toggle="lightbox"]', function () {
             preview_loading_animation(decodeURIComponent(jQuery(this).attr('data-url')));
         })
 
-        jQuery('.create-file-btn').on('click', function() {
+        jQuery('.create-file-btn').on('click', function () {
             create_text_file();
         });
 
-        jQuery('.new-folder').on('click', function() {
-            bootbox.prompt(jQuery('#insert_folder_name').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function(name) {
+        jQuery('.new-folder').on('click', function () {
+            bootbox.prompt(jQuery('#insert_folder_name').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function (name) {
                 if (name !== null) {
                     name = fix_filename(name).replace('.', '');
                     var folder_path = jQuery('#sub_folder').val() + jQuery('#fldr_value').val();
@@ -788,11 +789,11 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                             name: name,
                             _token: jQuery('meta[name="csrf-token"]').attr('content')
                         }
-                    }).done(function(msg) {
+                    }).done(function (msg) {
                         if (msg) {
                             bootbox.alert(jQuery('#rename_existing_folder').val());
                         } else {
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 window.location.href = jQuery('#refresh').attr('href') + '&' + new Date().getTime();
                             }, 300);
                         }
@@ -802,7 +803,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             });
         });
 
-        jQuery('.view-controller button').on('click', function() {
+        jQuery('.view-controller button').on('click', function () {
             var _this = jQuery(this);
 
             jQuery('.view-controller button').removeClass('btn-inverse');
@@ -812,7 +813,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
             $.ajax({
                 url: "ajax_calls.php?action=view&type=" + _this.attr('data-value')
-            }).done(function(msg) {
+            }).done(function (msg) {
                 if (msg != "") {
                     bootbox.alert(msg);
                 }
@@ -844,7 +845,6 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             jQuery('.tip-right').tooltip({ placement: "right" });
             jQuery('body').addClass('no-touch');
         } else {
-
             jQuery('#help').show();
 
             //Enable swiping...
@@ -857,20 +857,20 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             });
         }
 
-        jQuery('.paste-here-btn').on('click', function() {
+        jQuery('.paste-here-btn').on('click', function () {
             if (jQuery(this).hasClass('disabled') == false) {
                 paste_to_this_dir();
             }
         });
 
-        jQuery('.clear-clipboard-btn').on('click', function() {
+        jQuery('.clear-clipboard-btn').on('click', function () {
             if (jQuery(this).hasClass('disabled') == false) {
                 clear_clipboard();
             }
         });
-        var getFiles = function(path) {
+        var getFiles = function (path) {
             var files = [];
-            jQuery('.selection:checkbox:checked:visible').each(function() {
+            jQuery('.selection:checkbox:checked:visible').each(function () {
                 var file = jQuery(this).val();
                 if (path) {
                     file = jQuery(this).closest('figure').attr('data-path');
@@ -880,32 +880,32 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             return files;
         };
 
-        jQuery('.multiple-action-btn').on('click', function() {
+        jQuery('.multiple-action-btn').on('click', function () {
             var files = getFiles();
             window[jQuery(this).attr('data-function')](files, jQuery('#field_id').val());
         });
-        jQuery('.multiple-deselect-btn').on('click', function() {
+        jQuery('.multiple-deselect-btn').on('click', function () {
             $('.selection:checkbox').removeAttr('checked');
             jQuery("#multiple-selection").hide(300);
         });
 
-        jQuery('.multiple-select-btn').on('click', function() {
+        jQuery('.multiple-select-btn').on('click', function () {
             $('.selection:checkbox:visible').prop('checked', true);
         });
 
-        jQuery('.multiple-delete-btn').on('click', function() {
+        jQuery('.multiple-delete-btn').on('click', function () {
             if (jQuery('.selection:checkbox:checked:visible').length == 0) {
                 return;
             }
             var _this = jQuery(this);
-            bootbox.confirm(_this.attr('data-confirm'), jQuery('#cancel').val(), jQuery('#ok').val(), function(result) {
+            bootbox.confirm(_this.attr('data-confirm'), jQuery('#cancel').val(), jQuery('#ok').val(), function (result) {
                 if (result == true) {
                     var files = getFiles(true);
 
                     execute_multiple_action('delete_files', files, '', '', '');
                     var fil = jQuery('#files_number');
                     fil.text(parseInt(fil.text()) - files.length);
-                    jQuery('.selection:checkbox:checked:visible').each(function() {
+                    jQuery('.selection:checkbox:checked:visible').each(function () {
                         jQuery(this).closest('li').remove();
                     });
                     jQuery("#multiple-selection").hide(300);
@@ -916,7 +916,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         // reverted to jquery from Modernizr.csstransforms because drag&drop
         if (!Modernizr.csstransforms) { // Test if CSS transform are supported
             var figures = jQuery('figure');
-            figures.on('mouseover', function() {
+            figures.on('mouseover', function () {
                 if (jQuery('#view').val() == 0 && jQuery('#main-item-container').hasClass('no-effect-slide') === false) {
                     jQuery(this).find('.box:not(.no-effect)').animate({ top: "-26px" }, {
                         queue: false,
@@ -925,7 +925,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 }
             });
 
-            figures.on('mouseout', function() {
+            figures.on('mouseout', function () {
                 if (jQuery('#view').val() == 0) {
                     jQuery(this).find('.box:not(.no-effect)').animate({ top: "0px" }, {
                         queue: false,
@@ -935,7 +935,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             });
         }
 
-        jQuery(window).resize(function() {
+        jQuery(window).resize(function () {
             fix_colums(28);
         });
         fix_colums(14);
@@ -951,7 +951,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             distance: 20,
             cursor: "move",
 
-            helper: function() {
+            helper: function () {
                 //hack all the way through
                 jQuery(this).find('figure').find('.box').css("top", "0px");
                 var ret = jQuery(this).clone().css("z-index", 1000).find('.box').css("box-shadow", "none").css("-webkit-box-shadow", "none").parent().parent();
@@ -959,13 +959,13 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 return ret;
             },
 
-            start: function(e, ui) {
+            start: function (e, ui) {
                 jQuery(ui.helper).addClass("ui-draggable-helper");
                 if (jQuery('#view').val() == 0) {
                     jQuery('#main-item-container').addClass('no-effect-slide');
                 }
             },
-            stop: function() {
+            stop: function () {
                 jQuery(this).removeClass('selected');
                 if (jQuery('#view').val() == 0) {
                     jQuery('#main-item-container').removeClass('no-effect-slide');
@@ -977,23 +977,23 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             accept: "ul.grid li",
             activeClass: "ui-state-highlight",
             hoverClass: "ui-state-hover",
-            drop: function(event, ui) {
+            drop: function (event, ui) {
                 drag_n_drop_paste(ui.draggable.find('figure'), jQuery(this).find('figure'));
             }
         });
 
         // file permissions window
-        jQuery(document).on("keyup", '#chmod_form #chmod_value', function() {
+        jQuery(document).on("keyup", '#chmod_form #chmod_value', function () {
             chmod_logic(true);
         });
 
         // file permissions window
-        jQuery(document).on("change", '#chmod_form input', function() {
+        jQuery(document).on("change", '#chmod_form input', function () {
             chmod_logic(false);
         });
 
         //safety
-        jQuery(document).on("focusout", '#chmod_form #chmod_value', function() {
+        jQuery(document).on("focusout", '#chmod_form #chmod_value', function () {
             var chmodElement = jQuery('#chmod_form #chmod_value');
             if (chmodElement.val().match(/^[0-7]{3}$/) == null) {
                 chmodElement.val(chmodElement.attr('data-def-value'));
@@ -1005,32 +1005,35 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         clipboard = new Clipboard('.btn');
     });
 
-    function preview_loading_animation(url) {
+    function preview_loading_animation(url)
+    {
         show_animation();
         var tmpImg = new Image();
         tmpImg.src = url;
-        jQuery(tmpImg).on('load', function() {
+        jQuery(tmpImg).on('load', function () {
             hide_animation();
         });
     }
 
-    function create_text_file() {
+    function create_text_file()
+    {
         // remove to prevent duplicates
         jQuery('#textfile_create_area').parent().parent().remove();
 
         $.ajax({
             type: "GET",
             url: "ajax_calls.php?action=new_file_form"
-        }).done(function(status_msg) {
-            bootbox.dialog(status_msg,
+        }).done(function (status_msg) {
+            bootbox.dialog(
+                status_msg,
                 [{
-                        "label": jQuery('#cancel').val(),
-                        "class": "btn"
+                    "label": jQuery('#cancel').val(),
+                    "class": "btn"
                     },
                     {
                         "label": jQuery('#ok').val(),
                         "class": "btn-inverse",
-                        "callback": function() {
+                        "callback": function () {
                             var newFileName = jQuery('#create_text_file_name').val() + jQuery('#create_text_file_extension').val();
                             var newContent = jQuery('#textfile_create_area').val();
 
@@ -1047,10 +1050,10 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                                         new_content: newContent,
                                         _token: jQuery('meta[name="csrf-token"]').attr('content')
                                     }
-                                }).done(function(status_msg) {
+                                }).done(function (status_msg) {
                                     if (status_msg != "") {
-                                        bootbox.alert(status_msg, function( /*result*/ ) {
-                                            setTimeout(function() {
+                                        bootbox.alert(status_msg, function ( /*result*/ ) {
+                                            setTimeout(function () {
                                                 window.location.href = jQuery('#refresh').attr('href') + '&' + new Date().getTime();
                                             }, 500);
                                         });
@@ -1059,13 +1062,16 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                             }
                         }
                     }
-                ], {
+                ],
+                {
                     "header": jQuery('#lang_new_file').val()
-                });
+                }
+            );
         });
     }
 
-    function edit_text_file($trigger) {
+    function edit_text_file($trigger)
+    {
         // remove to prevent duplicates
         jQuery('#textfile_edit_area').parent().parent().remove();
 
@@ -1075,16 +1081,17 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             type: "POST",
             url: "ajax_calls.php?action=get_file&sub_action=edit&preview_mode=text",
             data: { path: full_path, _token: jQuery('meta[name="csrf-token"]').attr('content') }
-        }).done(function(init_content) {
-            bootbox.dialog(init_content,
+        }).done(function (init_content) {
+            bootbox.dialog(
+                init_content,
                 [{
-                        "label": jQuery('#cancel').val(),
-                        "class": "btn"
+                    "label": jQuery('#cancel').val(),
+                    "class": "btn"
                     },
                     {
                         "label": jQuery('#ok').val(),
                         "class": "btn-inverse",
-                        "callback": function() {
+                        "callback": function () {
                             var newContent = jQuery('#textfile_edit_area').val();
                             if (window.editor && typeof window.editor.getData === "function") {
                                 newContent = window.editor.getData();
@@ -1098,34 +1105,38 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                                     new_content: newContent,
                                     _token: jQuery('meta[name="csrf-token"]').attr('content')
                                 }
-                            }).done(function(status_msg) {
+                            }).done(function (status_msg) {
                                 if (status_msg != "") {
                                     bootbox.alert(status_msg);
                                 }
                             });
                         }
                     }
-                ], {
+                ],
+                {
                     "header": $trigger.find('.name_download').val()
-                });
+                }
+            );
         });
     }
 
-    function change_lang() {
+    function change_lang()
+    {
         $.ajax({
             type: "POST",
             url: "ajax_calls.php?action=get_lang",
             data: { _token: jQuery('meta[name="csrf-token"]').attr('content') }
-        }).done(function(init_msg) {
-            bootbox.dialog(init_msg,
+        }).done(function (init_msg) {
+            bootbox.dialog(
+                init_msg,
                 [{
-                        "label": jQuery('#cancel').val(),
-                        "class": "btn"
+                    "label": jQuery('#cancel').val(),
+                    "class": "btn"
                     },
                     {
                         "label": jQuery('#ok').val(),
                         "class": "btn-inverse",
-                        "callback": function() {
+                        "callback": function () {
                             // get new lang
                             var newLang = jQuery('#new_lang_select').val();
                             // post ajax
@@ -1133,24 +1144,27 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                                 type: "POST",
                                 url: "ajax_calls.php?action=change_lang",
                                 data: { choosen_lang: newLang, _token: jQuery('meta[name="csrf-token"]').attr('content') }
-                            }).done(function(error_msg) {
+                            }).done(function (error_msg) {
                                 if (error_msg != "") {
                                     bootbox.alert(error_msg);
                                 } else {
-                                    setTimeout(function() {
+                                    setTimeout(function () {
                                         window.location.href = jQuery('#refresh').attr('href').replace(/lang=[\w]*&/i, 'lang=' + newLang + "&") + '&' + new Date().getTime();
                                     }, 100);
                                 }
                             });
                         }
                     }
-                ], {
+                ],
+                {
                     "header": jQuery('#lang_lang_change').val()
-                });
+                }
+            );
         });
     }
 
-    function chmod($trigger) {
+    function chmod($trigger)
+    {
         // remove to prevent duplicates
         jQuery('#files_permission_start').parent().parent().remove();
 
@@ -1169,16 +1183,17 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 folder: folder,
                 _token: jQuery('meta[name="csrf-token"]').attr('content')
             }
-        }).done(function(init_msg) {
-            bootbox.dialog(init_msg,
+        }).done(function (init_msg) {
+            bootbox.dialog(
+                init_msg,
                 [{
-                        "label": jQuery('#cancel').val(),
-                        "class": "btn"
+                    "label": jQuery('#cancel').val(),
+                    "class": "btn"
                     },
                     {
                         "label": jQuery('#ok').val(),
                         "class": "btn-inverse",
-                        "callback": function() {
+                        "callback": function () {
                             var info = "-";
                             if (jQuery('#u_4').is(':checked')) {
                                 info += "r";
@@ -1246,7 +1261,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                                         folder: folder,
                                         _token: jQuery('meta[name="csrf-token"]').attr('content')
                                     }
-                                }).done(function(status_msg) {
+                                }).done(function (status_msg) {
                                     if (status_msg != "") {
                                         bootbox.alert(status_msg);
                                     } else {
@@ -1256,15 +1271,18 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                             }
                         }
                     }
-                ], {
+                ],
+                {
                     "header": jQuery('#lang_file_permission').val()
                 }
             );
-            setTimeout(function() { chmod_logic(false); }, 100);
+            setTimeout(function () {
+                chmod_logic(false); }, 100);
         });
     }
 
-    function chmod_logic(is_text) {
+    function chmod_logic(is_text)
+    {
         var perm = [];
         perm['user'] = 0;
         perm['group'] = 0;
@@ -1279,7 +1297,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             perm['all'] = newperm.substr(2, 1);
 
             // check values for errors (empty,not num, not 0-7)
-            $.each(perm, function(index) {
+            $.each(perm, function (index) {
                 if (perm[index] == '' ||
                     $.isNumeric(perm[index]) == false ||
                     (parseInt(perm[index]) < 0 || parseInt(perm[index]) > 7)) {
@@ -1288,7 +1306,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             });
 
             // update checkboxes
-            jQuery('#chmod_form input:checkbox').each(function() {
+            jQuery('#chmod_form input:checkbox').each(function () {
                 var group = jQuery(this).attr('data-group');
                 var val = jQuery(this).attr('data-value');
 
@@ -1298,9 +1316,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     jQuery(this).prop('checked', false);
                 }
             });
-
         } else { //a checkbox was updated
-            jQuery('#chmod_form input:checkbox:checked').each(function() {
+            jQuery('#chmod_form input:checkbox:checked').each(function () {
                 var group = jQuery(this).attr('data-group');
                 var val = jQuery(this).attr('data-value');
                 perm[group] = parseInt(perm[group]) + parseInt(val);
@@ -1310,7 +1327,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function chmod_logic_helper(perm, val) {
+    function chmod_logic_helper(perm, val)
+    {
         var valid = [];
         valid[1] = [1, 3, 5, 7];
         valid[2] = [2, 3, 6, 7];
@@ -1322,14 +1340,15 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return ($.inArray(perm, valid[val]) != -1);
     }
 
-    function clear_clipboard() {
-        bootbox.confirm(jQuery('#lang_clear_clipboard_confirm').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function(result) {
+    function clear_clipboard()
+    {
+        bootbox.confirm(jQuery('#lang_clear_clipboard_confirm').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function (result) {
             if (result == true) {
                 $.ajax({
                     type: "POST",
                     url: "ajax_calls.php?action=clear_clipboard",
                     data: { _token: jQuery('meta[name="csrf-token"]').attr('content') }
-                }).done(function(msg) {
+                }).done(function (msg) {
                     if (msg != "") {
                         bootbox.alert(msg);
                     } else {
@@ -1341,7 +1360,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         });
     }
 
-    function copy_cut_clicked($trigger, atype) {
+    function copy_cut_clicked($trigger, atype)
+    {
         if (atype != 'copy' && atype != 'cut') {
             return;
         }
@@ -1358,7 +1378,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 sub_action: atype,
                 _token: jQuery('meta[name="csrf-token"]').attr('content')
             }
-        }).done(function(msg) {
+        }).done(function (msg) {
             if (msg != "") {
                 bootbox.alert(msg);
             } else {
@@ -1368,8 +1388,9 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         });
     }
 
-    function paste_to_this_dir(dnd) {
-        bootbox.confirm(jQuery('#lang_paste_confirm').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function(result) {
+    function paste_to_this_dir(dnd)
+    {
+        bootbox.confirm(jQuery('#lang_paste_confirm').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function (result) {
             if (result == true) {
                 var folder_path;
                 if (typeof dnd != 'undefined') {
@@ -1385,13 +1406,13 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                         path: folder_path,
                         _token: jQuery('meta[name="csrf-token"]').attr('content')
                     }
-                }).done(function(msg) {
+                }).done(function (msg) {
                     if (msg != "") {
                         bootbox.alert(msg);
                     } else {
                         jQuery('#clipboard').val('0');
                         toggle_clipboard(false);
-                        setTimeout(function() {
+                        setTimeout(function () {
                             window.location.href = jQuery('#refresh').attr('href') + '&' + new Date().getTime();
                         }, 300);
                     }
@@ -1402,7 +1423,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
     // Had to separate from copy_cut_clicked & paste_to_this_dir func
     // because of feedback and on error bahhhhh...
-    function drag_n_drop_paste($trigger, dnd) {
+    function drag_n_drop_paste($trigger, dnd)
+    {
         var obj;
 
         if (!$trigger.hasClass('directory')) {
@@ -1416,14 +1438,14 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         $trigger.parent().hide(100);
 
         $.ajax({
-                type: "POST",
-                url: "ajax_calls.php?action=copy_cut",
-                data: {
-                    path: full_path,
-                    sub_action: 'cut',
-                    _token: jQuery('meta[name="csrf-token"]').attr('content')
-                }
-            }).done(function(msg) {
+            type: "POST",
+            url: "ajax_calls.php?action=copy_cut",
+            data: {
+                path: full_path,
+                sub_action: 'cut',
+                _token: jQuery('meta[name="csrf-token"]').attr('content')
+            }
+            }).done(function (msg) {
                 if (msg != "") {
                     bootbox.alert(msg);
                 } else {
@@ -1445,7 +1467,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                             path: folder_path,
                             _token: jQuery('meta[name="csrf-token"]').attr('content')
                         }
-                    }).done(function(msg) {
+                    }).done(function (msg) {
                         if (msg != "") {
                             bootbox.alert(msg);
                             $trigger.parent().show(100);
@@ -1457,12 +1479,13 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     });
                 }
             })
-            .error(function( /*err*/ ) {
+            .error(function ( /*err*/ ) {
                 $trigger.parent().show(100);
             });
     }
 
-    function toggle_clipboard(lever) {
+    function toggle_clipboard(lever)
+    {
         if (lever == true) {
             jQuery('.paste-here-btn, .clear-clipboard-btn').removeClass('disabled');
         } else {
@@ -1470,7 +1493,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function fix_colums(adding) {
+    function fix_colums(adding)
+    {
         var width = jQuery('.breadcrumb').width() + adding;
 
         var viewElement = jQuery('#view');
@@ -1496,7 +1520,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function swipe_reaction( /*event, direction, distance, duration, fingerCount*/ ) {
+    function swipe_reaction( /*event, direction, distance, duration, fingerCount*/ )
+    {
         var _this = jQuery(this);
 
         if (jQuery('#view').val() == 0) {
@@ -1513,11 +1538,11 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     duration: 300
                 });
             }
-
         }
     }
 
-    function returnUrls(files) {
+    function returnUrls(files)
+    {
         var path = jQuery('#cur_dir').val();
         path = path.replace('\\', '/');
         var sub_folder = jQuery('#sub_folder').val();
@@ -1539,7 +1564,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return urls;
     }
 
-    function returnWindowParent() {
+    function returnWindowParent()
+    {
         if (jQuery('#popup').val() == 1) {
             return window.opener;
         } else {
@@ -1547,7 +1573,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    encodeURL = function(url) {
+    encodeURL = function (url) {
         var tmp = url.split('/');
         for (var i = 3; i < tmp.length; i++) {
             tmp[i] = encodeURIComponent(tmp[i]);
@@ -1555,7 +1581,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return tmp.join('/');
     }
 
-    apply = function(files, external) {
+    apply = function (files, external) {
         var windowParent = returnWindowParent();
         var callback = jQuery('#callback').val();
         var fill = '';
@@ -1573,7 +1599,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
         if (external != "") {
             if (jQuery('#crossdomain').val() == 1) {
-                windowParent.postMessage({
+                windowParent.postMessage(
+                    {
                         sender: 'responsivefilemanager',
                         url: res,
                         field_id: external
@@ -1597,7 +1624,6 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             }
         } else {
             for (var i = 0; i < urls.length; i++) {
-
                 var file = files[i];
                 var alt_name = file.substr(0, file.lastIndexOf('.'));
                 var ext = file.split('.').pop();
@@ -1621,12 +1647,12 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                             fill += '<a href="' + url + '" title="' + alt_name + '">' + alt_name + '</a> ';
                         }
                     }
-
                 }
             }
 
             if (jQuery('#crossdomain').val() == 1) {
-                windowParent.postMessage({
+                windowParent.postMessage(
+                    {
                         sender: 'responsivefilemanager',
                         url: res,
                         field_id: null,
@@ -1634,7 +1660,6 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     },
                     '*'
                 );
-
             } else {
                 // tinymce 3.X
                 if (parent.tinymce.majorVersion < 4) {
@@ -1651,7 +1676,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
     }
 
 
-    apply_link = function(files, external) {
+    apply_link = function (files, external) {
         var windowParent = returnWindowParent();
         var callback = jQuery('#callback').val();
         if (!Array.isArray(files)) {
@@ -1666,7 +1691,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
         if (external != "") {
             if (jQuery('#crossdomain').val() == 1) {
-                windowParent.postMessage({
+                windowParent.postMessage(
+                    {
                         sender: 'responsivefilemanager',
                         url: urls[0],
                         field_id: external
@@ -1692,7 +1718,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    apply_img = function(files, external) {
+    apply_img = function (files, external) {
         var windowParent = returnWindowParent();
         var callback = jQuery('#callback').val();
         if (!Array.isArray(files)) {
@@ -1707,7 +1733,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
         if (external != "") {
             if (jQuery('#crossdomain').val() == 1) {
-                windowParent.postMessage({
+                windowParent.postMessage(
+                    {
                         sender: 'responsivefilemanager',
                         url: urls[0],
                         field_id: external
@@ -1738,7 +1765,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    apply_video = function(files, external) {
+    apply_video = function (files, external) {
         var windowParent = returnWindowParent();
         var callback = jQuery('#callback').val();
         if (!Array.isArray(files)) {
@@ -1752,7 +1779,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
         if (external != "") {
             if (jQuery('#crossdomain').val() == 1) {
-                windowParent.postMessage({
+                windowParent.postMessage(
+                    {
                         sender: 'responsivefilemanager',
                         url: urls[0],
                         field_id: external
@@ -1778,23 +1806,25 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    apply_none = function(file, external, el) {
+    apply_none = function (file, external, el) {
         console.log(el);
         var _this = el.parent().find('form a');
         _this[1].click();
         jQuery('.tip-right').tooltip('hide');
     }
 
-    function getUrlParam(paramName) {
+    function getUrlParam(paramName)
+    {
         var reParam = new RegExp('(?:[\?&]|&)' + paramName + '=([^&]+)', 'i');
         var match = window.location.search.match(reParam);
 
         return (match && match.length > 1) ? match[1] : null;
     }
 
-    apply_any = function(url) {
+    apply_any = function (url) {
         if (jQuery('#crossdomain').val() == 1) {
-            window.parent.postMessage({
+            window.parent.postMessage(
+                {
                     sender: 'responsivefilemanager',
                     url: url,
                     field_id: null
@@ -1817,7 +1847,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function close_window() {
+    function close_window()
+    {
         if (jQuery('#popup').val() == 1) {
             window.close();
         } else {
@@ -1838,7 +1869,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    apply_file_duplicate = function(container, name) {
+    apply_file_duplicate = function (container, name) {
         var li_container = container.parent();
 
         li_container.after("<li class='" + li_container.attr('class') + "' data-name='" + li_container.attr('data-name') + "'>" + li_container.html() + "</li>");
@@ -1854,7 +1885,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         form.find('.tip-right').first().attr('onclick', "jQuery('#" + new_form_id + "').submit();");
     }
 
-    apply_file_rename = function(container, name) {
+    apply_file_rename = function (container, name) {
         var file;
 
         container.attr('data-name', name);
@@ -1874,12 +1905,12 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             extension = '';
         }
 
-        link.each(function() {
+        link.each(function () {
             jQuery(this).attr('data-file', encodeURIComponent(name + extension));
         });
 
         //thumbnails
-        container.find('img').each(function() {
+        container.find('img').each(function () {
             var src = jQuery(this).attr('src');
             if (src) {
                 jQuery(this).attr('src', src.replace(old_name, name + extension) + '?time=' + new Date().getTime());
@@ -1915,7 +1946,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         jQuery('a#refresh')[0].click();
     }
 
-    apply_folder_rename = function(container, name) {
+    apply_folder_rename = function (container, name) {
 
         container.attr('data-name', name);
         container.find('figure').attr('data-name', name);
@@ -1928,7 +1959,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         var url = link.attr('href');
         var fldr = jQuery('#fldr_value').val();
         var new_url = url.replace('fldr=' + fldr + encodeURIComponent(old_name), 'fldr=' + fldr + encodeURIComponent(name));
-        link.each(function() {
+        link.each(function () {
             jQuery(this).attr('href', new_url);
         });
 
@@ -1944,12 +1975,14 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
     }
 
-    function replace_last(str, find, replace) {
+    function replace_last(str, find, replace)
+    {
         var re = new RegExp(find + "$");
         return str.replace(re, replace);
     }
 
-    function replaceDiacritics(s) {
+    function replaceDiacritics(s)
+    {
         var s;
 
         var diacritics = [
@@ -1971,7 +2004,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return s;
     }
 
-    function fix_filename(stri) {
+    function fix_filename(stri)
+    {
         if (stri != null) {
             if (jQuery('#transliteration').val() == "true") {
                 stri = replaceDiacritics(stri);
@@ -1993,7 +2027,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return null;
     }
 
-    function execute_action(action, file, name, container, function_name) {
+    function execute_action(action, file, name, container, function_name)
+    {
         if (name !== null) {
             name = fix_filename(name);
             $.ajax({
@@ -2004,7 +2039,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     name: name.replace('/', ''),
                     _token: jQuery('meta[name="csrf-token"]').attr('content')
                 }
-            }).done(function(msg) {
+            }).done(function (msg) {
                 if (msg != "") {
                     bootbox.alert(msg);
                     return false;
@@ -2018,7 +2053,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function execute_multiple_action(action, files, names, container, function_name) {
+    function execute_multiple_action(action, files, names, container, function_name)
+    {
         if (name !== null) {
             name = fix_filename(name);
             $.ajax({
@@ -2030,7 +2066,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     names: names,
                     _token: jQuery('meta[name="csrf-token"]').attr('content')
                 }
-            }).done(function(msg) {
+            }).done(function (msg) {
                 if (msg != "") {
                     bootbox.alert(msg);
                     return false;
@@ -2045,7 +2081,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
     }
 
 
-    function sortUnorderedList(sortDescending, sort_field) {
+    function sortUnorderedList(sortDescending, sort_field)
+    {
         var lis_dir = jQuery('li.dir', 'ul.grid').filter(':visible');
         var lis_file = jQuery('li.file', 'ul.grid').filter(':visible');
         checked = 0;
@@ -2056,7 +2093,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         var vals_file = [];
         var values_file = [];
 
-        lis_dir.each(function( /*index*/ ) {
+        lis_dir.each(function ( /*index*/ ) {
             var _this = jQuery(this);
             var value = _this.find(sort_field).val();
             if ($.isNumeric(value)) {
@@ -2071,7 +2108,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             values_dir.push(value);
         });
 
-        lis_file.each(function( /*index*/ ) {
+        lis_file.each(function ( /*index*/ ) {
 
             var _this = jQuery(this);
             var value = _this.find(sort_field).val();
@@ -2088,7 +2125,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         });
 
         if ($.isNumeric(values_dir[0])) {
-            values_dir.sort(function(a, b) {
+            values_dir.sort(function (a, b) {
                 return parseFloat(a) - parseFloat(b);
             });
         } else {
@@ -2096,7 +2133,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
 
         if ($.isNumeric(values_file[0])) {
-            values_file.sort(function(a, b) {
+            values_file.sort(function (a, b) {
                 return parseFloat(a) - parseFloat(b);
             });
         } else {
@@ -2108,26 +2145,27 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             values_file.reverse();
         }
 
-        lis_dir.each(function(index) {
+        lis_dir.each(function (index) {
             jQuery(this).html(vals_dir[values_dir[index]]);
         });
 
-        lis_file.each(function(index) {
+        lis_file.each(function (index) {
             jQuery(this).html(vals_file[values_file[index]]);
             jQuery(this).attr('data-name', jQuery(this).children().attr('data-name'));
         });
     }
 
-    show_animation = function() {
+    show_animation = function () {
         jQuery('#loading_container').css('display', 'block');
         jQuery('#loading').css('opacity', '.7');
     }
 
-    hide_animation = function() {
+    hide_animation = function () {
         jQuery('#loading_container').fadeOut();
     }
 
-    function launchEditor(id, src) {
+    function launchEditor(id, src)
+    {
         //load image into cropper. Set heights and refresh cropper.
         imageEditor.loadImageFromURL(src, "SampleImage").then(result => {
             imageEditor.ui.resizeEditor({
@@ -2140,19 +2178,21 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return false;
     }
 
-    function lazyLoad() {
+    function lazyLoad()
+    {
         myLazyLoad.update();
     }
 
 })(jQuery, Modernizr, image_editor);
 
 //IE enable
-(function() {
+(function () {
     if (typeof window.CustomEvent === "function") {
         return false;
     }
 
-    function CustomEvent(event, params) {
+    function CustomEvent(event, params)
+    {
         params = params || { bubbles: false, cancelable: false, detail: undefined };
         var evt = document.createEvent("CustomEvent");
         evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);

@@ -40,17 +40,17 @@ button, input, select, textarea {
 }
 .sorter-container .file-name {
     width: 50px;
-	left: auto;
+    left: auto;
     right: 52px;
 }
 .sorter-container .file-date {
     width: 70px;
-	right: auto;
+    right: auto;
     left: 188px;
 }
 .sorter-container .file-size {
     width: 55px;
-	right: auto;
+    right: auto;
     left: 258px;
 }
 .sorter-container .img-dimension {
