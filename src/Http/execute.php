@@ -40,7 +40,7 @@ $base = config('rfm.current_path');
 $path = $base . request()->post('path');
 
 if ($ftp) {
-    if (!request()->post('path')) {
+    if (!request()->has('path')) {
         if (!FM_DEBUG_ERROR_MESSAGE) {
             throw new NotFoundHttpException();
         }
@@ -48,7 +48,9 @@ if ($ftp) {
         exit;
     }
 
-    $info = RFM::decrypt(Request::create(request()->post('path'))->get('ox'));
+    $info = request()->post('path') ? RFM::decrypt(Request::create(request()->post('path'))->get('ox')) : [
+        'path' => $config['current_path']
+    ];
     $name = request()->post('name');
     $path = $info['path'];
     $path_thumb = str_replace($config['current_path'], $config['thumbs_base_path'], $path);

@@ -605,7 +605,7 @@ class RFM
     public static function createFolder($path = null, $path_thumbs = null, $ftp = null, $config = null)
     {
         if ($ftp) {
-            return $ftp->mkdir($path) && $ftp->mkdir($path_thumbs);
+            return $ftp->mkdir(config('rfm.ftp_base_folder').'/'.$path) && $ftp->mkdir(config('rfm.ftp_base_folder').'/'.$path_thumbs);
         } else {
             if (file_exists($path) || file_exists($path_thumbs)) {
                 return false;
