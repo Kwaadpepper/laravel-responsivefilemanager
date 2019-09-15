@@ -31,19 +31,6 @@ if (!RFM::checkRelativePath($_POST['path'])) {
     exit;
 }
 
-if (session()->exists('RF.language') && file_exists(__DIR__.'/../I18N/' . basename(session('RF.language')) . '.php')) {
-    $languages = include __DIR__.'/../I18N/languages.php';
-    if (array_key_exists(session('RF.language'), $languages)) {
-        include __DIR__.'/../I18N/' . basename(session('RF.language')) . '.php';
-    } else {
-        RFM::response(__('Lang_Not_Found') . RFM::addErrorLocation())->send();
-        exit;
-    }
-} else {
-    RFM::response(__('Lang_Not_Found') . RFM::addErrorLocation())->send();
-    exit;
-}
-
 $ftp = RFM::ftpCon($config);
 
 $base = $config['current_path'];
@@ -308,6 +295,8 @@ if (isset($_GET['action'])) {
                     RFM::response(__('Empty_name') . RFM::addErrorLocation())->send();
                     exit;
                 }
+            } else {
+                RFM::response(__('forbidden') . RFM::addErrorLocation())->send();
             }
             break;
 
