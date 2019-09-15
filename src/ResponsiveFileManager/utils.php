@@ -284,8 +284,12 @@ class RFM
             try {
                 $ftp->rmdir('/'.config('rfm.ftp_base_folder').'/'.$dir);
                 return true;
-            } catch (FtpException $e) {
-                return null;
+            } catch (\Exception $e) {
+                if (!FM_DEBUG_ERROR_MESSAGE) {
+                    return false;
+                }
+                self::response(__('ftp_delete_failure') . self::addErrorLocation(), 200)->send();
+                exit;
             }
         } else {
             if (! file_exists($dir) || self::isUploadDir($dir, $config)) {

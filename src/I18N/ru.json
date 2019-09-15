@@ -128,6 +128,7 @@
     "Zip_No_Extract": "Извлечь невозможно. Возможно файл повреждён.",
     "forbidden": "Запрещено",
     "ftp_cant_chmod": "Can't chmod on a non Unix FTP server",
+    "ftp_delete_failure": "Can't remove non empty folder",
     "ftp_failure": "Something gone wrong with ftp server",
     "max_size_reached": "Папка достигла максимального размера в :size MB.",
     "no action passed": "Действие не сработало",
