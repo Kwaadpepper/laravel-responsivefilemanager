@@ -1,7 +1,7 @@
 <?php
 namespace Kwaadpepper\ResponsiveFileManager;
 
-use RFM;
+use \Kwaadpepper\ResponsiveFileManager\RFM;
 
 # ========================================================================#
 #

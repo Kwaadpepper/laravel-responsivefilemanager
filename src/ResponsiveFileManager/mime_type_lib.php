@@ -206,7 +206,7 @@ class RFMMimeTypesLib
         return '';
     }
 
-    public function getFileMimeType($filename, $debug = false)
+    public static function getFileMimeType($filename, $debug = false)
     {
         if (function_exists('finfo_open') && function_exists('finfo_file') && function_exists('finfo_close')) {
             $fileinfo = finfo_open(FILEINFO_MIME_TYPE);
