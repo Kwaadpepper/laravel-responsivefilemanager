@@ -282,7 +282,7 @@ class RFM
     {
         if ($ftp) {
             try {
-                $ftp->rmdir($dir);
+                $ftp->rmdir(config('rfm.ftp_base_folder').'/'.$dir);
                 return true;
             } catch (FtpException $e) {
                 return null;
