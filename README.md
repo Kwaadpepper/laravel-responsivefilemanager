@@ -1,9 +1,10 @@
 # Laravel-ResponsiveFileManager
 
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
-[![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
-[![Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)  license](https://img.shields.io/badge/Licence-CC%20BY%20NC%203.0-informational)](https://creativecommons.org/licenses/by-nc/3.0/)
-<a href="https://badge.fury.io/gh/Kwaadpepper%2Flaravel-responsivefilemanager"><img src="https://badge.fury.io/gh/Kwaadpepper%2Flaravel-responsivefilemanager.svg" alt="GitHub version" height="18"></a>
+[![GitHub issues](https://img.shields.io/github/issues/Kwaadpepper/laravel-responsivefilemanager)](https://github.com/Kwaadpepper/laravel-responsivefilemanager/issues)
+[![GitHub license](https://img.shields.io/badge/License-MIT-informational.svg)](https://github.com/Kwaadpepper/laravel-responsivefilemanager/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/badge/Licence-CC%20BY%20NC%203.0-informational.svg)](https://creativecommons.org/licenses/by-nc/3.0/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-informational.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+[![GitHub tag](https://img.shields.io/github/tag/Kwaadpepper/laravel-responsivefilemanager.svg?style=flat&logo=laravel&color=informational)](https://github.com/Kwaadpepper/laravel-responsivefilemanager/tags)
 
 This software includes a modified version of [Responsive File Manager](https://github.com/trippo/ResponsiveFilemanager) *see [official website](https://responsivefilemanager.com/)*
 
