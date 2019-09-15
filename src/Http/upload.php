@@ -26,7 +26,7 @@ $config = config('rfm');
  * Check RF session
  */
 if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager") {
-    RFM::response(RFM::fmTrans('forbidden') . RFM::addErrorLocation(), 403)->send();
+    RFM::response(__('forbidden') . RFM::addErrorLocation(), 403)->send();
     exit;
 }
 
@@ -52,7 +52,7 @@ try {
     $fldr = rawurldecode(trim(strip_tags($_POST['fldr']), "/") . "/");
 
     if (!RFM::checkRelativePath($fldr)) {
-        response(RFM::fmTrans('wrong path') . RFM::addErrorLocation())->send();
+        response(__('wrong path') . RFM::addErrorLocation())->send();
         exit;
     }
 
@@ -76,8 +76,8 @@ try {
     }
 
     $messages = null;
-    if (RFM::fmTrans("Upload_error_messages") !== "Upload_error_messages") {
-        $messages = RFM::fmTrans("Upload_error_messages");
+    if (__("Upload_error_messages") !== "Upload_error_messages") {
+        $messages = __("Upload_error_messages");
     }
 
     // make sure the length is limited to avoid DOS attacks
@@ -146,7 +146,10 @@ try {
             // Avoid " Warning: Creating default object from empty value ... "
             $upload_handler->response['files'][0] = new stdClass();
         }
-        $upload_handler->response['files'][0]->error = sprintf(RFM::fmTrans('max_size_reached'), $config['MaxSizeTotal']) . RFM::addErrorLocation();//phpcs:ignore
+        $upload_handler->response['files'][0]->error = __(
+            'max_size_reached',
+            ['size' => $config['MaxSizeTotal']]
+        ).RFM::addErrorLocation();
         echo json_encode($upload_handler->response);
         exit();
     }

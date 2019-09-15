@@ -40,11 +40,12 @@ class FileManagerServiceProvider extends ServiceProvider
 
         // Add package routes.
         $this->loadRoutesFrom(__DIR__ . '/../Http/routes.php');
+        $this->loadJsonTranslationsFrom(__DIR__.'/../I18N');
 
         /**
          * Publish all static ressources
          */
-        $FMPRIVPATH = "/../resources/filemanager/";
+        $FMPRIVPATH = "/../../resources/filemanager/";
         $FMPUBPATH = "vendor/responsivefilemanager/";
 
         $FM_PUBLISH = [];
@@ -143,8 +144,7 @@ class FileManagerServiceProvider extends ServiceProvider
         $FM_PUBLISH[__DIR__ . $FMPRIVPATH . '/img'] = public_path($FMPUBPATH . '/img');//phpcs:ignore
         $FM_PUBLISH[__DIR__ . $FMPRIVPATH . '/js'] = public_path($FMPUBPATH . '/js');//phpcs:ignore
         $FM_PUBLISH[__DIR__ . $FMPRIVPATH . '/svg'] = public_path($FMPUBPATH . '/svg');//phpcs:ignore
-        $FM_PUBLISH[__DIR__ . $FMPRIVPATH . '/lang'] = public_path($FMPUBPATH . '/lang');//phpcs:ignore
-
+        $FM_PUBLISH[__DIR__.'/../I18N'] = resource_path('lang/vendor/rfm');
         $this->publishes($FM_PUBLISH);
 
         /**

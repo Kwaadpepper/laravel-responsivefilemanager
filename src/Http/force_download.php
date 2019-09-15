@@ -23,17 +23,17 @@ $config = config('rfm');
  * Check RF session
  */
 if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager") {
-    RFM::response(RFM::fmTrans('forbidden') . RFM::addErrorLocation(), 403)->send();
+    RFM::response(__('forbidden') . RFM::addErrorLocation(), 403)->send();
     exit;
 }
 
 if (!RFM::checkRelativePath($_POST['path']) || strpos($_POST['path'], '/') === 0) {
-    RFM::response(RFM::fmTrans('wrong path') . RFM::addErrorLocation(), 400)->send();
+    RFM::response(__('wrong path') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
 if (strpos($_POST['name'], '/') !== false) {
-    RFM::response(RFM::fmTrans('wrong path') . RFM::addErrorLocation(), 400)->send();
+    RFM::response(__('wrong path') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
@@ -49,7 +49,7 @@ $name = $_POST['name'];
 $info = pathinfo($name);
 
 if (!RFM::checkExtension($info['extension'], $config)) {
-    RFM::response(RFM::fmTrans('wrong extension') . RFM::addErrorLocation(), 400)->send();
+    RFM::response(__('wrong extension') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
@@ -72,7 +72,7 @@ if ($ftp && RFM::ftpDownloadFile($ftp, $file_path, $file_name.'.'.$file_ext, $lo
     exit;
 } elseif (is_file($file_path) && is_readable($file_path)) {
     if (!file_exists($path . $name)) {
-        RFM::response(RFM::fmTrans('File_Not_Found') . RFM::addErrorLocation(), 404)->send();
+        RFM::response(__('File_Not_Found') . RFM::addErrorLocation(), 404)->send();
         exit;
     }
 

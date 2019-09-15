@@ -1641,7 +1641,7 @@ class UploadHandler
 
             if ($thumbResult !== true) {
                 if ($thumbResult === false) {
-                    $res['files'][0]->error = RFM::fmTrans("Not enough Memory");
+                    $res['files'][0]->error = __("Not enough Memory");
                 } else {
                     $res['files'][0]->error = $thumbResult;
                 }
@@ -1656,7 +1656,7 @@ class UploadHandler
                         $this->options['config']
                     )
                 ) {
-                    $res['files'][0]->error = RFM::fmTrans("Not enough Memory");
+                    $res['files'][0]->error = __("Not enough Memory");
                 } else {
                     $imginfo = getimagesize($targetFile);
                     $srcWidth = $imginfo[0];

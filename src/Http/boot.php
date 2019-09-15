@@ -56,68 +56,8 @@ if (basename(request()->server('REQUEST_URI')) == "dialog.php") {
     date_default_timezone_set(FM_date_default_timezone_set);
 }
 
-$config = config('rfm');
+$availableLangs = include __DIR__.'/../I18N/languages.php';
 
-/**
- * Language init
- */
-if (! session()->exists('RF.language')
-    || file_exists(__DIR__.'/../I18N/' . basename(session('RF.language')) . '.php') === false
-    || ! is_readable(__DIR__.'/../I18N/' . basename(session('RF.language')) . '.php')
-) {
-    $lang = $config['default_language'];
-
-    if (request()->get('lang') && request()->get('lang') != 'undefined' && request()->get('lang') != '') {
-        $lang = RFM::fixGetParams(request()->get('lang'));
-        $lang = trim($lang);
-    }
-
-    if (request()->get('langCode') && request()->get('langCode') != 'undefined' && request()->get('langCode') != '') {
-        $lang = RFM::fixGetParams(request()->get('langCode'));
-        $lang = trim($lang);
-    }
-    if ($lang != $config['default_language']) {
-        $path_parts = pathinfo($lang);
-        $lang = $path_parts['basename'];
-        $languages = include __DIR__.'/../I18N/languages.php';
-        $f = false;
-        array_walk(
-            $languages,
-            function ($fulllanguage, $isocode) use (&$lang, &$f) {
-                if (strpos($isocode, $lang) !== false) {
-                    $f = true;
-                    $lang = $isocode;
-                }
-            }
-        );
-        if (!$f) {
-            $lang = $config['default_language'];
-        }
-    }
-
-    // add lang file to session for easy include
-    session()->put('RF.language', $lang);
-} else {
-    if (file_exists(__DIR__.'/../I18N/languages.php')) {
-        $languages = include __DIR__.'/../I18N/languages.php';
-    } else {
-        $languages = include __DIR__.'/../I18N/languages.php';
-    }
-
-    if (array_key_exists(session('RF.language'), $languages)) {
-        $lang = session('RF.language');
-    } else {
-        RFM::response('Lang_Not_Found'.RFM::addErrorLocation())->send();
-        exit;
-    }
-}
-// dd(request()->global());
-if (file_exists(__DIR__.'/../I18N/' . $lang . '.php')) {
-    $GLOBALS['lang_vars'] = include __DIR__.'/../I18N/' . $lang . '.php';
-} else {
-    $GLOBALS['lang_vars'] = include __DIR__.'/../I18N/' . $lang . '.php';
-}
-
-if (! is_array($GLOBALS['lang_vars'])) {
-    $GLOBALS['lang_vars'] = array();
-}
+$preferredLang = RFM::getPreferredLanguage($availableLangs);
+app()->setLocale($preferredLang);
+session()->put('RF.language', $preferredLang);

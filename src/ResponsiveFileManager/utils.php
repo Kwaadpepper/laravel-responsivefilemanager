@@ -161,21 +161,6 @@ class RFM
     }
 
     /**
-    * Translate language variable
-    *
-    * @static
-    * @param $var string name
-    *
-    * @return string translated variable
-    */
-    public static function fmTrans($var)
-    {
-        global $lang_vars;
-
-        return (array_key_exists($var, $lang_vars)) ? $lang_vars[ $var ] : $var;
-    }
-
-    /**
     * Check relative path
     *
     * @static
@@ -492,7 +477,7 @@ class RFM
             $u++;
         }
 
-        return (number_format($size, 0) . " " . self::fmTrans($units[ $u ]));
+        return (number_format($size, 0) . " " . __($units[ $u ]));
     }
 
     /**
@@ -1235,5 +1220,53 @@ class RFM
             return " (@".$pile[0]["file"]."#".$pile[0]["line"].")";
         }
         return "";
+    }
+
+
+    /**
+     * Returns preferred language to use
+     * defined by web dev or by client
+     *
+     * @param array $availableLangs
+     * @return string
+     */
+    public static function getPreferredLanguage(array $availableLangs) : string
+    {
+        /**
+         * Check local availability: get first in order
+         * 1 - url get parameter
+         * 2 - RF.language session var (User selected languages in drop list)
+         * 3 - config.php (rfm.php) default_language
+         * 4 - User prefered language (HTTP headers)
+         * 5 - Laravel app default language
+         */
+        $preferredLang = current(array_filter([
+            // CKEDITOR hack prevent JS undefined as $_GET lang
+            ($l = request()->get('lang')) !== 'undefined' ? $l : null,
+            session('RF.language'),
+            config('rfm.default_language'),
+            request()->getPreferredLanguage(array_keys($availableLangs)),
+            app()->getLocale()
+        ]));
+
+        /**
+         * Checks if country in (country_LANGAGE) matches preferredLang
+         * eg: zh_CN -> if zh == $preferredLang
+         */
+        return current(array_filter(array_keys($availableLangs), function ($lang) use ($preferredLang) {
+            if ($preferredLang === $lang) {
+                return true;
+            }
+        
+            $superLang = false;
+        
+            if (false !== $position = strpos($lang, '_')) {
+                $superLang = substr($lang, 0, $position);
+                if ($preferredLang === $superLang) {
+                    return true;
+                }
+            }
+            return false;
+        })) ?? $preferredLang;
     }
 }

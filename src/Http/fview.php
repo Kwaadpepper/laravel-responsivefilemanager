@@ -38,7 +38,7 @@ if (!request()->get('ox')) {
     if (!FM_DEBUG_ERROR_MESSAGE) {
         throw new NotFoundHttpException();
     }
-    RFM::response(RFM::fmTrans('no ox query') . RFM::addErrorLocation(), 400)->send();
+    RFM::response(__('no ox query') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
@@ -48,7 +48,7 @@ try {
     if (!FM_DEBUG_ERROR_MESSAGE) {
         throw new NotFoundHttpException();
     }
-    RFM::response(RFM::fmTrans('ox query decrypt failed') . RFM::addErrorLocation(), 400)->send();
+    RFM::response(__('ox query decrypt failed') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
@@ -60,7 +60,7 @@ if (!RFM::checkRelativePath($get['path'])) {
     if (!FM_DEBUG_ERROR_MESSAGE) {
         throw new NotFoundHttpException();
     }
-    RFM::response(RFM::fmTrans('path is wrong') . RFM::addErrorLocation(), 400)->send();
+    RFM::response(__('path is wrong') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
@@ -68,7 +68,7 @@ if (strpos($get['name'], '/') !== false) {
     if (!FM_DEBUG_ERROR_MESSAGE) {
         throw new NotFoundHttpException();
     }
-    RFM::response(RFM::fmTrans('name includes a forbidden \'/\' char') . RFM::addErrorLocation(), 400)->send();
+    RFM::response(__('name includes a forbidden \'/\' char') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
@@ -76,7 +76,7 @@ if (!($ftp = RFM::ftpCon($config))) {
     if (!FM_DEBUG_ERROR_MESSAGE) {
         throw new NotFoundHttpException();
     }
-    RFM::response(RFM::fmTrans('FTP is not configured') . RFM::addErrorLocation(), 400)->send();
+    RFM::response(__('FTP is not configured') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
@@ -87,7 +87,7 @@ if (!RFM::checkExtension($info['extension'], $config)) {
     if (!FM_DEBUG_ERROR_MESSAGE) {
         throw new NotFoundHttpException();
     }
-        RFM::response(RFM::fmTrans('wrong extension') . RFM::addErrorLocation(), 400)->send();
+        RFM::response(__('wrong extension') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
@@ -102,7 +102,7 @@ if (!RFM::ftpDownloadFile($ftp, $file_path, $file_name.'.'.$file_ext, $local_fil
         throw new NotFoundHttpException();
     }
     RFM::response(
-        RFM::fmTrans('failed to fetch ftp file '.$file_name.'.'.$file_ext.' in '.$file_path).RFM::addErrorLocation(),
+        __('failed to fetch ftp file '.$file_name.'.'.$file_ext.' in '.$file_path).RFM::addErrorLocation(),
         400
     )->send();
     exit;

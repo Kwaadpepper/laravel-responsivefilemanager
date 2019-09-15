@@ -22,12 +22,12 @@ $config = config('rfm');
  * Check RF session
  */
 if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager") {
-    RFM::response(RFM::fmTrans('forbidden') . RFM::addErrorLocation(), 403)->send();
+    RFM::response(__('forbidden') . RFM::addErrorLocation(), 403)->send();
     exit;
 }
 
 if (!RFM::checkRelativePath($_POST['path'])) {
-    RFM::response(RFM::fmTrans('wrong path') . RFM::addErrorLocation())->send();
+    RFM::response(__('wrong path') . RFM::addErrorLocation())->send();
     exit;
 }
 
@@ -36,11 +36,11 @@ if (session()->exists('RF.language') && file_exists(__DIR__.'/../I18N/' . basena
     if (array_key_exists(session('RF.language'), $languages)) {
         include __DIR__.'/../I18N/' . basename(session('RF.language')) . '.php';
     } else {
-        RFM::response(RFM::fmTrans('Lang_Not_Found') . RFM::addErrorLocation())->send();
+        RFM::response(__('Lang_Not_Found') . RFM::addErrorLocation())->send();
         exit;
     }
 } else {
-    RFM::response(RFM::fmTrans('Lang_Not_Found') . RFM::addErrorLocation())->send();
+    RFM::response(__('Lang_Not_Found') . RFM::addErrorLocation())->send();
     exit;
 }
 
@@ -60,7 +60,7 @@ $returnPaths = function ($_path, $_name, $config) use ($ftp) {
     if ($_name) {
         $name = RFM::fixGetParams($_name, $config);
         if (strpos($name, '../') !== false || strpos($name, '..\\') !== false) {
-            RFM::response(RFM::fmTrans('wrong name') . RFM::addErrorLocation())->send();
+            RFM::response(__('wrong name') . RFM::addErrorLocation())->send();
             exit;
         }
     }
@@ -71,7 +71,7 @@ if (isset($_POST['paths'])) {
     $paths = $paths_thumb = $names = array();
     foreach ($_POST['paths'] as $key => $path) {
         if (!RFM::checkRelativePath($path)) {
-            RFM::response(RFM::fmTrans('wrong path').RFM::addErrorLocation())->send();
+            RFM::response(__('wrong path').RFM::addErrorLocation())->send();
             exit;
         }
         $name = null;
@@ -95,7 +95,7 @@ $info = pathinfo($path);
 if (isset($info['extension']) && !(isset($_GET['action']) && $_GET['action'] == 'delete_folder') &&
     !RFM::checkExtension($info['extension'], $config)
     && $_GET['action'] != 'create_file') {
-    RFM::response(RFM::fmTrans('wrong extension') . RFM::addErrorLocation())->send();
+    RFM::response(__('wrong extension') . RFM::addErrorLocation())->send();
     exit;
 }
 
@@ -152,14 +152,14 @@ if (isset($_GET['action'])) {
                     $config
                 );
                 if (!$res) {
-                    RFM::response(RFM::fmTrans('Rename_existing_folder').RFM::addErrorLocation())->send();
+                    RFM::response(__('Rename_existing_folder').RFM::addErrorLocation())->send();
                 }
             }
             break;
         case 'rename_folder':
             if ($config['rename_folders']) {
                 if ($ftp && !is_dir($path) && !RFM::ftpIsDir($ftp, $path)) {
-                    RFM::response(RFM::fmTrans('wrong path').RFM::addErrorLocation())->send();
+                    RFM::response(__('wrong path').RFM::addErrorLocation())->send();
                     exit;
                 }
                 $name = RFM::fixGetParams($name, $config);
@@ -167,7 +167,7 @@ if (isset($_GET['action'])) {
 
                 if (!empty($name)) {
                     if (!RFM::renameFolder($path, $name, $ftp, $config)) {
-                        RFM::response(RFM::fmTrans('Rename_existing_folder') . RFM::addErrorLocation())->send();
+                        RFM::response(__('Rename_existing_folder') . RFM::addErrorLocation())->send();
                         exit;
                     }
                     RFM::renameFolder($path_thumb, $name, $ftp, $config);
@@ -182,7 +182,7 @@ if (isset($_GET['action'])) {
                         }
                     }
                 } else {
-                    RFM::response(RFM::fmTrans('Empty_name') . RFM::addErrorLocation())->send();
+                    RFM::response(__('Empty_name') . RFM::addErrorLocation())->send();
                     exit;
                 }
             }
@@ -190,7 +190,7 @@ if (isset($_GET['action'])) {
 
         case 'create_file':
             if ($config['create_text_files'] === false) {
-                RFM::response(sprintf(RFM::fmTrans('File_Open_Edit_Not_Allowed'), strtolower(RFM::fmTrans('Edit'))).
+                RFM::response(__('File_Open_Edit_Not_Allowed', ['sub_action' => strtolower(__('Edit'))]).
                 RFM::addErrorLocation())->send();
                 exit;
             }
@@ -201,9 +201,10 @@ if (isset($_GET['action'])) {
 
             // check if user supplied extension
             if (strpos($name, '.') === false) {
-                RFM::response(RFM::fmTrans('No_Extension') . ' '.
-                sprintf(RFM::fmTrans('Valid_Extensions'), implode(', ', $config['editable_text_file_exts'])).
-                RFM::addErrorLocation())->send();
+                RFM::response(__('No_Extension') . ' '.
+                __('Valid_Extensions', [
+                    'editable_text_file_exts' => implode(', ', $config['editable_text_file_exts'])
+                ]).RFM::addErrorLocation())->send();
                 exit;
             }
 
@@ -211,7 +212,7 @@ if (isset($_GET['action'])) {
             $old_name = $name;
             $name = RFM::fixGetParams($name, $config);
             if (empty($name)) {
-                RFM::response(RFM::fmTrans('Empty_name') . RFM::addErrorLocation())->send();
+                RFM::response(__('Empty_name') . RFM::addErrorLocation())->send();
                 exit;
             }
 
@@ -219,9 +220,10 @@ if (isset($_GET['action'])) {
             $parts = explode('.', $name);
             if (!in_array(end($parts), $config['editable_text_file_exts'])) {
                 RFM::response(
-                    RFM::fmTrans('Error_extension').' '.
-                    sprintf(RFM::fmTrans('Valid_Extensions'), implode(', ', $config['editable_text_file_exts'])).
-                    RFM::addErrorLocation(),
+                    __('Error_extension').' '.
+                    __('Valid_Extensions', [
+                        'editable_text_file_exts' => implode(', ', $config['editable_text_file_exts'])
+                    ]).RFM::addErrorLocation(),
                     400
                 )->send();
                 exit;
@@ -234,27 +236,27 @@ if (isset($_GET['action'])) {
                 file_put_contents($temp, $content);
                 $ftp->put("/" . $path . $name, $temp, FTP_BINARY);
                 unlink($temp);
-                RFM::response(RFM::fmTrans('File_Save_OK'))->send();
+                RFM::response(__('File_Save_OK'))->send();
             } else {
                 if (!RFM::checkresultingsize(strlen($content))) {
-                    RFM::response(sprintf(RFM::fmTrans('max_size_reached'), $config['MaxSizeTotal']).
+                    RFM::response(__('max_size_reached', ['size' => $config['MaxSizeTotal']]).
                     RFM::addErrorLocation())->send();
                     exit;
                 }
                 // file already exists
                 if (file_exists($path . $name)) {
-                    RFM::response(RFM::fmTrans('Rename_existing_file') . RFM::addErrorLocation())->send();
+                    RFM::response(__('Rename_existing_file') . RFM::addErrorLocation())->send();
                     exit;
                 }
 
                 if (@file_put_contents($path . $name, $content) === false) {
-                    RFM::response(RFM::fmTrans('File_Save_Error') . RFM::addErrorLocation())->send();
+                    RFM::response(__('File_Save_Error') . RFM::addErrorLocation())->send();
                     exit;
                 } else {
                     if (RFM::isFunctionCallable('chmod') !== false) {
                         chmod($path . $name, 0644);
                     }
-                    RFM::response(RFM::fmTrans('File_Save_OK'))->send();
+                    RFM::response(__('File_Save_OK'))->send();
                     exit;
                 }
             }
@@ -266,7 +268,7 @@ if (isset($_GET['action'])) {
                 $name = RFM::fixGetParams($name, $config);
                 if (!empty($name)) {
                     if (!RFM::renameFile($path, $name, $ftp, $config)) {
-                        RFM::response(RFM::fmTrans('Rename_existing_file') . RFM::addErrorLocation())->send();
+                        RFM::response(__('Rename_existing_file') . RFM::addErrorLocation())->send();
                         exit;
                     }
 
@@ -303,7 +305,7 @@ if (isset($_GET['action'])) {
                         }
                     }
                 } else {
-                    RFM::response(RFM::fmTrans('Empty_name') . RFM::addErrorLocation())->send();
+                    RFM::response(__('Empty_name') . RFM::addErrorLocation())->send();
                     exit;
                 }
             }
@@ -314,14 +316,12 @@ if (isset($_GET['action'])) {
                 $name = RFM::fixGetParams($name, $config);
                 if (!empty($name)) {
                     if (!$ftp && !RFM::checkresultingsize(filesize($path))) {
-                        RFM::response(
-                            sprintf(RFM::fmTrans('max_size_reached'), $config['MaxSizeTotal']) .
-                            RFM::addErrorLocation()
-                        )->send();
+                        RFM::response(__('max_size_reached', ['size' => $config['MaxSizeTotal']]).
+                        RFM::addErrorLocation())->send();
                         exit;
                     }
                     if (!RFM::duplicateFile($path, $name, $ftp, $config)) {
-                        RFM::response(RFM::fmTrans('Rename_existing_file') . RFM::addErrorLocation())->send();
+                        RFM::response(__('Rename_existing_file') . RFM::addErrorLocation())->send();
                         exit;
                     }
 
@@ -357,7 +357,7 @@ if (isset($_GET['action'])) {
                         }
                     }
                 } else {
-                    RFM::response(RFM::fmTrans('Empty_name') . RFM::addErrorLocation())->send();
+                    RFM::response(__('Empty_name') . RFM::addErrorLocation())->send();
                     exit;
                 }
             }
@@ -407,7 +407,7 @@ if (isset($_GET['action'])) {
 
             // something terribly gone wrong
             if ($action != 'copy' && $action != 'cut') {
-                RFM::response(RFM::fmTrans('wrong action') . RFM::addErrorLocation())->send();
+                RFM::response(__('wrong action') . RFM::addErrorLocation())->send();
                 exit;
             }
             if ($ftp) {
@@ -455,7 +455,7 @@ if (isset($_GET['action'])) {
                 // check for writability
                 if (RFM::isReallyWritable($path) === false || RFM::isReallyWritable($path_thumb) === false) {
                     RFM::response(
-                        RFM::fmTrans('Dir_No_Write') . '<br/>' .
+                        __('Dir_No_Write') . '<br/>' .
                         str_replace('../', '', $path) . '<br/>' .
                         str_replace('../', '', $path_thumb) . RFM::addErrorLocation()
                     )->send();
@@ -464,16 +464,16 @@ if (isset($_GET['action'])) {
 
                 // check if server disables copy or rename
                 if (RFM::isFunctionCallable(($action == 'copy' ? 'copy' : 'rename')) === false) {
-                    RFM::response(sprintf(
-                        RFM::fmTrans('Function_Disabled'),
-                        ($action == 'copy' ? (RFM::fmTrans('Copy')) : (RFM::fmTrans('Cut')))
-                    ) . RFM::addErrorLocation())->send();
+                    RFM::response(__(
+                        'Function_Disabled',
+                        ['function' => ($action == 'copy' ? (__('Copy')) : (__('Cut')))]
+                    ).RFM::addErrorLocation())->send();
                     exit;
                 }
                 if ($action == 'copy') {
                     list($sizeFolderToCopy, $fileNum, $foldersCount) = RFM::folderInfo($path, false);
                     if (!RFM::checkresultingsize($sizeFolderToCopy)) {
-                        RFM::response(sprintf(RFM::fmTrans('max_size_reached'), $config['MaxSizeTotal']) .
+                        RFM::response(__('max_size_reached', ['size' => $config['MaxSizeTotal']]).
                         RFM::addErrorLocation())->send();
                         exit;
                     }
@@ -505,25 +505,25 @@ if (isset($_GET['action'])) {
 
             // check perm
             if ($chmod_perm === false) {
-                RFM::response(sprintf(
-                    RFM::fmTrans('File_Permission_Not_Allowed'),
-                    (is_dir($path) ? (RFM::fmTrans('Folders')) : (RFM::fmTrans('Files')))
+                RFM::response(__(
+                    'File_Permission_Not_Allowed',
+                    ['folder_permissions' => (is_dir($path) ? (__('Folders')) : (__('Files')))]
                 ) .RFM::addErrorLocation())->send();
                 exit;
             }
             // check mode
             if (!preg_match("/^[0-7]{3}$/", $mode)) {
-                RFM::response(RFM::fmTrans('File_Permission_Wrong_Mode') . RFM::addErrorLocation())->send();
+                RFM::response(__('File_Permission_Wrong_Mode') . RFM::addErrorLocation())->send();
                 exit;
             }
             // check recursive option
             if (!in_array($rec_option, $valid_options)) {
-                RFM::response(RFM::fmTrans("wrong option") . RFM::addErrorLocation())->send();
+                RFM::response(__("wrong option") . RFM::addErrorLocation())->send();
                 exit;
             }
             // check if server disabled chmod
             if (!$ftp && RFM::isFunctionCallable('chmod') === false) {
-                RFM::response(sprintf(RFM::fmTrans('Function_Disabled'), 'chmod') . RFM::addErrorLocation())->send();
+                RFM::response(__('Function_Disabled', ['function' => 'chmod']).RFM::addErrorLocation())->send();
                 exit;
             }
 
@@ -534,8 +534,7 @@ if (isset($_GET['action'])) {
                     $ftp->chmod($mode, "/" . $path);
                 } catch (\Throwable $th) {
                     if ($th->getMessage() === "ftp_chmod(): Command not implemented for that parameter") {
-                        RFM::response(sprintf(RFM::fmTrans('ftp_cant_chmod'), 'chmod') .
-                        RFM::addErrorLocation())->send();
+                        RFM::response(__('ftp_cant_chmod').RFM::addErrorLocation())->send();
                         exit;
                     } else {
                         throw $th;
@@ -557,35 +556,33 @@ if (isset($_GET['action'])) {
                 file_put_contents($tmp, $content);
                 $ftp->put("/" . $path, $tmp, FTP_BINARY);
                 unlink($tmp);
-                RFM::response(RFM::fmTrans('File_Save_OK'))->send();
+                RFM::response(__('File_Save_OK'))->send();
             } else {
                 // no file
                 if (!file_exists($path)) {
-                    RFM::response(RFM::fmTrans('File_Not_Found') . RFM::addErrorLocation())->send();
+                    RFM::response(__('File_Not_Found') . RFM::addErrorLocation())->send();
                     exit;
                 }
 
                 // not writable or edit not allowed
                 if (!is_writable($path) || $config['edit_text_files'] === false) {
-                    RFM::response(sprintf(
-                        RFM::fmTrans('File_Open_Edit_Not_Allowed'),
-                        strtolower(RFM::fmTrans('Edit'))
-                    ) . RFM::addErrorLocation())->send();
+                    RFM::response(__(
+                        'File_Open_Edit_Not_Allowed',
+                        ['sub_action' => strtolower(__('Edit'))]
+                    ).RFM::addErrorLocation())->send();
                     exit;
                 }
 
                 if (!RFM::checkresultingsize(strlen($content))) {
-                    RFM::response(sprintf(
-                        RFM::fmTrans('max_size_reached'),
-                        $config['MaxSizeTotal']
-                    ) . RFM::addErrorLocation())->send();
+                    RFM::response(__('max_size_reached', ['size' => $config['MaxSizeTotal']]).
+                    RFM::addErrorLocation())->send();
                     exit;
                 }
                 if (@file_put_contents($path, $content) === false) {
-                    RFM::response(RFM::fmTrans('File_Save_Error') . RFM::addErrorLocation())->send();
+                    RFM::response(__('File_Save_Error') . RFM::addErrorLocation())->send();
                     exit;
                 } else {
-                    RFM::response(RFM::fmTrans('File_Save_OK'))->send();
+                    RFM::response(__('File_Save_OK'))->send();
                     exit;
                 }
             }
@@ -593,7 +590,7 @@ if (isset($_GET['action'])) {
             break;
 
         default:
-            RFM::response(RFM::fmTrans('wrong action') . RFM::addErrorLocation())->send();
+            RFM::response(__('wrong action') . RFM::addErrorLocation())->send();
             exit;
     }
 }

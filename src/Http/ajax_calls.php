@@ -29,32 +29,19 @@ $languages = include __DIR__.'/../I18N/languages.php';
  * Check RF session
  */
 if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager") {
-    RFM::response(RFM::fmTrans('forbidden') . RFM::addErrorLocation(), 403)->send();
+    RFM::response(__('forbidden') . RFM::addErrorLocation(), 403)->send();
     exit;
 }
-
-if (session()->exists('RF.language') && file_exists(__DIR__.'/../I18N/' . basename(session('RF.language')) . '.php')) {
-    if (array_key_exists(session('RF.language'), $languages)) {
-        include __DIR__.'/../I18N/' . basename(session('RF.language')) . '.php';
-    } else {
-        RFM::response(RFM::fmTrans('Lang_Not_Found').RFM::addErrorLocation())->send();
-        exit;
-    }
-} else {
-    RFM::response(RFM::fmTrans('Lang_Not_Found').RFM::addErrorLocation())->send();
-    exit;
-}
-
 
 //check $_GET['file']
 if (isset($_GET['file']) && !RFM::checkRelativePath($_GET['file'])) {
-    RFM::response(RFM::fmTrans('wrong path').RFM::addErrorLocation())->send();
+    RFM::response(__('wrong path').RFM::addErrorLocation())->send();
     exit;
 }
 
 //check $_POST['file']
 if (isset($_POST['path']) && !RFM::checkRelativePath($_POST['path'])) {
-    RFM::response(RFM::fmTrans('wrong path').RFM::addErrorLocation())->send();
+    RFM::response(__('wrong path').RFM::addErrorLocation())->send();
     exit;
 }
 
@@ -64,7 +51,7 @@ $ftp = RFM::ftpCon($config);
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'new_file_form':
-            echo    RFM::fmTrans('Filename') . ': <input type="text" id="create_text_file_name" style="height:30px">
+            echo    __('Filename') . ': <input type="text" id="create_text_file_name" style="height:30px">
                     <select id="create_text_file_extension" style="margin:0;width:100px;">';
             foreach ($config['editable_text_file_exts'] as $ext) {
                 echo '<option value=".'.$ext.'">.'.$ext.'</option>';
@@ -76,7 +63,7 @@ if (isset($_GET['action'])) {
             if (isset($_GET['type'])) {
                 session()->put('RF.view_type', $_GET['type']);
             } else {
-                RFM::response(RFM::fmTrans('view type number missing').RFM::addErrorLocation())->send();
+                RFM::response(__('view type number missing').RFM::addErrorLocation())->send();
                 exit;
             }
             break;
@@ -87,7 +74,7 @@ if (isset($_GET['action'])) {
                     session()->put('RF.filter', $_GET['type']);
                 }
             } else {
-                RFM::response(RFM::fmTrans('view type number missing').RFM::addErrorLocation())->send();
+                RFM::response(__('view type number missing').RFM::addErrorLocation())->send();
                 exit;
             }
             break;
@@ -112,24 +99,22 @@ if (isset($_GET['action'])) {
                 $image_data = base64_decode($image_data);
 
                 if ($image_data === false) {
-                    RFM::response(RFM::fmTrans('TUI_Decode_Failed').RFM::addErrorLocation())->send();
+                    RFM::response(__('TUI_Decode_Failed').RFM::addErrorLocation())->send();
                     exit;
                 }
             } else {
-                RFM::response(RFM::fmTrans('').RFM::addErrorLocation())->send();
+                RFM::response(__('').RFM::addErrorLocation())->send();
                 exit;
             }
 
             if ($image_data === false) {
-                RFM::response(RFM::fmTrans('').RFM::addErrorLocation())->send();
+                RFM::response(__('').RFM::addErrorLocation())->send();
                 exit;
             }
 
             if (!RFM::checkresultingsize(strlen($image_data))) {
-                RFM::response(sprintf(
-                    RFM::fmTrans('max_size_reached'),
-                    $config['MaxSizeTotal']
-                ).RFM::addErrorLocation())->send();
+                RFM::response(__('max_size_reached', ['size' => $config['MaxSizeTotal']]).
+                RFM::addErrorLocation())->send();
                 exit;
             }
             if ($ftp) {
@@ -175,7 +160,7 @@ if (isset($_GET['action'])) {
 
         case 'extract':
             if (!$config['extract_files']) {
-                RFM::response(RFM::fmTrans('wrong action').RFM::addErrorLocation())->send();
+                RFM::response(__('wrong action').RFM::addErrorLocation())->send();
             }
             if ($ftp) {
                 $path = $config['upload_dir'] . $_POST['path'];
@@ -212,10 +197,8 @@ if (isset($_GET['action'])) {
                             $sizeTotalFinal += $aStat['size'];
                         }
                         if (!RFM::checkresultingsize($sizeTotalFinal)) {
-                            RFM::response(sprintf(
-                                RFM::fmTrans('max_size_reached'),
-                                $config['MaxSizeTotal']
-                            ).RFM::addErrorLocation())->send();
+                            RFM::response(__('max_size_reached', ['size' => $config['MaxSizeTotal']]).
+                            RFM::addErrorLocation())->send();
                             exit;
                         }
 
@@ -239,7 +222,7 @@ if (isset($_GET['action'])) {
                         }
                         $zip->close();
                     } else {
-                        RFM::response(RFM::fmTrans('Zip_No_Extract').RFM::addErrorLocation())->send();
+                        RFM::response(__('Zip_No_Extract').RFM::addErrorLocation())->send();
                         exit;
                     }
 
@@ -262,7 +245,7 @@ if (isset($_GET['action'])) {
                     break;
 
                 default:
-                    RFM::response(RFM::fmTrans('Zip_Invalid').RFM::addErrorLocation())->send();
+                    RFM::response(__('Zip_Invalid').RFM::addErrorLocation())->send();
                     exit;
             }
 
@@ -293,7 +276,7 @@ if (isset($_GET['action'])) {
                     if (!FM_DEBUG_ERROR_MESSAGE) {
                         throw new NotFoundHttpException();
                     }
-                    RFM::response(RFM::fmTrans('FTP ftpDownloadFile error') . RFM::addErrorLocation(), 400)->send();
+                    RFM::response(__('FTP ftpDownloadFile error') . RFM::addErrorLocation(), 400)->send();
                     exit;
                 }
                 $info = pathinfo($preview_file);
@@ -409,26 +392,25 @@ if (isset($_GET['action'])) {
             break;
         case 'copy_cut':
             if ($_POST['sub_action'] != 'copy' && $_POST['sub_action'] != 'cut') {
-                RFM::response(RFM::fmTrans('wrong sub-action').RFM::addErrorLocation())->send();
+                RFM::response(__('wrong sub-action').RFM::addErrorLocation())->send();
                 exit;
             }
 
             if (trim($_POST['path']) == '') {
-                RFM::response(RFM::fmTrans('no path').RFM::addErrorLocation())->send();
+                RFM::response(__('no path').RFM::addErrorLocation())->send();
                 exit;
             }
 
-            $msg_sub_action = ($_POST['sub_action'] == 'copy' ? RFM::fmTrans('Copy') : RFM::fmTrans('Cut'));
+            $msg_sub_action = ($_POST['sub_action'] == 'copy' ? __('Copy') : __('Cut'));
             $path = $config['current_path'] . $_POST['path'];
 
             if (is_dir($path)) {
                 // can't copy/cut dirs
                 if ($config['copy_cut_dirs'] === false) {
-                    RFM::response(sprintf(
-                        RFM::fmTrans('Copy_Cut_Not_Allowed'),
-                        $msg_sub_action,
-                        RFM::fmTrans('Folders')
-                    ).RFM::addErrorLocation())->send();
+                    RFM::response(__('Copy_Cut_Not_Allowed', [
+                        'msg_sub_action' => $msg_sub_action,
+                        'folders' => __('Folders')
+                    ]).RFM::addErrorLocation())->send();
                     exit;
                 }
 
@@ -436,11 +418,10 @@ if (isset($_GET['action'])) {
                 // size over limit
                 if ($config['copy_cut_max_size'] !== false && is_int($config['copy_cut_max_size'])) {
                     if (($config['copy_cut_max_size'] * 1024 * 1024) < $sizeFolderToCopy) {
-                        RFM::response(sprintf(
-                            RFM::fmTrans('Copy_Cut_Size_Limit'),
-                            $msg_sub_action,
-                            $config['copy_cut_max_size']
-                        ).RFM::addErrorLocation())->send();
+                        RFM::response(__('Copy_Cut_Size_Limit', [
+                            'msg_sub_action' => $msg_sub_action,
+                            'copy_cut_max_size' => $config['copy_cut_max_size']
+                        ]).RFM::addErrorLocation())->send();
                         exit;
                     }
                 }
@@ -448,30 +429,27 @@ if (isset($_GET['action'])) {
                 // file count over limit
                 if ($config['copy_cut_max_count'] !== false && is_int($config['copy_cut_max_count'])) {
                     if ($config['copy_cut_max_count'] < $fileNum) {
-                        RFM::response(sprintf(
-                            RFM::fmTrans('Copy_Cut_Count_Limit'),
-                            $msg_sub_action,
-                            $config['copy_cut_max_count']
-                        ).RFM::addErrorLocation())->send();
+                        RFM::response(__('Copy_Cut_Count_Limit', [
+                            'msg_sub_action' => $msg_sub_action,
+                            'copy_cut_max_count' => $config['copy_cut_max_count']
+                        ]).RFM::addErrorLocation())->send();
                         exit;
                     }
                 }
 
                 if (!RFM::checkresultingsize($sizeFolderToCopy)) {
-                    RFM::response(sprintf(
-                        RFM::fmTrans('max_size_reached'),
-                        $config['MaxSizeTotal']
-                    ).RFM::addErrorLocation())->send();
+                    RFM::response(__('max_size_reached', [
+                        'MaxSizeTotal' => $config['MaxSizeTotal']
+                    ]).RFM::addErrorLocation())->send();
                     exit;
                 }
             } else {
                 // can't copy/cut files
                 if ($config['copy_cut_files'] === false) {
-                    RFM::response(sprintf(
-                        RFM::fmTrans('Copy_Cut_Not_Allowed'),
-                        $msg_sub_action,
-                        RFM::fmTrans('Files')
-                    ).RFM::addErrorLocation())->send();
+                    RFM::response(__('Copy_Cut_Not_Allowed', [
+                        'msg_sub_action' => $msg_sub_action,
+                        'folders' => __('Files')
+                    ]).RFM::addErrorLocation())->send();
                     exit;
                 }
             }
@@ -489,11 +467,9 @@ if (isset($_GET['action'])) {
                 if (($_POST['folder']==1 && $config['chmod_dirs'] === false)
                     || ($_POST['folder']==0 && $config['chmod_files'] === false)
                     || (RFM::isFunctionCallable(("chmod") === false))) {
-                    RFM::response(sprintf(
-                        RFM::fmTrans('File_Permission_Not_Allowed'),
-                        (is_dir($path) ? RFM::fmTrans('Folders') : RFM::fmTrans('Files')),
-                        403
-                    ).RFM::addErrorLocation())->send();
+                    RFM::response(__('File_Permission_Not_Allowed', [
+                        'folder' => (is_dir($path) ? __('Folders') : __('Files'))
+                    ]).RFM::addErrorLocation(), 403)->send();
                     exit;
                 }
                 $info = $_POST['permissions'];
@@ -502,11 +478,9 @@ if (isset($_GET['action'])) {
                 if ((is_dir($path) && $config['chmod_dirs'] === false)
                     || (is_file($path) && $config['chmod_files'] === false)
                     || (RFM::isFunctionCallable(("chmod") === false))) {
-                    RFM::response(sprintf(
-                        RFM::fmTrans('File_Permission_Not_Allowed'),
-                        (is_dir($path) ? RFM::fmTrans('Folders') : RFM::fmTrans('Files')),
-                        403
-                    ).RFM::addErrorLocation())->send();
+                    RFM::response(__('File_Permission_Not_Allowed', [
+                        'folder' => (is_dir($path) ? __('Folders') : __('Files'))
+                    ]).RFM::addErrorLocation(), 403)->send();
                     exit;
                 }
 
@@ -550,19 +524,19 @@ if (isset($_GET['action'])) {
                     </thead>
                     <tbody>
                         <tr>
-                            <td>'.RFM::fmTrans('User').'</td>
+                            <td>'.__('User').'</td>
                             <td><input id="u_4" type="checkbox" data-value="4" data-group="user" '.(substr($info, 1, 1)=='r' ? " checked" : "").'></td>
                             <td><input id="u_2" type="checkbox" data-value="2" data-group="user" '.(substr($info, 2, 1)=='w' ? " checked" : "").'></td>
                             <td><input id="u_1" type="checkbox" data-value="1" data-group="user" '.(substr($info, 3, 1)=='x' ? " checked" : "").'></td>
                         </tr>
                         <tr>
-                            <td>'.RFM::fmTrans('Group').'</td>
+                            <td>'.__('Group').'</td>
                             <td><input id="g_4" type="checkbox" data-value="4" data-group="group" '.(substr($info, 4, 1)=='r' ? " checked" : "").'></td>
                             <td><input id="g_2" type="checkbox" data-value="2" data-group="group" '.(substr($info, 5, 1)=='w' ? " checked" : "").'></td>
                             <td><input id="g_1" type="checkbox" data-value="1" data-group="group" '.(substr($info, 6, 1)=='x' ? " checked" : "").'></td>
                         </tr>
                         <tr>
-                            <td>'.RFM::fmTrans('All').'</td>
+                            <td>'.__('All').'</td>
                             <td><input id="a_4" type="checkbox" data-value="4" data-group="all" '.(substr($info, 7, 1)=='r' ? " checked" : "").'></td>
                             <td><input id="a_2" type="checkbox" data-value="2" data-group="all" '.(substr($info, 8, 1)=='w' ? " checked" : "").'></td>
                             <td><input id="a_1" type="checkbox" data-value="1" data-group="all" '.(substr($info, 9, 1)=='x' ? " checked" : "").'></td>
@@ -575,13 +549,13 @@ if (isset($_GET['action'])) {
                 </table>';
 
             if ((!$ftp && is_dir($path))) {
-                $ret .= '<div class="hero-unit" style="padding:10px;">'.RFM::fmTrans('File_Permission_Recursive').'<br/><br/>
+                $ret .= '<div class="hero-unit" style="padding:10px;">'.__('File_Permission_Recursive').'<br/><br/>
                         <ul class="unstyled">
-                            <li><label class="radio"><input value="none" name="apply_recursive" type="radio" checked> '.RFM::fmTrans('No').'</label></li>
-                            <li><label class="radio"><input value="files" name="apply_recursive" type="radio"> '.RFM::fmTrans('Files').'</label></li>
-                            <li><label class="radio"><input value="folders" name="apply_recursive" type="radio"> '.RFM::fmTrans('Folders').'</label></li>
-                            <li><label class="radio"><input value="both" name="apply_recursive" type="radio"> '.RFM::fmTrans('Files').' & '.
-                            RFM::fmTrans('Folders').'</label></li>
+                            <li><label class="radio"><input value="none" name="apply_recursive" type="radio" checked> '.__('No').'</label></li>
+                            <li><label class="radio"><input value="files" name="apply_recursive" type="radio"> '.__('Files').'</label></li>
+                            <li><label class="radio"><input value="folders" name="apply_recursive" type="radio"> '.__('Folders').'</label></li>
+                            <li><label class="radio"><input value="both" name="apply_recursive" type="radio"> '.__('Files').' & '.
+                            __('Folders').'</label></li>
                         </ul>
                         </div>';
             }
@@ -594,13 +568,13 @@ if (isset($_GET['action'])) {
             break;
         case 'get_lang':
             if (! file_exists(__DIR__.'/../I18N/languages.php')) {
-                RFM::response(RFM::fmTrans('Lang_Not_Found').RFM::addErrorLocation())->send();
+                RFM::response(__('Lang_Not_Found').RFM::addErrorLocation())->send();
                 exit;
             }
 
             $languages = include __DIR__.'/../I18N/languages.php';
             if (! isset($languages) || ! is_array($languages)) {
-                RFM::response(RFM::fmTrans('Lang_Not_Found').RFM::addErrorLocation())->send();
+                RFM::response(__('Lang_Not_Found').RFM::addErrorLocation())->send();
                 exit;
             }
 
@@ -618,16 +592,7 @@ if (isset($_GET['action'])) {
 
             break;
         case 'change_lang':
-            $choosen_lang = (!empty($_POST['choosen_lang']))? $_POST['choosen_lang']:"en_EN";
-
-            if (array_key_exists($choosen_lang, $languages)) {
-                if (! file_exists(__DIR__.'/../I18N/' . $choosen_lang . '.php')) {
-                    RFM::response(RFM::fmTrans('Lang_Not_Found').RFM::addErrorLocation())->send();
-                    exit;
-                } else {
-                    session()->put('RF.language', $choosen_lang);
-                }
-            }
+            session()->put('RF.language', request()->post('choosen_lang'));
 
             break;
         case 'cad_preview':
@@ -637,7 +602,7 @@ if (isset($_GET['action'])) {
                 $selected_file = $config['current_path'] . $_GET['file'];
 
                 if (! file_exists($selected_file)) {
-                    RFM::response(RFM::fmTrans('File_Not_Found').RFM::addErrorLocation())->send();
+                    RFM::response(__('File_Not_Found').RFM::addErrorLocation())->send();
                     exit;
                 }
             }
@@ -659,7 +624,7 @@ if (isset($_GET['action'])) {
             $preview_mode = $_GET["preview_mode"];
 
             if ($sub_action != 'preview' && $sub_action != 'edit') {
-                RFM::response(RFM::fmTrans('wrong action').RFM::addErrorLocation())->send();
+                RFM::response(__('wrong action').RFM::addErrorLocation())->send();
                 exit;
             }
 
@@ -677,7 +642,7 @@ if (isset($_GET['action'])) {
                 );
 
                 if (! file_exists($selected_file)) {
-                    RFM::response(RFM::fmTrans('File_Not_Found').RFM::addErrorLocation())->send();
+                    RFM::response(__('File_Not_Found').RFM::addErrorLocation())->send();
                     exit;
                 }
             }
@@ -708,14 +673,11 @@ if (isset($_GET['action'])) {
                 || $is_allowed === false
                 || (!$ftp && ! is_readable($selected_file))
             ) {
-                RFM::response(sprintf(
-                    RFM::fmTrans('File_Open_Edit_Not_Allowed'),
-                    (
-                        $sub_action == 'preview' ?
-                        strtolower(RFM::fmTrans('Open')) :
-                        strtolower(RFM::fmTrans('Edit'))
-                    )
-                ).RFM::addErrorLocation())->send();
+                RFM::response(__('File_Open_Edit_Not_Allowed', (
+                    $sub_action == 'preview' ?
+                    strtolower(__('Open')) :
+                    strtolower(__('Edit'))
+                )).RFM::addErrorLocation())->send();
                 exit;
             }
             if ($ftp) {
@@ -729,7 +691,7 @@ if (isset($_GET['action'])) {
                     if (!FM_DEBUG_ERROR_MESSAGE) {
                         throw new NotFoundHttpException();
                     }
-                    RFM::response(RFM::fmTrans('FTP ftpDownloadFile error') . RFM::addErrorLocation(), 400)->send();
+                    RFM::response(__('FTP ftpDownloadFile error') . RFM::addErrorLocation(), 400)->send();
                     exit;
                 }
                 $selected_file = $preview_file;
@@ -777,10 +739,10 @@ if (isset($_GET['action'])) {
 
             break;
         default:
-            RFM::response(RFM::fmTrans('no action passed').RFM::addErrorLocation())->send();
+            RFM::response(__('no action passed').RFM::addErrorLocation())->send();
             exit;
     }
 } else {
-    RFM::response(RFM::fmTrans('no action passed').RFM::addErrorLocation())->send();
+    RFM::response(__('no action passed').RFM::addErrorLocation())->send();
     exit;
 }
