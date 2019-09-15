@@ -116,6 +116,8 @@ __**Replace #MYTEXTAREAJS with your textarea input**__
 
 - **For TinyMCE**
 
+with tinymce parameters
+
     $(document).ready(() => {
         $('textarea').first().tinymce({
             script_url : '/tinymce/tinymce.min.js',
