@@ -128,6 +128,7 @@
     "Zip_No_Extract": "Extraction impossible. Le fichier est peut-être corrompu.",
     "forbidden": "Interdit",
     "ftp_cant_chmod": "Impossible de changer les droits de fichier de façon Unix (chmod) sur un serveur FTP Windows",
+    "ftp_failure": "Something gone wrong with ftp server",
     "max_size_reached": "Votre répertoire d'image a déjà atteind sa taille maximale de :size mo.",
     "no action passed": "Aucune action demandée",
     "no file": "Fichier manquant",

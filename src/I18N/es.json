@@ -128,6 +128,7 @@
     "Zip_No_Extract": "No fue posible extraer los archivos. Es posible que el archivo esté corrupto.",
     "forbidden": "Prohibido",
     "ftp_cant_chmod": "Can't chmod on a non Unix FTP server",
+    "ftp_failure": "Something gone wrong with ftp server",
     "max_size_reached": "La carpeta de imágenes ha excedido el tamaño máximo de :size MB.",
     "no action passed": "No se ha recibido una acción",
     "no file": "Sin archivo",

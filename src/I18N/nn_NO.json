@@ -128,6 +128,7 @@
     "Zip_No_Extract": "Kunne ikkje pakke ut. Fila kan vere skada.",
     "forbidden": "Ikkje lov",
     "ftp_cant_chmod": "Can't chmod on a non Unix FTP server",
+    "ftp_failure": "Something gone wrong with ftp server",
     "max_size_reached": "Biletmappa di har nådd sin maksimale storleik :size MB.",
     "no action passed": "Inga handling sendt",
     "no file": "Inga fil",

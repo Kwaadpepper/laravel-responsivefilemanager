@@ -14,6 +14,8 @@
  * Mountain View, California, 94041, USA.
  */
 
+use Illuminate\Routing\Matching\UriValidator;
+use Illuminate\Support\Facades\Request;
 use Kwaadpepper\ResponsiveFileManager\RFM;
 
 $config = config('rfm');
@@ -33,8 +35,24 @@ if (!RFM::checkRelativePath($_POST['path'])) {
 
 $ftp = RFM::ftpCon($config);
 
-$base = $config['current_path'];
-$path = $base . $_POST['path'];
+$base = config('rfm.current_path');
+
+$path = $base . request()->post('path');
+
+if ($ftp) {
+    if (!request()->post('path')) {
+        if (!FM_DEBUG_ERROR_MESSAGE) {
+            throw new NotFoundHttpException();
+        }
+        RFM::response(__('no path post param') . RFM::addErrorLocation(), 400)->send();
+        exit;
+    }
+
+    $info = RFM::decrypt(Request::create(request()->post('path'))->get('ox'));
+    $name = request()->post('name');
+    $path = $info['path'];
+    $path_thumb = str_replace($config['current_path'], $config['thumbs_base_path'], $path);
+}
 
 $returnPaths = function ($_path, $_name, $config) use ($ftp) {
     $path = $config['current_path'] . $_path;
@@ -70,7 +88,7 @@ if (isset($_POST['paths'])) {
         $paths_thumb[] = $path_thumb;
         $names = $name;
     }
-} else {
+} elseif (!$ftp) {
     $name = null;
     if (isset($_POST['name'])) {
         $name = $_POST['name'];
@@ -79,8 +97,11 @@ if (isset($_POST['paths'])) {
 }
 
 $info = pathinfo($path);
-if (isset($info['extension']) && !(isset($_GET['action']) && $_GET['action'] == 'delete_folder') &&
-    !RFM::checkExtension($info['extension'], $config)
+if (isset($info['extension']) && !(isset($_GET['action']) &&
+        ($_GET['action'] == 'create_folder') ||
+        ($_GET['action'] == 'delete_folder') ||
+        ($_GET['action'] == 'rename_folder')
+    ) && !RFM::checkExtension($info['extension'], $config)
     && $_GET['action'] != 'create_file') {
     RFM::response(__('wrong extension') . RFM::addErrorLocation())->send();
     exit;
@@ -251,20 +272,25 @@ if (isset($_GET['action'])) {
             break;
 
         case 'rename_file':
-            if ($config['rename_files']) {
-                $name = RFM::fixGetParams($name, $config);
+            if (config('rfm.rename_files')) {
+                $name = RFM::fixGetParams($name, config('rfm'));
                 if (!empty($name)) {
-                    if (!RFM::renameFile($path, $name, $ftp, $config)) {
+                    // Rename File
+                    if (!RFM::renameFile($path, $name, $ftp, config('rfm'))) {
                         RFM::response(__('Rename_existing_file') . RFM::addErrorLocation())->send();
                         exit;
                     }
 
-                    RFM::renameFile($path_thumb, $name, $ftp, $config);
+                    $fileExt = substr(strrchr(basename($path), '.'), 1);
+                    //Rename file thumb if is image
+                    if (preg_match('/(gif|jpe?g|png)$/i', $fileExt)) {
+                        RFM::renameFile($path_thumb, $name, $ftp, config('rfm'));
+                    }
 
-                    if ($config['fixed_image_creation']) {
+                    if (config('rfm.fixed_image_creation')) {
                         $info = pathinfo($path);
 
-                        foreach ($config['fixed_path_from_filemanager'] as $k => $paths) {
+                        foreach (config('rfm.fixed_path_from_filemanager') as $k => $paths) {
                             if ($paths != "" && $paths[strlen($paths) - 1] != "/") {
                                 $paths .= "/";
                             }
@@ -273,20 +299,21 @@ if (isset($_GET['action'])) {
                                 $info['dirname'] . "/",
                                 '',
                                 0,
-                                strlen($config['current_path'])
+                                strlen(config('rfm.current_path'))
                             );
                             if (file_exists(
-                                $base_dir . $config['fixed_image_creation_name_to_prepend'][$k] .
-                                $info['filename'] . $config['fixed_image_creation_to_append'][$k] .
+                                $base_dir . config('rfm.fixed_image_creation_name_to_prepend.'.$k) .
+                                $info['filename'] . config('rfm.fixed_image_creation_to_append.'.$k) .
                                 "." . $info['extension']
                             )) {
                                 RFM::renameFile(
-                                    $base_dir . $config['fixed_image_creation_name_to_prepend'][$k] . $info['filename'].
-                                    $config['fixed_image_creation_to_append'][$k] . "." . $info['extension'],
-                                    $config['fixed_image_creation_name_to_prepend'][$k] . $name .
-                                    $config['fixed_image_creation_to_append'][$k],
+                                    $base_dir . config('rfm.fixed_image_creation_name_to_prepend.'.$k) .
+                                    $info['filename']. config('rfm.fixed_image_creation_to_append.'.$k) .
+                                    "." . $info['extension'],
+                                    config('rfm.fixed_image_creation_name_to_prepend.'.$k) . $name .
+                                    config('rfm.fixed_image_creation_to_append.'.$k),
                                     $ftp,
-                                    $config
+                                    config('rfm')
                                 );
                             }
                         }

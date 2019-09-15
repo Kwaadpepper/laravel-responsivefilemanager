@@ -24,6 +24,8 @@ use \Illuminate\Http\Response;
 use Kwaadpepper\ResponsiveFileManager\ImageLib;
 use Kwaadpepper\FtpClient\FtpClient;
 use Kwaadpepper\FtpClient\FtpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use \Illuminate\Contracts\Encryption\DecryptException;
 
 /**
  * @author Alberto Peripolli https://responsivefilemanager.com/#contact-section
@@ -107,7 +109,7 @@ class RFM
     public static function ftpIsDir($ftp, $path)
     {
         try {
-            return $ftp->chdir($path);
+            return $ftp->chdir("/".RFM::cleanPath(config('rfm.ftp_base_folder').$path));
         } catch (\Throwable $th) {
             return false;
         }
@@ -357,9 +359,16 @@ class RFM
         $new_path = $info['dirname'] . "/" . $name . "." . $info['extension'];
         if ($ftp) {
             try {
-                return $ftp->rename("/".$old_path, "/".$new_path);
+                return $ftp->rename(
+                    "/".RFM::cleanPath(config('rfm.ftp_base_folder').$old_path),
+                    "/".RFM::cleanPath(config('rfm.ftp_base_folder').$new_path)
+                );
             } catch (\Exception $e) {
-                return false;
+                if (!FM_DEBUG_ERROR_MESSAGE) {
+                    return false;
+                }
+                self::response(__('ftp_failure') . self::addErrorLocation(). ' ' . dump($e), 400)->send();
+                exit;
             }
         } else {
             if (file_exists($old_path) && is_file($old_path)) {
@@ -388,11 +397,22 @@ class RFM
         $name = self::fixFilename($name, $config, true);
         $new_path = self::fixDirname($old_path) . "/" . $name;
         if ($ftp) {
-            if ($ftp->chdir("/".$old_path)) {
-                if (@$ftp->chdir($new_path)) {
+            if ($ftp->chdir("/".RFM::cleanPath(config('rfm.ftp_base_folder').$old_path))) {
+                if (@$ftp->chdir("/".RFM::cleanPath(config('rfm.ftp_base_folder').$new_path))) {
                     return false;
                 }
-                return $ftp->rename("/".$old_path, "/".$new_path);
+                try {
+                    return $ftp->rename(
+                        "/".RFM::cleanPath(config('rfm.ftp_base_folder').$old_path),
+                        "/".RFM::cleanPath(config('rfm.ftp_base_folder').$new_path)
+                    );
+                } catch (\Exception $e) {
+                    if (!FM_DEBUG_ERROR_MESSAGE) {
+                        return false;
+                    }
+                    self::response(__('ftp_failure') . self::addErrorLocation(). ' ' . dump($e), 400)->send();
+                    exit;
+                }
             }
         } else {
             if (file_exists($old_path) && is_dir($old_path) && !self::isUploadDir($old_path, $config)) {
@@ -1268,5 +1288,161 @@ class RFM
             }
             return false;
         })) ?? $preferredLang;
+    }
+
+    /**
+     * With encrypted parameters like
+     * ['path' => 'testar/', 'name' => 'Git to Follow.png' ]
+     * Which is FTP file path and name
+     * returns the downloaded local file
+     *
+     * @param string $oX
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public static function getLocalFileFromEncrypted(string $oX) : string
+    {
+        /**
+         * Public FTP file viewer
+         *
+         * Here security is priority
+         * FTP server request must be secured here to prevent
+         * anyone exploring freely the FTP server
+         * To prevent exposing FTP path on request,
+         * like Oooh look its a HTTP way to explore FTP server,
+         * path should be encrypted using Laravel API
+         *
+         * Encryption will work as Always work Token !
+         * preventing someone altering the request
+         * or generating one.
+         *
+         * ox parameter will be a PHP Object
+         * like following :
+         *
+         *  ['path' => 'testar/', 'name' => 'Git to Follow.png' ]
+         */
+
+        $param = self::decrypt($oX);
+        
+        if (strpos($param['path'], '/') === 0) {
+            $param['path'] = substr($param['path'], 1);
+        }
+        
+        if (!self::checkRelativePath($param['path'])) {
+            if (!FM_DEBUG_ERROR_MESSAGE) {
+                throw new NotFoundHttpException();
+            }
+            self::response(__('path is wrong') . self::addErrorLocation(), 400)->send();
+            exit;
+        }
+        
+        if (strpos($param['name'], '/') !== false) {
+            if (!FM_DEBUG_ERROR_MESSAGE) {
+                throw new NotFoundHttpException();
+            }
+            self::response(__('name includes a forbidden \'/\' char') . self::addErrorLocation(), 400)->send();
+            exit;
+        }
+        
+        if (!($ftp = self::ftpCon(config('rfm')))) {
+            if (!FM_DEBUG_ERROR_MESSAGE) {
+                throw new NotFoundHttpException();
+            }
+            self::response(__('FTP is not configured') . self::addErrorLocation(), 400)->send();
+            exit;
+        }
+
+        $name = $param['name'];
+        $info = pathinfo($param['path']);
+
+        if (!self::checkExtension($info['extension'], config('rfm'))) {
+            if (!FM_DEBUG_ERROR_MESSAGE) {
+                throw new NotFoundHttpException();
+            }
+            self::response(__('wrong extension') . self::addErrorLocation(), 400)->send();
+            exit;
+        }
+
+        $file_path = config('rfm.ftp_base_folder') . '/' . $param['path'];
+
+        $local_file_path_to_download = "";
+        // make sure the file exists
+        if (!self::ftpDownloadFile($ftp, $file_path, $name, $local_file_path_to_download)) {
+            if (!FM_DEBUG_ERROR_MESSAGE) {
+                throw new NotFoundHttpException();
+            }
+            self::response(
+                __('failed to fetch ftp file '.$name.' in '.$file_path).self::addErrorLocation(),
+                400
+            )->send();
+            exit;
+        }
+
+        return $local_file_path_to_download;
+    }
+
+    /**
+     * Laravel Decrypt String
+     * or throw 404 HTTP
+     *
+     * @param string $encryptedText
+     * @return mixed String or Array
+     * @throws NotFoundHttpException
+     */
+    public static function decrypt(string $encryptedText)
+    {
+        try {
+            return decrypt($encryptedText);
+        } catch (DecryptException $e) {
+            if (!FM_DEBUG_ERROR_MESSAGE) {
+                throw new NotFoundHttpException();
+            }
+            self::response(__('decryption_failed') . self::addErrorLocation(), 400)->send();
+            exit;
+        }
+    }
+
+    public static function cleanPath($A_path = "", $A_echo = false)
+    {
+        // IF YOU WANT TO LEAN CODE, KILL ALL "if" LINES and $A_echo in ARGS
+        $_p = func_get_args();
+        // HOW IT WORKS:
+        // REMOVING EMPTY ELEMENTS AT THE END ALLOWS FOR "BUFFERS" AND HANDELLING START & END SPEC. SEQUENCES
+        // BLANK ELEMENTS AT START & END MAKE SURE WE COVER SPECIALS AT BEGIN & END
+        // REPLACING ":" AGAINST "://" MAKES AN EMPTY ELEMENT TO ALLOW FOR CORRECT x:/../<path> USE (which, in principle is faulty)
+
+        // 1.) "normalize" TO "slashed" AND MAKE SOME SPECIALS, ALSO DUMMY ELEMENTS AT BEGIN & END
+        $_s = array( "\\", ":", ":./", ":../");
+        $_r = array( "/", "://", ":/", ":/" );
+        $_p['sr'] = "/" . str_replace($_s, $_r, $_p[0]) . "/";
+        $_p['arr'] = explode('/', $_p['sr']);
+        if ($A_echo) {
+            $_p['arr1'] = $_p['arr'];
+        }
+        // 2.) GET KEYS OF ".." ELEMENTS, REMOVE THEM AND THE ONE BEFORE (!) AS THAT MEANS "UP" AND THAT DISABLES STEP BEFORE
+        $_p['pp'] = array_keys($_p['arr'], '..');
+        foreach ($_p['pp'] as $_pos) {
+            $_p['arr'][ $_pos-1 ] = $_p['arr'][ $_pos ] ="";
+        }
+        if ($A_echo) {
+            $_p['arr2'] = $_p['arr'];
+        }
+        // 3.) REMOVE ALL "/./" PARTS AS THEY ARE SIMPLY OVERFLUENT
+        $_p['p'] = array_keys($_p['arr'], '.');
+        foreach ($_p['p'] as $_pos) {
+            unset($_p['arr'][ $_pos ]);
+        }
+        if ($A_echo) {
+            $_p['arr3'] = $_p['arr'];
+        }
+        // 4.) CLEAN OUT EMPTY ONES INCLUDING OUR DUMMIES
+        $_p['arr'] = array_filter($_p['arr']);
+        // 5) MAKE FINAL STRING
+        $_p['clean'] = implode(DIRECTORY_SEPARATOR, $_p['arr']);
+        if ($A_echo) {
+            echo "arr==";
+            print_r($_p);
+        };
+        return $_p['clean'];
     }
 }

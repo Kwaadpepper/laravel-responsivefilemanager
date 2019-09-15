@@ -54,9 +54,9 @@ if (!defined('FM_DEBUG_ERROR_MESSAGE')) {
 // CHANGE HERE FILES AND THUMBS PATH
 // path from public folder !!Accessible to All!!
 $upload_dir = 'uploads/files/';
-$thumbs_upload_dir = 'uploads/files/';
+$thumbs_upload_dir = 'thumbs/';
 $current_path = 'uploads/files/';
-$thumbs_base_path = 'uploads/thumbs/';
+$thumbs_base_path = 'thumbs/';
 
 $config = array(
 

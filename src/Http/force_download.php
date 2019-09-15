@@ -17,8 +17,6 @@
 use Kwaadpepper\ResponsiveFileManager\RFM;
 use Kwaadpepper\ResponsiveFileManager\RFMMimeTypesLib;
 
-$config = config('rfm');
-
 /**
  * Check RF session
  */
@@ -27,28 +25,28 @@ if (!session()->exists('RF') || session('RF.verify') != "RESPONSIVEfilemanager")
     exit;
 }
 
-if (!RFM::checkRelativePath($_POST['path']) || strpos($_POST['path'], '/') === 0) {
+if (!RFM::checkRelativePath(request()->post('path')) || strpos(request()->post('path'), '/') === 0) {
     RFM::response(__('wrong path') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
-if (strpos($_POST['name'], '/') !== false) {
+if (strpos(request()->post('name'), '/') !== false) {
     RFM::response(__('wrong path') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
 
-$ftp = RFM::ftpCon($config);
+$ftp = RFM::ftpCon(config('rfm'));
 
 if ($ftp) {
-    $path = $config['ftp_base_folder'] .  $config['upload_dir'] . $_POST['path'];
+    $path = config('rfm.ftp_base_folder') .  config('rfm.upload_dir') . request()->post('path');
 } else {
-    $path = $config['current_path'] . $_POST['path'];
+    $path = config('rfm.current_path') . request()->post('path');
 }
 
-$name = $_POST['name'];
+$name = request()->post('name');
 $info = pathinfo($name);
 
-if (!RFM::checkExtension($info['extension'], $config)) {
+if (!RFM::checkExtension($info['extension'], config('rfm'))) {
     RFM::response(__('wrong extension') . RFM::addErrorLocation(), 400)->send();
     exit;
 }
@@ -80,14 +78,7 @@ if ($ftp && RFM::ftpDownloadFile($ftp, $file_path, $file_name.'.'.$file_ext, $lo
     $file_name = rawurldecode($file_name);
 
 
-    if (function_exists('mime_content_type')) {
-        $mime_type = mime_content_type($file_path);
-    } elseif (function_exists('finfo_open')) {
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime_type = finfo_file($finfo, $file_path);
-    } else {
-        $mime_type = RFMMimeTypesLib::getFileMimeType($file_path);
-    }
+    $mime_type = RFMMimeTypesLib::getFileMimeType($file_path);
 
 
     @ob_end_clean();
@@ -99,8 +90,8 @@ if ($ftp && RFM::ftpDownloadFile($ftp, $file_path, $file_name.'.'.$file_ext, $lo
     header("Content-Transfer-Encoding: binary");
     header('Accept-Ranges: bytes');
 
-    if (isset($_SERVER['HTTP_RANGE'])) {
-        list($a, $range) = explode("=", $_SERVER['HTTP_RANGE'], 2);
+    if (request()->header('HTTP_RANGE')) {
+        list($a, $range) = explode("=", request()->header('HTTP_RANGE'), 2);
         list($range) = explode(",", $range, 2);
         list($range, $range_end) = explode("-", $range);
         $range = intval($range);
@@ -123,7 +114,7 @@ if ($ftp && RFM::ftpDownloadFile($ftp, $file_path, $file_name.'.'.$file_ext, $lo
     $bytes_send = 0;
 
     if ($file = fopen($file_path, 'r')) {
-        if (isset($_SERVER['HTTP_RANGE'])) {
+        if (request()->header('HTTP_RANGE')) {
             fseek($file, $range);
         }
 
