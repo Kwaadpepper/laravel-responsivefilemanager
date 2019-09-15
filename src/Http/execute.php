@@ -48,9 +48,10 @@ if ($ftp) {
         exit;
     }
 
-    $info = request()->post('path') ? RFM::decrypt(Request::create(request()->post('path'))->get('ox')) : [
-        'path' => $config['current_path']
-    ];
+    $info = request()->get('action') !== 'create_folder' ?
+            RFM::decrypt(Request::create(request()->post('path'))->get('ox')) : [
+                'path' => $config['current_path'].request()->post('path', '')
+            ];
     $name = request()->post('name');
     $path = $info['path'];
     $path_thumb = str_replace($config['current_path'], $config['thumbs_base_path'], $path);
