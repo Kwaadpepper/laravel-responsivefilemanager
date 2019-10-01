@@ -65,6 +65,11 @@ $config = array(
      */
     'version' => $version,
 
+    /**
+     * Laravel route prefix
+     */
+    'laravel_route_prefix' => '/filemanager',
+
     /*
     |--------------------------------------------------------------------------
     | DON'T TOUCH (base url (only domain) of site).

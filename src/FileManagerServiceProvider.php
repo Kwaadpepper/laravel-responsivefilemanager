@@ -39,18 +39,19 @@ class FileManagerServiceProvider extends ServiceProvider
     {
 
         // Add package routes.
-        $this->loadRoutesFrom(__DIR__ . '/../Http/routes.php');
-        $this->loadJsonTranslationsFrom(__DIR__.'/../I18N');
+        $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
+        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
+        $this->loadViewsFrom(__DIR__ . '/resources/views/', 'rfm');
 
         /**
          * Publish all static ressources
          */
-        $FMPRIVPATH = "/../../resources/filemanager/";
+        $FMPRIVPATH = "/../resources/filemanager/";
         $FMPUBPATH = "vendor/responsivefilemanager/";
 
         $FM_PUBLISH = [];
-
-        $FM_PUBLISH[__DIR__ . $FMPRIVPATH . 'config/config.php'] = config_path('rfm.php');//phpcs:ignore
+        $FM_PUBLISH[__DIR__ . '/../config/config.php'] = config_path('rfm.php');//phpcs:ignore
+        $FM_PUBLISH[__DIR__ . '/../resources/views/'] = resource_path('views/vendor/rfm');//phpcs:ignore
 
         $FM_SCRIPT = [
             'plugin.min.js'
@@ -72,7 +73,11 @@ class FileManagerServiceProvider extends ServiceProvider
             'jquery.fileupload-ui.js', 'plugins.js',
             'jquery.fileupload-image.js', 'jquery.fileupload-validate.js',
             'vendor/jquery.ui.widget.js', 'jquery.fileupload-jquery-ui.js',
-            'jquery.fileupload-video.js'
+            'jquery.fileupload-video.js',
+            '../../dist/js/chunk-vendors.js',
+            '../../dist/js/chunk-vendors.js.map',
+            '../../dist/js/index.js',
+            '../../dist/js/index.js.map'
         ];
 
 
@@ -138,14 +143,27 @@ class FileManagerServiceProvider extends ServiceProvider
             }
         }
 
-        $FM_PUBLISH[__DIR__ . $FMPRIVPATH . 'config/config.php'] = config_path('rfm.php');//phpcs:ignore
         $FM_PUBLISH[__DIR__ . $FMPRIVPATH . '/plugin.min.js'] = public_path($FMPUBPATH . '/plugin.min.js');//phpcs:ignore
         $FM_PUBLISH[__DIR__ . $FMPRIVPATH . '/css'] = public_path($FMPUBPATH . '/css');//phpcs:ignore
         $FM_PUBLISH[__DIR__ . $FMPRIVPATH . '/img'] = public_path($FMPUBPATH . '/img');//phpcs:ignore
         $FM_PUBLISH[__DIR__ . $FMPRIVPATH . '/js'] = public_path($FMPUBPATH . '/js');//phpcs:ignore
+        $FM_PUBLISH[__DIR__ . '/../dist/js'] = public_path($FMPUBPATH . '/js');//phpcs:ignore
         $FM_PUBLISH[__DIR__ . $FMPRIVPATH . '/svg'] = public_path($FMPUBPATH . '/svg');//phpcs:ignore
-        $FM_PUBLISH[__DIR__.'/../I18N'] = resource_path('lang/vendor/rfm');
+        $FM_PUBLISH[__DIR__.'/../resources/lang'] = resource_path('lang/vendor/rfm');
         $this->publishes($FM_PUBLISH);
+
+        $this->app['router']->middlewareGroup(
+            'rfmxss',
+            [Middleware\XssMiddleware::class]
+        );
+        $this->app['router']->middlewareGroup(
+            'rfmsession',
+            [Middleware\SessionMiddleware::class]
+        );
+        $this->app['router']->middlewareGroup(
+            'rfmkey',
+            [Middleware\KeyMiddleware::class]
+        );
 
         /**
          * Blade print
@@ -168,16 +186,16 @@ class FileManagerServiceProvider extends ServiceProvider
 
         Blade::directive(
             'filemanager_get_resource',
-            function ($file) use ($FMVENDOR) {
-                $r = parse_url(route('FM' . $file), PHP_URL_PATH);
+            function ($name) use ($FMVENDOR) {
+                $r = parse_url(route('RFM' . $name), PHP_URL_PATH);
                 if ($r) {
                     return $r;
                 }
-                if (isset($FMVENDOR[$file])) {
-                    return $FMVENDOR[$file];
+                if (isset($FMVENDOR[$name])) {
+                    return $FMVENDOR[$name];
                 }
                 if (config('app.debug')) {
-                    throw new \Exception('unkow file ' . $file . ' in Reponsive File Manager');//phpcs:ignore
+                    throw new \Exception('unkow file or route' . $name . ' in Reponsive File Manager');//phpcs:ignore
                 }
             }
         );
@@ -202,5 +220,10 @@ class FileManagerServiceProvider extends ServiceProvider
     public function register()
     {
         $this->commands($this->commands);
+        $this->app->singleton(RFM::class, function () {
+            return new RFM();
+        });
+
+        $this->app->alias(RFM::class, 'rfm-utils');
     }
 }

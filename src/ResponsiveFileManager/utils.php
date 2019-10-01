@@ -83,26 +83,23 @@ class RFM
         }
     }
 
-    public static function ftpCon($config)
+    /**
+     * Reecriture
+     * @author Jérémy Munsch <kwaadpepper@users.noreply.github.com>
+     * @param [type] $config
+     * @return void
+     * @throws RFMException
+     */
+    public static function ftpCon()
     {
-        if (isset($config['ftp_host']) && $config['ftp_host']) {
+        try {
             $ftp = new FtpClient();
-            try {
-                $ftp->connect($config['ftp_host'], $config['ftp_ssl'], $config['ftp_port']);
-                $ftp->login($config['ftp_user'], $config['ftp_pass']);
-                $ftp->pasv(true);
-                return $ftp;
-            } catch (FtpException $e) {
-                echo "Error: ";
-                echo $e->getMessage();
-                echo " to server ";
-                $tmp = $e->getTrace();
-                echo $tmp[0]['args'][0];
-                echo "<br/>Please check configurations";
-                die();
-            }
-        } else {
-            return false;
+            $ftp->connect(config('rfm.ftp_host'), config('rfm.ftp_ssl'), config('rfm.ftp_port'));
+            $ftp->login(config('rfm.ftp_user'), config('rfm.ftp_pass'));
+            $ftp->pasv(true);
+            return $ftp;
+        } catch (FtpException $e) {
+            throw new RFMException('Failed to connect to FTP : '.$e->getMessage());
         }
     }
 
@@ -1252,9 +1249,10 @@ class RFM
      * defined by web dev or by client
      *
      * @param array $availableLangs
+     * @param string &$file If no null, the language file is assigned to this variable
      * @return string
      */
-    public static function getPreferredLanguage(array $availableLangs) : string
+    public static function getPreferredLanguage(array $availableLangs, &$file = false) : string
     {
         /**
          * Check local availability: get first in order
@@ -1277,8 +1275,9 @@ class RFM
          * Checks if country in (country_LANGAGE) matches preferredLang
          * eg: zh_CN -> if zh == $preferredLang
          */
-        return current(array_filter(array_keys($availableLangs), function ($lang) use ($preferredLang) {
+        return current(array_filter(array_keys($availableLangs), function ($lang) use ($preferredLang, &$file) {
             if ($preferredLang === $lang) {
+                $file = ($file == false ? $lang.'.json' : $file);
                 return true;
             }
         
@@ -1287,6 +1286,7 @@ class RFM
             if (false !== $position = strpos($lang, '_')) {
                 $superLang = substr($lang, 0, $position);
                 if ($preferredLang === $superLang) {
+                    $file = ($file == false ? $lang.'.json' : $file);
                     return true;
                 }
             }

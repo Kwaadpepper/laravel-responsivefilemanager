@@ -3,20 +3,43 @@
   "description": "Integrate Alberto Peripolli's Responsive File Manager with Laravel",
   "license": "MIT",
   "authors": [
-      {
-          "name": "Jeremy Munsch"
-      }
+    {
+      "name": "Jeremy Munsch"
+    }
   ],
   "version": "0.0.5",
-  "keywords": ["laravel", "responsive", "filemanager"],
+  "keywords": [
+    "laravel",
+    "responsive",
+    "filemanager"
+  ],
   "minimum-stability": "dev",
   "require": {
     "php": ">=7.1"
   },
   "autoload": {
     "psr-4": {
-      "Kwaadpepper\\ResponsiveFileManager\\": "src/ResponsiveFileManager/",
-      "Kwaadpepper\\FtpClient\\": "src/FtpClient/"
+      "Kwaadpepper\\ResponsiveFileManager\\": "src/",
+      "Kwaadpepper\\FtpClient\\": "src/FtpClient/",
+      "Kwaadpepper\\ResponsiveFileManager\\Middleware\\": "src/Http/Middleware/",
+      "Kwaadpepper\\ResponsiveFileManager\\Controller\\": "src/Http/Controllers/"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Kwaadpepper\\ResponsiveFileManager\\FileManagerServiceProvider"
+      ],
+      "aliases": {
+        "RFM": "Kwaadpepper\\ResponsiveFileManager\\RFMFacade"
+      }
+    }
+  },
+  "scripts": {
+    "post-update-cmd": [
+      "php artisan clear-compiled",
+      "php artisan optimize",
+      "php artisan asset:publish vendor/package"
+    ]
   }
 }
