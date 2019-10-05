@@ -41,8 +41,6 @@ ___
 
     composer require kwaadpepper/laravel-responsivefilemanager
 
-    php artisan vendor:publish --provider="Kwaadpepper\ResponsiveFileManager\FileManagerServiceProvider"
-
 Now there is a new configuration file ```rfm.php```
 
 Install in ```config/app.php```
@@ -56,7 +54,7 @@ Install in ```config/app.php```
             Kwaadpepper\ResponsiveFileManager\FileManagerServiceProvider::class
     ],
 
-In ```HTTP/Kernel.php``` need to use StartSession, can also use and is recommended CSRF Token
+In ```app/Http/Kernel.php``` need to use StartSession, can also use and is recommended CSRF Token
 
     protected $middlewareGroups = [
         ...
@@ -69,12 +67,20 @@ In ```HTTP/Kernel.php``` need to use StartSession, can also use and is recommend
         ...
     ];
 
+then do
+
+    php artisan vendor:publish --provider="Kwaadpepper\ResponsiveFileManager\FileManagerServiceProvider"
+
 Generate private key for url identification
 
     php artisan rfm:generate
 
 All configs included to work out of the box.
 Files are meant to be stored in public folder.
+
+Don't forget to create upload dir
+
+    mkdir -p public/uploads/files/
 
 ___
 
