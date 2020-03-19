@@ -9,7 +9,7 @@
  *
  * @copyright Nicolas Tallefourtane http://nicolab.net
  */
-namespace Kwaadpepper\FtpClient;
+namespace \Kwaadpepper\FtpClient;
 
 /**
  * The FtpException class.

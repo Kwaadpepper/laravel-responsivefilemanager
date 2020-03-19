@@ -14,7 +14,7 @@
  * Mountain View, California, 94041, USA.
  */
 
-use Kwaadpepper\ResponsiveFileManager\RFM;
+use \Kwaadpepper\ResponsiveFileManager\RFM;
 
 mb_internal_encoding('UTF-8');
 mb_http_output('UTF-8');

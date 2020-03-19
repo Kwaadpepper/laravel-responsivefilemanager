@@ -14,8 +14,8 @@
  * Mountain View, California, 94041, USA.
  */
 
-use Kwaadpepper\ResponsiveFileManager\RFM;
-use Kwaadpepper\ResponsiveFileManager\RFMMimeTypesLib;
+use \Kwaadpepper\ResponsiveFileManager\RFM;
+use \Kwaadpepper\ResponsiveFileManager\RfmMimeTypesLib;
 
 /**
  * Check RF session
@@ -78,7 +78,7 @@ if ($ftp && RFM::ftpDownloadFile($ftp, $file_path, $file_name.'.'.$file_ext, $lo
     $file_name = rawurldecode($file_name);
 
 
-    $mime_type = RFMMimeTypesLib::getFileMimeType($file_path);
+    $mime_type = RfmMimeTypesLib::getFileMimeType($file_path);
 
 
     @ob_end_clean();

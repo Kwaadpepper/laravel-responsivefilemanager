@@ -14,10 +14,10 @@
  * Mountain View, California, 94041, USA.
  */
 
-use Kwaadpepper\ResponsiveFileManager\RFM;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use \ZipArchive;
-use \PharData;
+use \Kwaadpepper\ResponsiveFileManager\RFM;
+use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use \ZipArchive as _ZipArchive;
+use \PharData as _PharData;
 
 $config = config('rfm');
 $version = config('rfm.version');
@@ -188,7 +188,7 @@ if (isset($_GET['action'])) {
 
             switch ($info['extension']) {
                 case "zip":
-                    $zip = new ZipArchive;
+                    $zip = new _ZipArchive;
                     if ($zip->open($path) === true) {
                         //get total size
                         $sizeTotalFinal = 0;
@@ -230,14 +230,14 @@ if (isset($_GET['action'])) {
 
                 case "gz":
                     // No resulting size pre-control available
-                    $p = new PharData($path);
+                    $p = new _PharData($path);
                     $p->decompress(); // creates files.tar
                     break;
 
                 case "tar":
                     // No resulting size pre-control available
                     // unarchive from the tar
-                    $phar = new PharData($path);
+                    $phar = new _PharData($path);
                     $phar->decompressFiles();
                     $files = array();
                     RFM::checkFilesExtensionsOnPhar($phar, $files, '', $config);

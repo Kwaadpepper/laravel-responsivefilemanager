@@ -1,4 +1,5 @@
 <?php
+namespace Kwaadpepper\ResponsiveFileManager;
 
 /**
  * @author Alberto Peripolli https://responsivefilemanager.com/#contact-section
@@ -18,13 +19,11 @@
  * @package  ResponsiveFileManager
  */
 
-namespace Kwaadpepper\ResponsiveFileManager;
-
 use \Illuminate\Http\Response;
-use Kwaadpepper\ResponsiveFileManager\ImageLib;
-use Kwaadpepper\FtpClient\FtpClient;
-use Kwaadpepper\FtpClient\FtpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use \Kwaadpepper\ResponsiveFileManager\ImageLib;
+use \Kwaadpepper\FtpClient\FtpClient;
+use \Kwaadpepper\FtpClient\FtpException;
+use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use \Illuminate\Contracts\Encryption\DecryptException;
 
 /**

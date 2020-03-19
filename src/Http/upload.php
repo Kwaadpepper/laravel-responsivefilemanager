@@ -14,11 +14,11 @@
  * Mountain View, California, 94041, USA.
  */
 
-use \Exception;
-use \stdClass;
-use Kwaadpepper\ResponsiveFileManager\RFM;
-use Kwaadpepper\ResponsiveFileManager\UploadHandler;
-use Kwaadpepper\ResponsiveFileManager\RFMMimeTypesLib;
+use \Exception as _Exception;
+use \stdClass as _stdClass;
+use \Kwaadpepper\ResponsiveFileManager\RFM;
+use \Kwaadpepper\ResponsiveFileManager\UploadHandler;
+use \Kwaadpepper\ResponsiveFileManager\RfmMimeTypesLib;
 
 $config = config('rfm');
 
@@ -95,7 +95,7 @@ try {
             curl_exec($ch);
             if (curl_errno($ch)) {
                 curl_close($ch);
-                throw new Exception('Invalid URL');
+                throw new _Exception('Invalid URL');
             }
             curl_close($ch);
             fclose($fp);
@@ -107,7 +107,7 @@ try {
                 'type' => null
             );
         } else {
-            throw new Exception('Is not a valid URL.');
+            throw new _Exception('Is not a valid URL.');
         }
     }
 
@@ -121,9 +121,9 @@ try {
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mime_type = finfo_file($finfo, $_FILES['files']['tmp_name'][0]);
         } else {
-            $mime_type = RFMMimeTypesLib::getFileMimeType($_FILES['files']['tmp_name'][0]);
+            $mime_type = RfmMimeTypesLib::getFileMimeType($_FILES['files']['tmp_name'][0]);
         }
-        $extension = RFMMimeTypesLib::getExtensionFromMime($mime_type);
+        $extension = RfmMimeTypesLib::getExtensionFromMime($mime_type);
 
         if ($extension == 'so' || $extension == '' || $mime_type == "text/troff") {
             $extension = $info['extension'];
@@ -144,7 +144,7 @@ try {
     if (!RFM::checkresultingsize($_FILES['files']['size'][0])) {
         if (!isset($upload_handler->response['files'][0])) {
             // Avoid " Warning: Creating default object from empty value ... "
-            $upload_handler->response['files'][0] = new stdClass();
+            $upload_handler->response['files'][0] = new _stdClass();
         }
         $upload_handler->response['files'][0]->error = __(
             'max_size_reached',
@@ -194,7 +194,7 @@ try {
     }
 
     $upload_handler = new UploadHandler($ftp, $uploadConfig, true, $messages);
-} catch (Exception $e) {
+} catch (_Exception $e) {
     $return = array();
 
     if ($_FILES['files']) {

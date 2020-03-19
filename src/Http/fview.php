@@ -8,8 +8,8 @@
  * @link     https://github.com/Kwaadpepper/laravel-responsivefilemanager/blob/master/resources/filemanager/fview.php
  */
 
-use Kwaadpepper\ResponsiveFileManager\RFM;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use \Kwaadpepper\ResponsiveFileManager\RFM;
+use \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 $local_file_path_to_download = RFM::getLocalFileFromEncrypted(request()->get('ox'));
 

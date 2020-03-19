@@ -1,4 +1,6 @@
 <?php
+namespace Kwaadpepper\ResponsiveFileManager;
+
 /**
  * RFM command line Interface
  * Mostly used to generate RFM private key
@@ -9,7 +11,6 @@
  * @version  GIT:
  * @link     https://github.com/Kwaadpepper/laravel-responsivefilemanager/blob/master/src/RFMGenerate.php
  */
-namespace Kwaadpepper\ResponsiveFileManager;
 
 use Illuminate\Console\Command;
 use Illuminate\Encryption\Encrypter;

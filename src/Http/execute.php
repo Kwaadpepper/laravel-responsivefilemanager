@@ -14,9 +14,9 @@
  * Mountain View, California, 94041, USA.
  */
 
-use Illuminate\Routing\Matching\UriValidator;
-use Illuminate\Support\Facades\Request;
-use Kwaadpepper\ResponsiveFileManager\RFM;
+use \Illuminate\Routing\Matching\UriValidator;
+use \Illuminate\Support\Facades\Request;
+use \Kwaadpepper\ResponsiveFileManager\RFM;
 
 $config = config('rfm');
 

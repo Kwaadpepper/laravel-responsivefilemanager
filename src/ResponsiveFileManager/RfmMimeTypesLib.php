@@ -15,7 +15,7 @@ namespace Kwaadpepper\ResponsiveFileManager;
  * letter to Creative Commons, 444 Castro Street, Suite 900,
  * Mountain View, California, 94041, USA.
  */
-class RFMMimeTypesLib
+class RfmMimeTypesLib
 {
 
     private static $mime_types = array(
@@ -192,7 +192,7 @@ class RFMMimeTypesLib
     /**
      * Returns extension file name from a mime type
      *
-     * @param string $mime
+     * @param  string $mime
      * @return void
      */
     public static function getExtensionFromMime($mime)
@@ -271,6 +271,6 @@ class RFMMimeTypesLib
 
 
 /* REMOVE ME TO TEST
-echo RFMMimeTypesLib::getFileMimeType( 'test.txt' ) . "\n";
-echo print_r( RFMMimeTypesLib::getFileMimeType( 'image.jpg', true ), true ) . "\n";
+echo RfmMimeTypesLib::getFileMimeType( 'test.txt' ) . "\n";
+echo print_r( RfmMimeTypesLib::getFileMimeType( 'image.jpg', true ), true ) . "\n";
 REMOVE ME TO TEST */

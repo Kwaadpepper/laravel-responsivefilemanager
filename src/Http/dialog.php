@@ -1,7 +1,7 @@
 <?php
 
 use \FtpClient\FtpException;
-use Illuminate\Support\Facades\App;
+use \Illuminate\Support\Facades\App;
 
 /**
  * @author Alberto Peripolli https://responsivefilemanager.com/#contact-section
@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\App;
  * Mountain View, California, 94041, USA.
  */
 
-use Kwaadpepper\ResponsiveFileManager\RFM;
+use \Kwaadpepper\ResponsiveFileManager\RFM;
 
 session()->start();
 

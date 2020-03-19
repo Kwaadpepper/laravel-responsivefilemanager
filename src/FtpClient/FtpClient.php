@@ -9,11 +9,11 @@
  *
  * @copyright Nicolas Tallefourtane http://nicolab.net
  */
-namespace Kwaadpepper\FtpClient;
+namespace \Kwaadpepper\FtpClient;
 
-use \Countable;
-use Kwaadpepper\FtpClient\FtpWrapper;
-use Kwaadpepper\FtpClient\FtpException;
+use \Countable as _Countable;
+use \Kwaadpepper\FtpClient\FtpWrapper;
+use \Kwaadpepper\FtpClient\FtpException;
 
 /**
  * The FTP and SSL-FTP client for PHP.
@@ -47,7 +47,7 @@ use Kwaadpepper\FtpClient\FtpException;
  *
  * @author Nicolas Tallefourtane <dev@nicolab.net>
  */
-class FtpClient implements Countable
+class FtpClient implements _Countable
 {
     /**
      * The connection with the server.

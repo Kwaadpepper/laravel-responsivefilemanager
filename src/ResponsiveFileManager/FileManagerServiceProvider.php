@@ -1,4 +1,5 @@
 <?php
+namespace Kwaadpepper\ResponsiveFileManager;
 
 /**
  * RFM FileManagerServiceProvider
@@ -10,10 +11,8 @@
  * @link     https://github.com/Kwaadpepper/laravel-responsivefilemanager/blob/master/src/FileManagerServiceProvider.php
  */
 
-namespace Kwaadpepper\ResponsiveFileManager;
-
-use Illuminate\Support\ServiceProvider;
-use Blade;
+use \Illuminate\Support\ServiceProvider;
+use \Blade as _Blade;
 
 /**
  * FileManagerServiceProvider
@@ -151,14 +150,14 @@ class FileManagerServiceProvider extends ServiceProvider
          * Blade print
          */
 
-        Blade::directive(
+        _Blade::directive(
             'external_filemanager_path',
             function () use ($FMPUBPATH) {
                 return $FMPUBPATH . '/';
             }
         );
 
-        Blade::directive(
+        _Blade::directive(
             'filemanager_get_key',
             function () {
                 $o = isset(config('rfm.access_keys')[0]) ? config('rfm.access_keys')[0] : '';//phpcs:ignore
@@ -166,7 +165,7 @@ class FileManagerServiceProvider extends ServiceProvider
             }
         );
 
-        Blade::directive(
+        _Blade::directive(
             'filemanager_get_resource',
             function ($file) use ($FMVENDOR) {
                 $r = parse_url(route('FM' . $file), PHP_URL_PATH);
@@ -182,7 +181,7 @@ class FileManagerServiceProvider extends ServiceProvider
             }
         );
 
-        Blade::directive(
+        _Blade::directive(
             'filemanager_get_config',
             function ($expression) {
                 return config($expression);

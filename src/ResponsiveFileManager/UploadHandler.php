@@ -1,4 +1,5 @@
 <?php
+namespace Kwaadpepper\ResponsiveFileManager;
 
 /**
  * RFM UploadHandler
@@ -8,10 +9,8 @@
  * @license  MIT https://choosealicense.com/licenses/mit/
  */
 
-namespace Kwaadpepper\ResponsiveFileManager;
-
-use \Exception;
-use \stdClass;
+use \Exception as _Exception;
+use \stdClass as _stdClass;
 use Kwaadpepper\ResponsiveFileManager\RFM;
 use Kwaadpepper\ResponsiveFileManager\ImageLib;
 
@@ -374,7 +373,7 @@ class UploadHandler
     protected function getFileObject($file_name)
     {
         if ($this->isValidFileObject($file_name)) {
-            $file = new stdClass();
+            $file = new _stdClass();
             $file->name = $file_name;
             $file->size = $this->getFileSize(
                 $this->getUploadPath($file_name)
@@ -1139,7 +1138,7 @@ class UploadHandler
                         return $dimensions;
                     }
                     return false;
-                } catch (Exception $e) {
+                } catch (_Exception $e) {
                     error_log($e->getMessage());
                 }
             }
@@ -1173,7 +1172,7 @@ class UploadHandler
                 return $this->imagickCreateScaledImage($file_name, $version, $options);
             }
             return $this->gdCreateScaledImage($file_name, $version, $options);
-        } catch (\Exception $e) {
+        } catch (_Exception $e) {
             error_log($e->getMessage());
             return false;
         }
@@ -1248,7 +1247,7 @@ class UploadHandler
         $index = null,
         $content_range = null
     ) {
-        $file = new stdClass();
+        $file = new _stdClass();
         $file->name = $this->getFileName(
             $uploaded_file,
             $name,
