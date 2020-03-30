@@ -1,4 +1,5 @@
 <?php
+
 namespace Kwaadpepper\ResponsiveFileManager;
 
 /**
@@ -250,17 +251,12 @@ class UploadHandler
         $https = !empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'on') === 0 ||
             !empty($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
             strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
-        return  ($https ? 'https://' : 'http://').
-                (!empty($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] . '@' : '').
-                (
-                    isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : (
-                        $_SERVER['SERVER_NAME'].
-                        (
-                            $https &&
-                            $_SERVER['SERVER_PORT'] === 443 ||
-                            $_SERVER['SERVER_PORT'] === 80 ? '' : ':' . $_SERVER['SERVER_PORT']
-                        ))
-                ).
+        return ($https ? 'https://' : 'http://') .
+            (!empty($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'] . '@' : '') .
+            (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ($_SERVER['SERVER_NAME'] .
+                ($https &&
+                    $_SERVER['SERVER_PORT'] === 443 ||
+                    $_SERVER['SERVER_PORT'] === 80 ? '' : ':' . $_SERVER['SERVER_PORT']))) .
             substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
     }
 
@@ -364,7 +360,7 @@ class UploadHandler
     protected function isValidFileObject($file_name)
     {
         $file_path = $this->getUploadPath($file_name);
-        if (is_file($file_path) && $file_name[0] !== '.') {
+        if (strlen($file_name) > 0 && $file_name[0] !== '.' && is_file($file_path)) {
             return true;
         }
         return false;
@@ -422,7 +418,11 @@ class UploadHandler
     {
         $val = trim($val);
         $last = strtolower($val[strlen($val) - 1]);
-        $val = (int) $val;
+        if (is_numeric($val)) {
+            $val = (int) $val;
+        } else {
+            $val = (int) substr($val, 0, -1);
+        }
         switch ($last) {
             case 'g':
                 $val *= 1024;
@@ -459,19 +459,22 @@ class UploadHandler
         } else {
             $file_size = $content_length;
         }
-        if ($this->options['max_file_size'] && ($file_size > $this->options['max_file_size'] ||
+        if (
+            $this->options['max_file_size'] && ($file_size > $this->options['max_file_size'] ||
                 $file->size > $this->options['max_file_size'])
         ) {
             $file->error = $this->getErrorMessage('max_file_size');
             return false;
         }
-        if ($this->options['min_file_size'] &&
+        if (
+            $this->options['min_file_size'] &&
             $file_size < $this->options['min_file_size']
         ) {
             $file->error = $this->getErrorMessage('min_file_size');
             return false;
         }
-        if (is_int($this->options['max_number_of_files']) &&
+        if (
+            is_int($this->options['max_number_of_files']) &&
             ($this->countFileObjects() >= $this->options['max_number_of_files']) &&
             // Ignore additional chunks of existing files:
             !is_file($this->getUploadPath($file->name))
@@ -489,7 +492,8 @@ class UploadHandler
             list($img_width, $img_height) = $this->getImageSize($uploaded_file);
             // If we are auto rotating the image by default, do the checks on
             // the correct orientation
-            if (@$this->options['image_versions']['']['auto_orient'] &&
+            if (
+                @$this->options['image_versions']['']['auto_orient'] &&
                 function_exists('exif_read_data') &&
                 ($exif = @exif_read_data($uploaded_file)) && (((int) @$exif['Orientation']) >= 5)
             ) {
@@ -550,7 +554,7 @@ class UploadHandler
             $name = $this->upcountName($name);
         }
         // Keep an existing filename if this is part of a chunked upload:
-        $uploaded_bytes = $this->fixIntegerOverflow((int) $content_range[1]);
+        $uploaded_bytes = $this->fixIntegerOverflow((int) @$content_range[1]);
         while (is_file($this->getUploadPath($name))) {
             if ($uploaded_bytes === $this->getFileSize(
                 $this->getUploadPath($name)
@@ -572,7 +576,8 @@ class UploadHandler
         $content_range
     ) {
         // Add missing file extension for known image types:
-        if (strpos($name, '.') === false &&
+        if (
+            strpos($name, '.') === false &&
             preg_match('/^image\/(gif|jpe?g|png)/', $type, $matches)
         ) {
             $name .= '.' . $matches[1];
@@ -1023,7 +1028,8 @@ class UploadHandler
 
         $image_strip = (isset($options['strip']) ? $options['strip'] : false);
 
-        if (!$image_oriented &&
+        if (
+            !$image_oriented &&
             ($max_width >= $img_width) &&
             ($max_height >= $img_height) &&
             !$image_strip &&
@@ -1232,7 +1238,7 @@ class UploadHandler
         }
         if (count($failed_versions)) {
             $file->error = $this->getErrorMessage('image_resize')
-                . ' (' . implode($failed_versions, [', ']) . ')';
+                . ' (' . implode(', ', $failed_versions) . ')';
         }
         // Free memory:
         $this->destroyImageObject($file_path);
@@ -1542,7 +1548,7 @@ class UploadHandler
         $content_range_header = $this->getServerVar('HTTP_CONTENT_RANGE');
         $content_range = $content_range_header ?
             preg_split('/[^0-9]+/', $content_range_header) : null;
-        $size =  $content_range ? $content_range[3] : null;
+        $size = @$content_range[3];
         $files = array();
         if ($upload) {
             if (is_array($upload['tmp_name'])) {
@@ -1580,7 +1586,7 @@ class UploadHandler
         $name = $file_name ? $file_name : $upload['name'][0];
         $res = $this->generateResponse($response, $print_response);
         if (is_file($this->getUploadPath($name))) {
-            $uploaded_bytes = $this->fixIntegerOverflow((int) $content_range[1]);
+            $uploaded_bytes = $this->fixIntegerOverflow((int) @$content_range[1]);
             $totalSize = $this->getFileSize($this->getUploadPath($name));
             if ($totalSize - $uploaded_bytes - $this->options['readfile_chunk_size'] < 0) {
                 $this->onUploadEnd($ftp, $res);
@@ -1645,7 +1651,8 @@ class UploadHandler
                     $res['files'][0]->error = $thumbResult;
                 }
             } else {
-                if (!$this->options['ftp'] &&
+                if (
+                    !$this->options['ftp'] &&
                     !RFM::newThumbnailsCreation(
                         $ftp,
                         $targetPath,
@@ -1668,10 +1675,10 @@ class UploadHandler
                                 $this->options['config']['image_resizing_width'] = $srcWidth;
                                 $this->options['config']['image_resizing_height'] = $srcHeight;
                             } else {
-                                $this->options['config']['image_resizing_width'] = $this->options['config']['image_resizing_height'] * $srcWidth / $srcHeight;//phpcs:ignore
+                                $this->options['config']['image_resizing_width'] = $this->options['config']['image_resizing_height'] * $srcWidth / $srcHeight; //phpcs:ignore
                             }
                         } elseif ($this->options['config']['image_resizing_height'] == 0) { // if height not set
-                            $this->options['config']['image_resizing_height'] = $this->options['config']['image_resizing_width'] * $srcHeight / $srcWidth;//phpcs:ignore
+                            $this->options['config']['image_resizing_height'] = $this->options['config']['image_resizing_width'] * $srcHeight / $srcWidth; //phpcs:ignore
                         }
 
                         // new dims and create
@@ -1688,9 +1695,11 @@ class UploadHandler
 
                     //max resizing limit control
                     $resize = false;
-                    if ($this->options['config']['image_max_width'] != 0 &&
+                    if (
+                        $this->options['config']['image_max_width'] != 0 &&
                         $srcWidth > $this->options['config']['image_max_width'] &&
-                        $this->options['config']['image_resizing_override'] === false) {
+                        $this->options['config']['image_resizing_override'] === false
+                    ) {
                         $resize = true;
                         $srcWidth = $this->options['config']['image_max_width'];
 
@@ -1699,9 +1708,11 @@ class UploadHandler
                         }
                     }
 
-                    if ($this->options['config']['image_max_height'] != 0 &&
+                    if (
+                        $this->options['config']['image_max_height'] != 0 &&
                         $srcHeight > $this->options['config']['image_max_height'] &&
-                        $this->options['config']['image_resizing_override'] === false) {
+                        $this->options['config']['image_resizing_override'] === false
+                    ) {
                         $resize = true;
                         $srcHeight = $this->options['config']['image_max_height'];
 
@@ -1744,7 +1755,7 @@ class UploadHandler
         $response = array();
         foreach ($file_names as $file_name) {
             $file_path = $this->getUploadPath($file_name);
-            $success = is_file($file_path) && $file_name[0] !== '.' && unlink($file_path);
+            $success = strlen($file_name) > 0 && $file_name[0] !== '.' && is_file($file_path) && unlink($file_path);
             if ($success) {
                 foreach ($this->options['image_versions'] as $version => $options) {
                     if (!empty($version)) {

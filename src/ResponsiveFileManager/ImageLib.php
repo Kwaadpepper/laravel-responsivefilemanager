@@ -1,7 +1,9 @@
 <?php
+
 namespace Kwaadpepper\ResponsiveFileManager;
 
 use \Kwaadpepper\ResponsiveFileManager\RFM;
+use \Exception as _Exception;
 
 // ========================================================================#
 //
@@ -198,11 +200,11 @@ class ImageLib
     private $forceStretch        = true;
     private $aggresiveSharpening = false;
 
-    private $transparentArray = array( '.png', '.gif' );
+    private $transparentArray = array('.png', '.gif');
     private $keepTransparency = true;
-    private $fillColorArray   = array( 'r' => 255, 'g' => 255, 'b' => 255 );
+    private $fillColorArray   = array('r' => 255, 'g' => 255, 'b' => 255);
 
-    private $sharpenArray = array( 'jpg' );
+    private $sharpenArray = array('jpg');
 
     private $psdReaderPath;
     private $filterOverlayPath;
@@ -220,11 +222,11 @@ class ImageLib
 
     public function __construct($fileName)
     {
-        if (! $this->testGDInstalled()) {
+        if (!$this->testGDInstalled()) {
             if ($this->debug) {
-                throw new Exception('The GD Library is not installed.');
+                throw new _Exception('The GD Library is not installed.');
             } else {
-                throw new Exception();
+                throw new _Exception();
             }
         };
 
@@ -300,11 +302,11 @@ class ImageLib
         $option = $this->prepOption($option);
 
         // *** Make sure the file passed in is valid
-        if (! $this->image) {
+        if (!$this->image) {
             if ($this->debug) {
-                throw new Exception('file ' . $this->getFileName() . ' is missing or invalid');
+                throw new _Exception('file ' . $this->getFileName() . ' is missing or invalid');
             } else {
-                throw new Exception();
+                throw new _Exception();
             }
         };
 
@@ -317,7 +319,7 @@ class ImageLib
         // *** Resample - create image canvas of x, y size
         $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
         $this->keepTransparancy($optimalWidth, $optimalHeight, $this->imageResized);
-        imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $optimalWidth, $optimalHeight, $this->width, $this->height);//phpcs:ignore
+        imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $optimalWidth, $optimalHeight, $this->width, $this->height); //phpcs:ignore
 
 
         // *** If '4', then crop too
@@ -358,11 +360,11 @@ class ImageLib
     {
 
         // *** Make sure the file passed in is valid
-        if (! $this->image) {
+        if (!$this->image) {
             if ($this->debug) {
-                throw new Exception('file ' . $this->getFileName() . ' is missing or invalid');
+                throw new _Exception('file ' . $this->getFileName() . ' is missing or invalid');
             } else {
-                throw new Exception();
+                throw new _Exception();
             }
         };
 
@@ -381,7 +383,7 @@ class ImageLib
             $transparent = imagecolorallocatealpha($im, 255, 255, 255, 127);
             imagefilledrectangle($im, 0, 0, $width, $height, $transparent);
         } else {
-            $color = imagecolorallocate($im, $this->fillColorArray['r'], $this->fillColorArray['g'], $this->fillColorArray['b']);//phpcs:ignore
+            $color = imagecolorallocate($im, $this->fillColorArray['r'], $this->fillColorArray['g'], $this->fillColorArray['b']); //phpcs:ignore
             imagefilledrectangle($im, 0, 0, $width, $height, $color);
         }
     }
@@ -399,7 +401,7 @@ class ImageLib
         // *** Crop this bad boy
         $crop = imagecreatetruecolor($newWidth, $newHeight);
         $this->keepTransparancy($optimalWidth, $optimalHeight, $crop);
-        imagecopyresampled($crop, $this->imageResized, 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight, $newWidth, $newHeight);//phpcs:ignore
+        imagecopyresampled($crop, $this->imageResized, 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight, $newWidth, $newHeight); //phpcs:ignore
 
         $this->imageResized = $crop;
 
@@ -487,7 +489,7 @@ class ImageLib
             }
         }
 
-        return array( 'x' => $cropStartX, 'y' => $cropStartY );
+        return array('x' => $cropStartX, 'y' => $cropStartY);
     }
 
     // --------------------------------------------------------
@@ -527,7 +529,7 @@ class ImageLib
                 break;
         }
 
-        return array( 'optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight );
+        return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
     }
 
     // --------------------------------------------------------
@@ -535,10 +537,10 @@ class ImageLib
     private function getSizeByFixedHeight($newWidth, $newHeight)
     {
         // *** If forcing is off...
-        if (! $this->forceStretch) {
+        if (!$this->forceStretch) {
             // *** ...check if actual height is less than target height
             if ($this->height < $newHeight) {
-                return array( 'optimalWidth' => $this->width, 'optimalHeight' => $this->height );
+                return array('optimalWidth' => $this->width, 'optimalHeight' => $this->height);
             }
         }
 
@@ -547,7 +549,7 @@ class ImageLib
         $newWidth = $newHeight * $ratio;
 
         //return $newWidth;
-        return array( 'optimalWidth' => $newWidth, 'optimalHeight' => $newHeight );
+        return array('optimalWidth' => $newWidth, 'optimalHeight' => $newHeight);
     }
 
     // --------------------------------------------------------
@@ -555,10 +557,10 @@ class ImageLib
     private function getSizeByFixedWidth($newWidth, $newHeight)
     {
         // *** If forcing is off...
-        if (! $this->forceStretch) {
+        if (!$this->forceStretch) {
             // *** ...check if actual width is less than target width
             if ($this->width < $newWidth) {
-                return array( 'optimalWidth' => $this->width, 'optimalHeight' => $this->height );
+                return array('optimalWidth' => $this->width, 'optimalHeight' => $this->height);
             }
         }
 
@@ -567,7 +569,7 @@ class ImageLib
         $newHeight = $newWidth * $ratio;
 
         //return $newHeight;
-        return array( 'optimalWidth' => $newWidth, 'optimalHeight' => $newHeight );
+        return array('optimalWidth' => $newWidth, 'optimalHeight' => $newHeight);
     }
 
     // --------------------------------------------------------
@@ -575,10 +577,10 @@ class ImageLib
     private function getSizeByAuto($newWidth, $newHeight)
     {
         // *** If forcing is off...
-        if (! $this->forceStretch) {
+        if (!$this->forceStretch) {
             // *** ...check if actual size is less than target size
             if ($this->width < $newWidth && $this->height < $newHeight) {
-                return array( 'optimalWidth' => $this->width, 'optimalHeight' => $this->height );
+                return array('optimalWidth' => $this->width, 'optimalHeight' => $this->height);
             }
         }
 
@@ -621,7 +623,7 @@ class ImageLib
             }
         }
 
-        return array( 'optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight );
+        return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
     }
 
     // --------------------------------------------------------
@@ -630,10 +632,10 @@ class ImageLib
     {
 
         // *** If forcing is off...
-        if (! $this->forceStretch) {
+        if (!$this->forceStretch) {
             // *** ...check if actual size is less than target size
             if ($this->width < $newWidth && $this->height < $newHeight) {
-                return array( 'optimalWidth' => $this->width, 'optimalHeight' => $this->height );
+                return array('optimalWidth' => $this->width, 'optimalHeight' => $this->height);
             }
         }
 
@@ -649,7 +651,7 @@ class ImageLib
         $optimalHeight = round($this->height / $optimalRatio);
         $optimalWidth = round($this->width / $optimalRatio);
 
-        return array( 'optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight );
+        return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
     }
 
     // --------------------------------------------------------
@@ -660,9 +662,11 @@ class ImageLib
         if (version_compare(PHP_VERSION, '5.1.0') >= 0) {
             // ***
             if ($this->aggresiveSharpening) { // A more aggressive sharpening solution
-                $sharpenMatrix = array( array( -1, -1, -1 ),
-                                        array( -1, 16, -1 ),
-                                        array( -1, -1, -1 ) );
+                $sharpenMatrix = array(
+                    array(-1, -1, -1),
+                    array(-1, 16, -1),
+                    array(-1, -1, -1)
+                );
                 $divisor = 8;
                 $offset = 0;
 
@@ -672,10 +676,10 @@ class ImageLib
                 $sharpness = $this->findSharp($this->widthOriginal, $this->width);
 
                 $sharpenMatrix = array(
-                    array( -1, -2, -1 ),
+                    array(-1, -2, -1),
                     //Lessen the effect of a filter by increasing the value in the center cell
-                    array( -2, $sharpness + 12, -2 ),
-                    array( -1, -2, -1 )
+                    array(-2, $sharpness + 12, -2),
+                    array(-1, -2, -1)
                 );
                 $divisor = $sharpness; // adjusts brightness
                 $offset = 0;
@@ -683,7 +687,7 @@ class ImageLib
             }
         } else {
             if ($this->debug) {
-                throw new Exception('Sharpening required PHP 5.1.0 or greater.');
+                throw new _Exception('Sharpening required PHP 5.1.0 or greater.');
             }
         }
     }
@@ -693,10 +697,10 @@ class ImageLib
     private function sharpen2($level)
     {
         $sharpenMatrix = array(
-            array( $level, $level, $level ),
+            array($level, $level, $level),
             //Lessen the effect of a filter by increasing the value in the center cell
-            array( $level, (8 * $level) + 1, $level ),
-            array( $level, $level, $level )
+            array($level, (8 * $level) + 1, $level),
+            array($level, $level, $level)
         );
     }
 
@@ -722,7 +726,7 @@ class ImageLib
             if (RFM::fixStrtolower($option[0]) == 'crop' && count($option) == 2) {
                 return 'crop';
             } else {
-                throw new Exception('Crop resize option array is badly formatted.');
+                throw new _Exception('Crop resize option array is badly formatted.');
             }
         } else {
             if (strpos($option, 'crop') !== false) {
@@ -768,7 +772,7 @@ class ImageLib
     Draw border
     *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
-    public function addBorder($thickness = 1, $rgbArray = array( 255, 255, 255 ))
+    public function addBorder($thickness = 1, $rgbArray = array(255, 255, 255))
     {
         if ($this->imageResized) {
             $rgbArray = $this->formatColor($rgbArray);
@@ -986,7 +990,7 @@ class ImageLib
     Reflection
     *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
-    public function addReflection($reflectionHeight = 50, $startingTransparency = 30, $inside = false, $bgColor = '#fff', $stretch = false, $divider = 0)//phpcs:ignore
+    public function addReflection($reflectionHeight = 50, $startingTransparency = 30, $inside = false, $bgColor = '#fff', $stretch = false, $divider = 0) //phpcs:ignore
     {
 
         // *** Convert color
@@ -1050,7 +1054,7 @@ class ImageLib
             // Create new blank image with sizes.
             $final = imagecreatetruecolor($this->width, $this->height);
 
-            imagecopymerge($final, $this->imageResized, 0, 0, 0, $reflectionHeight, $this->width, $this->height - $reflectionHeight, 100);//phpcs:ignore
+            imagecopymerge($final, $this->imageResized, 0, 0, 0, $reflectionHeight, $this->width, $this->height - $reflectionHeight, 100); //phpcs:ignore
             imagecopymerge($final, $im, 0, $this->height - $reflectionHeight, 0, 0, $x, $y, 100);
         } else {
             // Create new blank image with sizes.
@@ -1134,7 +1138,7 @@ class ImageLib
 
         // *** Check if the user wants transparency
         $isTransparent = false;
-        if (! is_array($bgColor)) {
+        if (!is_array($bgColor)) {
             if (RFM::fixStrtolower($bgColor) == 'transparent') {
                 $isTransparent = true;
             }
@@ -1258,10 +1262,10 @@ class ImageLib
         $colour = imagecolorallocate($rgb, 255, 255, 255);
         //imagefilledrectangle($rgb, $blurWidth*0.5-$distWidth, $blurHeight*0.5-$distHeight,
         //  $width+$blurWidth*0.5-$distWidth, $height+$blurWidth*0.5-$distHeight, $colour);
-        imagefilledrectangle($rgb, $blurWidth * 0.5 - $distWidth, $blurHeight * 0.5 - $distHeight, $width + $blurWidth * 0.5 - $distWidth, $height + $blurWidth * 0.5 - $distHeight, $colour);//phpcs:ignore
+        imagefilledrectangle($rgb, $blurWidth * 0.5 - $distWidth, $blurHeight * 0.5 - $distHeight, $width + $blurWidth * 0.5 - $distWidth, $height + $blurWidth * 0.5 - $distHeight, $colour); //phpcs:ignore
         //imagecopymerge($rgb, $newImage, 1+$blurWidth*0.5-$distWidth, 1+$blurHeight*0.5-$distHeight,
         //  0,0, $width, $height, 100);
-        imagecopymerge($rgb, $newImage, $blurWidth * 0.5 - $distWidth, $blurHeight * 0.5 - $distHeight, 0, 0, $width + $blurWidth, $height + $blurHeight, 100);//phpcs:ignore
+        imagecopymerge($rgb, $newImage, $blurWidth * 0.5 - $distWidth, $blurHeight * 0.5 - $distHeight, 0, 0, $width + $blurWidth, $height + $blurHeight, 100); //phpcs:ignore
 
 
         // *** Shadow (alpha)
@@ -1293,17 +1297,17 @@ class ImageLib
             $t = ((1.0 * $i) / STEPS);
             $intensity = 255 * $t * $t;
 
-            $colour = imagecolorallocate($shadow, $intensity, $intensity, $intensity);//phpcs:ignore
-            imagefilledarc($shadow, $blurWidth - 1, $blurHeight - 1, 2 * (1 - $t) * $blurWidth, 2 * (1 - $t) * $blurHeight, 180, 268, $colour, IMG_ARC_PIE);//phpcs:ignore
-            imagefilledarc($shadow, $width, $blurHeight - 1, 2 * (1 - $t) * $blurWidth, 2 * (1 - $t) * $blurHeight, 270, 358, $colour, IMG_ARC_PIE);//phpcs:ignore
-            imagefilledarc($shadow, $width, $height, 2 * (1 - $t) * $blurWidth, 2 * (1 - $t) * $blurHeight, 0, 90, $colour, IMG_ARC_PIE);//phpcs:ignore
-            imagefilledarc($shadow, $blurWidth - 1, $height, 2 * (1 - $t) * $blurWidth, 2 * (1 - $t) * $blurHeight, 90, 180, $colour, IMG_ARC_PIE);//phpcs:ignore
+            $colour = imagecolorallocate($shadow, $intensity, $intensity, $intensity); //phpcs:ignore
+            imagefilledarc($shadow, $blurWidth - 1, $blurHeight - 1, 2 * (1 - $t) * $blurWidth, 2 * (1 - $t) * $blurHeight, 180, 268, $colour, IMG_ARC_PIE); //phpcs:ignore
+            imagefilledarc($shadow, $width, $blurHeight - 1, 2 * (1 - $t) * $blurWidth, 2 * (1 - $t) * $blurHeight, 270, 358, $colour, IMG_ARC_PIE); //phpcs:ignore
+            imagefilledarc($shadow, $width, $height, 2 * (1 - $t) * $blurWidth, 2 * (1 - $t) * $blurHeight, 0, 90, $colour, IMG_ARC_PIE); //phpcs:ignore
+            imagefilledarc($shadow, $blurWidth - 1, $height, 2 * (1 - $t) * $blurWidth, 2 * (1 - $t) * $blurHeight, 90, 180, $colour, IMG_ARC_PIE); //phpcs:ignore
         }
 
 
         $colour = imagecolorallocate($shadow, 255, 255, 255);
         imagefilledrectangle($shadow, $blurWidth, $blurHeight, $width, $height, $colour);
-        imagefilledrectangle($shadow, $blurWidth * 0.5 - $distWidth, $blurHeight * 0.5 - $distHeight, $width + $blurWidth * 0.5 - 1 - $distWidth, $height + $blurHeight * 0.5 - 1 - $distHeight, $colour);//phpcs:ignore
+        imagefilledrectangle($shadow, $blurWidth * 0.5 - $distWidth, $blurHeight * 0.5 - $distHeight, $width + $blurWidth * 0.5 - 1 - $distWidth, $height + $blurHeight * 0.5 - 1 - $distHeight, $colour); //phpcs:ignore
 
 
         // *** The magic
@@ -1327,7 +1331,7 @@ class ImageLib
                 if (RFM::fixStrtolower($bgColor) == 'transparent') {
                     $myColour = imagecolorallocatealpha($rgb, $r, $g, $b, $a);
                 } else {
-                    $myColour = imagecolorallocate($rgb, $r * (1.0 - $t) + $r0 * $t, $g * (1.0 - $t) + $g0 * $t, $b * (1.0 - $t) + $b0 * $t);//phpcs:ignore
+                    $myColour = imagecolorallocate($rgb, $r * (1.0 - $t) + $r0 * $t, $g * (1.0 - $t) + $g0 * $t, $b * (1.0 - $t) + $b0 * $t); //phpcs:ignore
                 }
 
                 // *** Add color to new rgb image
@@ -1350,7 +1354,7 @@ class ImageLib
     Add Caption Box
     *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
-    public function addCaptionBox($side = 'b', $thickness = 50, $padding = 0, $bgColor = '#000', $transaprencyAmount = 30)//phpcs:ignore
+    public function addCaptionBox($side = 'b', $thickness = 50, $padding = 0, $bgColor = '#000', $transaprencyAmount = 30) //phpcs:ignore
     {
         $side = RFM::fixStrtolower($side);
 
@@ -1367,8 +1371,8 @@ class ImageLib
 
 
         $transaprencyAmount = $this->invertTransparency($transaprencyAmount, 127, false);
-        $transparent = imagecolorallocatealpha($this->imageResized, $r, $g, $b, $transaprencyAmount);//phpcs:ignore
-        imagefilledrectangle($this->imageResized, $positionArray['x1'], $positionArray['y1'], $positionArray['x2'], $positionArray['y2'], $transparent);//phpcs:ignore
+        $transparent = imagecolorallocatealpha($this->imageResized, $r, $g, $b, $transaprencyAmount); //phpcs:ignore
+        imagefilledrectangle($this->imageResized, $positionArray['x1'], $positionArray['y1'], $positionArray['x2'], $positionArray['y2'], $transparent); //phpcs:ignore
     }
 
     // --------------------------------------------------------
@@ -1384,7 +1388,7 @@ class ImageLib
             $y2 = $this->captionBoxPositionArray['y2'];
         } else {
             if ($this->debug) {
-                throw new Exception('No caption box found.');
+                throw new _Exception('No caption box found.');
             } else {
                 return false;
             }
@@ -1458,28 +1462,28 @@ class ImageLib
     public function getExif($debug = false)
     {
 
-        if (! $this->debug || ! $debug) {
+        if (!$this->debug || !$debug) {
             $debug = false;
         }
 
         // *** Check all is good - check the EXIF library exists and the file exists, too.
-        if (! $this->testEXIFInstalled()) {
+        if (!$this->testEXIFInstalled()) {
             if ($debug) {
-                throw new Exception('The EXIF Library is not installed.');
+                throw new _Exception('The EXIF Library is not installed.');
             } else {
                 return array();
             }
         };
-        if (! file_exists($this->fileName)) {
+        if (!file_exists($this->fileName)) {
             if ($debug) {
-                throw new Exception('Image not found.');
+                throw new _Exception('Image not found.');
             } else {
                 return array();
             }
         };
         if ($this->fileExtension != '.jpg') {
             if ($debug) {
-                throw new Exception('Metadata not supported for this image type.');
+                throw new _Exception('Metadata not supported for this image type.');
             } else {
                 return array();
             }
@@ -1828,17 +1832,17 @@ class ImageLib
         $len = strlen($val);
         if ($len < 0x8000) {
             return chr(0x1c) . chr($rec) . chr($dat) .
-            chr($len >> 8) .
-            chr($len & 0xff) .
-            $val;
+                chr($len >> 8) .
+                chr($len & 0xff) .
+                $val;
         } else {
             return chr(0x1c) . chr($rec) . chr($dat) .
-            chr(0x80) . chr(0x04) .
-            chr(($len >> 24) & 0xff) .
-            chr(($len >> 16) & 0xff) .
-            chr(($len >> 8) & 0xff) .
-            chr(($len) & 0xff) .
-            $val;
+                chr(0x80) . chr(0x04) .
+                chr(($len >> 24) & 0xff) .
+                chr(($len >> 16) & 0xff) .
+                chr(($len >> 8) & 0xff) .
+                chr(($len) & 0xff) .
+                $val;
         }
     }
 
@@ -1855,7 +1859,7 @@ class ImageLib
     Add Text
     *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-**-*-*-*-*-*-*-*-*-*-*-*-*-*/
 
-    public function addText($text, $pos = '20x20', $padding = 0, $fontColor = '#fff', $fontSize = 12, $angle = 0, $font = null)//phpcs:ignore
+    public function addText($text, $pos = '20x20', $padding = 0, $fontColor = '#fff', $fontSize = 12, $angle = 0, $font = null) //phpcs:ignore
     {
 
         // *** Convert color
@@ -1895,15 +1899,15 @@ class ImageLib
         putenv('GDFONTPATH=' . realpath('.'));
 
         // *** Check if the passed in font exsits...
-        if ($font == null || ! file_exists($font)) {
+        if ($font == null || !file_exists($font)) {
             // *** ...If not, default to this font.
             $font = $fontPath . '/arimo.ttf';
 
             // *** Check our default font exists...
-            if (! file_exists($font)) {
+            if (!file_exists($font)) {
                 // *** If not, return false
                 if ($this->debug) {
-                    throw new Exception('Font not found');
+                    throw new _Exception('Font not found');
                 } else {
                     return false;
                 }
@@ -1927,7 +1931,7 @@ class ImageLib
         // ***  Get height of text from dimensions (should also be same as $fontSize)
         $textHeight = abs($box[5] - $box[1]);
 
-        return array( 'height' => $textHeight, 'width' => $textWidth );
+        return array('height' => $textHeight, 'width' => $textWidth);
     }
 
 
@@ -1987,8 +1991,7 @@ class ImageLib
 
                 case 'tr':
                     $width = $this->width - $assetWidth - $padding;
-                    $height = 0 + $padding;
-                    ;
+                    $height = 0 + $padding;;
                     break;
 
                 case 'l':
@@ -2028,11 +2031,11 @@ class ImageLib
             }
         }
 
-        if (! $upperLeft) {
+        if (!$upperLeft) {
             $height = $height + $assetHeight;
         }
 
-        return array( 'width' => $width, 'height' => $height );
+        return array('width' => $width, 'height' => $height);
     }
 
 
@@ -2041,7 +2044,7 @@ class ImageLib
     private function filterOpacity(&$img, $opacity = 75)
     {
 
-        if (! isset($opacity)) {
+        if (!isset($opacity)) {
             return false;
         }
 
@@ -2082,9 +2085,9 @@ class ImageLib
                     $alpha += 127 * $opacity;
                 }
                 //get the color index with new alpha
-                $alphacolorxy = imagecolorallocatealpha($img, ($colorxy >> 16) & 0xFF, ($colorxy >> 8) & 0xFF, $colorxy & 0xFF, $alpha);//phpcs:ignore
+                $alphacolorxy = imagecolorallocatealpha($img, ($colorxy >> 16) & 0xFF, ($colorxy >> 8) & 0xFF, $colorxy & 0xFF, $alpha); //phpcs:ignore
                 //set pixel with the new color + opacity
-                if (! imagesetpixel($img, $x, $y, $alphacolorxy)) {
+                if (!imagesetpixel($img, $x, $y, $alphacolorxy)) {
                     return false;
                 }
             }
@@ -2098,11 +2101,11 @@ class ImageLib
     private function openImage($file)
     {
 
-        if (! file_exists($file) && ! $this->checkStringStartsWith('http://', $file) && ! $this->checkStringStartsWith('https://', $file)) {//phpcs:ignore
+        if (!file_exists($file) && !$this->checkStringStartsWith('http://', $file) && !$this->checkStringStartsWith('https://', $file)) { //phpcs:ignore
             if ($this->debug) {
-                throw new Exception('Image not found.');
+                throw new _Exception('Image not found.');
             } else {
-                throw new Exception();
+                throw new _Exception();
             }
         };
 
@@ -2130,7 +2133,7 @@ class ImageLib
                 break;
 
 
-            // ... etc
+                // ... etc
 
             default:
                 $img = false;
@@ -2153,20 +2156,20 @@ class ImageLib
     {
 
         // *** Perform a check or two.
-        if (! is_resource($this->imageResized)) {
+        if (!is_resource($this->imageResized)) {
             if ($this->debug) {
-                throw new Exception('saveImage: This is not a resource.');
+                throw new _Exception('saveImage: This is not a resource.');
             } else {
-                throw new Exception();
+                throw new _Exception();
             }
         }
         $fileInfoArray = pathInfo($savePath);
         clearstatcache();
-        if (! is_writable($fileInfoArray['dirname'])) {
+        if (!is_writable($fileInfoArray['dirname'])) {
             if ($this->debug) {
-                throw new Exception('The path is not writable. Please check your permissions.');
+                throw new _Exception('The path is not writable. Please check your permissions.');
             } else {
-                throw new Exception();
+                throw new _Exception();
             }
         }
 
@@ -2216,7 +2219,7 @@ class ImageLib
                 break;
 
 
-            // ... etc
+                // ... etc
 
             default:
                 // *** No extension - No save.
@@ -2237,11 +2240,11 @@ class ImageLib
     public function displayImage($fileType = 'jpg', $imageQuality = "100")
     {
 
-        if (! is_resource($this->imageResized)) {
+        if (!is_resource($this->imageResized)) {
             if ($this->debug) {
-                throw new Exception('saveImage: This is not a resource.');
+                throw new _Exception('saveImage: This is not a resource.');
             } else {
-                throw new Exception();
+                throw new _Exception();
             }
         }
 
@@ -2270,7 +2273,7 @@ class ImageLib
                 echo 'bmp file format is not supported.';
                 break;
 
-            // ... etc
+                // ... etc
 
             default:
                 // *** No extension - No save.
@@ -2499,15 +2502,15 @@ class ImageLib
         $green = 255;
 
         do {
-            $greenChroma = array( 0, $green, 0 );
+            $greenChroma = array(0, $green, 0);
             $colorArray = $this->formatColor($greenChroma);
             $match = $this->testColorExists($colorArray);
             $green--;
         } while ($match == false && $green > 0);
 
         // *** If no match, just bite the bullet and use green value of 255
-        if (! $match) {
-            $greenChroma = array( 0, $green, 0 );
+        if (!$match) {
+            $greenChroma = array(0, $green, 0);
         }
 
         return $greenChroma;
@@ -2520,15 +2523,15 @@ class ImageLib
         $blue = 255;
 
         do {
-            $blueChroma = array( 0, 0, $blue );
+            $blueChroma = array(0, 0, $blue);
             $colorArray = $this->formatColor($blueChroma);
             $match = $this->testColorExists($colorArray);
             $blue--;
         } while ($match == false && $blue > 0);
 
         // *** If no match, just bite the bullet and use blue value of 255
-        if (! $match) {
-            $blueChroma = array( 0, 0, $blue );
+        if (!$match) {
+            $blueChroma = array(0, 0, $blue);
         }
 
         return $blueChroma;
@@ -2641,7 +2644,7 @@ class ImageLib
 
     private function getPixelColor(&$img, $x, $y)
     {
-        if (! is_resource($img)) {
+        if (!is_resource($img)) {
             return false;
         }
 
@@ -2670,7 +2673,7 @@ class ImageLib
     {
 
         //Ouverture du fichier en mode binaire
-        if (! $f1 = fopen($filename, "rb")) {
+        if (!$f1 = fopen($filename, "rb")) {
             return false;
         }
 
@@ -2683,8 +2686,8 @@ class ImageLib
         //2 : Chargement des ent�tes BMP
         $BMP = unpack(
             'Vheader_size/Vwidth/Vheight/vplanes/vbits_per_pixel' .
-            '/Vcompression/Vsize_bitmap/Vhoriz_resolution' .
-            '/Vvert_resolution/Vcolors_used/Vcolors_important',
+                '/Vcompression/Vsize_bitmap/Vhoriz_resolution' .
+                '/Vvert_resolution/Vcolors_used/Vcolors_important',
             fread($f1, 40)
         );
         $BMP['colors'] = pow(2, $BMP['bits_per_pixel']);
@@ -2745,7 +2748,7 @@ class ImageLib
                     $COLOR[1] = $red * 65536 + $green * 256 + $blue;
                 } elseif ($BMP['bits_per_pixel'] == 8) {
                     $COLOR = unpack("n", $VIDE . substr($IMG, $P, 1));
-                    $COLOR[1] = $PALETTE[ $COLOR[1] + 1 ];
+                    $COLOR[1] = $PALETTE[$COLOR[1] + 1];
                 } elseif ($BMP['bits_per_pixel'] == 4) {
                     $COLOR = unpack("n", $VIDE . substr($IMG, floor($P), 1));
                     if (($P * 2) % 2 == 0) {
@@ -2753,7 +2756,7 @@ class ImageLib
                     } else {
                         $COLOR[1] = ($COLOR[1] & 0x0F);
                     }
-                    $COLOR[1] = $PALETTE[ $COLOR[1] + 1 ];
+                    $COLOR[1] = $PALETTE[$COLOR[1] + 1];
                 } elseif ($BMP['bits_per_pixel'] == 1) {
                     $COLOR = unpack("n", $VIDE . substr($IMG, floor($P), 1));
                     if (($P * 8) % 8 == 0) {
@@ -2773,7 +2776,7 @@ class ImageLib
                     } elseif (($P * 8) % 8 == 7) {
                         $COLOR[1] = ($COLOR[1] & 0x1);
                     }
-                    $COLOR[1] = $PALETTE[ $COLOR[1] + 1 ];
+                    $COLOR[1] = $PALETTE[$COLOR[1] + 1];
                 } else {
                     return false;
                 }
