@@ -1126,8 +1126,8 @@ if (isset($filePermissions[$file])) {
                     $file_path='/'.$config['current_path'].$rfm_subfolder.$subdir.$file;
                     //check if file have illegal caracter
 
-                    if ($file!=RFM::fixGetParams($file, $config)) {
-                        $file1=RFM::fixGetParams($file, $config);
+                    if ($file!=RFM::fixFilename($file, $config)) {
+                        $file1=RFM::fixFilename($file, $config);
                         $file_path1=($config['current_path'].$rfm_subfolder.$subdir.$file1);
                         if (file_exists($file_path1)) {
                             $i = 1;
@@ -1143,9 +1143,9 @@ if (isset($filePermissions[$file])) {
                         if (strlen($file_array['extension'])===0) {
                             $filename = $file1;
                         }
-                        RFM::renameFile($file_path, RFM::fixGetParams($filename, $config), $ftp, $config);
+                        RFM::renameFile($file_path, RFM::fixFilename($filename, $config), $ftp, $config);
                         $file=$file1;
-                        $file_array['extension']=RFM::fixGetParams($file_array['extension'], $config);
+                        $file_array['extension']=RFM::fixFilename($file_array['extension'], $config);
                         $file_path=$file_path1;
                     }
                 } else {
