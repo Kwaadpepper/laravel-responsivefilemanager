@@ -78,7 +78,7 @@ Generate private key for url identification
 All configs included to work out of the box.
 Files are meant to be stored in public folder.
 
-Don't forget to create upload dir
+**Don't forget to create upload dir**
 
     mkdir -p public/uploads/files/
 
