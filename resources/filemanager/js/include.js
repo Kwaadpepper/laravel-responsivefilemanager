@@ -2102,7 +2102,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     value = parseFloat(parseFloat(value) + parseFloat(0.001));
                 }
             } else {
-                value = value + "a" + _this.find('h4 a').attr('data-file');
+                value = value + "a" + _this.find('a.link').attr('data-file');
             }
             vals_dir[value] = _this.html();
             values_dir.push(value);
@@ -2118,7 +2118,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     value = parseFloat(parseFloat(value) + parseFloat(0.001));
                 }
             } else {
-                value = value + "a" + _this.find('h4 a').attr('data-file');
+                value = value + "a" + _this.find('a.link').attr('data-file');
             }
             vals_file[value] = _this.html();
             values_file.push(value);
