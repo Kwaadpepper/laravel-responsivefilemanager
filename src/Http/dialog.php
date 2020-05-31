@@ -54,7 +54,7 @@ $subdir_path = '';
 
 if (isset($_GET['fldr']) && !empty($_GET['fldr'])) {
     $subdir_path = rawurldecode(trim(strip_tags($_GET['fldr']), "/"));
-} elseif (session()->exists('RF.fldr') && !session()->has('RF.fldr')) {
+} elseif (session()->has('RF.fldr') && !session()->has('RF.fldr')) {
     $subdir_path = rawurldecode(trim(strip_tags(session('RF.fldr')), "/"));
 }
 
@@ -98,12 +98,12 @@ if ($config['show_total_size']) {
 /***
  * SUB-DIR CODE
  ***/
-if (!session()->exists('RF.subfolder')) {
+if (!session()->has('RF.subfolder')) {
     session()->put('RF.subfolder', '');
 }
 $rfm_subfolder = '';
 
-if (!session()->exists('RF.subfolder')
+if (!session()->has('RF.subfolder')
     && strpos(session('RF.subfolder'), "/") !== 0
     && strpos(session('RF.subfolder'), '.') === false
 ) {
@@ -184,7 +184,7 @@ if (isset($_GET['callback'])) {
 } else {
     $callback = 0;
 
-    if (session()->exists('RF.callback', $callback)) {
+    if (session()->has('RF.callback', $callback)) {
         $callback = session('RF.callback');
     }
 }
@@ -198,7 +198,7 @@ $crossdomain = isset($_GET['crossdomain']) ? strip_tags($_GET['crossdomain']) : 
 $crossdomain=!!$crossdomain;
 
 //view type
-if (!session()->exists('RF.view_type')) {
+if (!session()->has('RF.view_type')) {
     $view = $config['default_view'];
     session()->put('RF.view_type', $view);
 }
@@ -212,7 +212,7 @@ $view = session('RF.view_type');
 
 //filter
 $filter = "";
-if (session()->exists('RF.filter')) {
+if (session()->has('RF.filter')) {
     $filter = session('RF.filter');
 }
 
@@ -220,7 +220,7 @@ if (isset($_GET["filter"])) {
     $filter = RFM::fixGetParams($_GET["filter"]);
 }
 
-if (!session()->exists('RF.sort_by')) {
+if (!session()->has('RF.sort_by')) {
     session()->put('RF.sort_by', 'name');
 }
 
@@ -232,7 +232,7 @@ if (isset($_GET["sort_by"])) {
 }
 
 
-if (!session()->exists('RF.descending')) {
+if (!session()->has('RF.descending')) {
     session()->put('RF.descending', true);
 }
 
@@ -1188,7 +1188,7 @@ if (isset($filePermissions[$file])) {
                         }
 
                         if ($img_width<45 && $img_height<38) {
-                            $mini_src=$config['current_path'].$rfm_subfolder.$subdir.$file;
+                            $mini_src="/".$config['current_path'].$rfm_subfolder.$subdir.$file;
                             $show_original_mini=true;
                         }
                     }
@@ -1281,7 +1281,7 @@ if (isset($filePermissions[$file])) {
                                          }?>"><?php echo $file_array['extension'] ?></div>
                     <div class="img-container-mini">
                     <?php if ($mini_src!="") { ?>
-                    <img class="<?php echo $show_original_mini ? "original" : "" ?><?php echo $is_icon_thumb_mini ? " icon" : "" ?>" data-src="<?php echo (in_array($file_array['extension'], $config['editable_text_file_exts']) ? '' : '').$mini_src;?>">
+                    <img class="<?php echo $show_original_mini ? "original" : "" ?><?php echo $is_icon_thumb_mini ? " icon" : "" ?>" data-src="<?php echo $mini_src;?>">
                     <?php } ?>
                     </div>
                 </div>
@@ -1500,3 +1500,7 @@ if (isset($filePermissions[$file])) {
     </script>
 </body>
 </html>
+
+<?php
+    session()->save();
+?>

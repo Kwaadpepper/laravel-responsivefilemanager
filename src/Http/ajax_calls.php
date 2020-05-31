@@ -746,3 +746,5 @@ if (isset($_GET['action'])) {
     RFM::response(__('no action passed').RFM::addErrorLocation())->send();
     exit;
 }
+
+session()->save();
