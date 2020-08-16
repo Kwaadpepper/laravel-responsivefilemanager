@@ -7,7 +7,7 @@
           "name": "Jeremy Munsch"
       }
   ],
-  "version": "0.0.9",
+  "version": "0.0.10",
   "keywords": ["laravel", "responsive", "filemanager"],
   "minimum-stability": "dev",
   "require": {
