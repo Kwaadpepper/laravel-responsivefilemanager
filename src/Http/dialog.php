@@ -28,6 +28,12 @@ session()->put('RF.verify', "RESPONSIVEfilemanager");
 $config = config('rfm');
 $version = config('rfm.version');
 
+if (session()->has('RF.composerVersion')) {
+    $composerVersion = json_decode(file_get_contents(__DIR__ . '/../../composer.json'))->version;
+    session()->put('RF.composerVersion', $composerVersion);
+} else {
+    $composerVersion = session()->get('RF.composerVersion');
+}
 
 $time = time();
 
@@ -1498,6 +1504,7 @@ if (isset($filePermissions[$file])) {
             $('li').draggable({disabled: true});
         }
     </script>
+    <div id="version" style="display: none;"><?php echo $composerVersion; ?></div>
 </body>
 </html>
 
