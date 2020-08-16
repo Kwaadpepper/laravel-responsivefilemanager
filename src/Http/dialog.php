@@ -109,7 +109,7 @@ if (!session()->has('RF.subfolder')) {
 }
 $rfm_subfolder = '';
 
-if (!session()->has('RF.subfolder')
+if (session()->has('RF.subfolder')
     && strpos(session('RF.subfolder'), "/") !== 0
     && strpos(session('RF.subfolder'), '.') === false
 ) {
