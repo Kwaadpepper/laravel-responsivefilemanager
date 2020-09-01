@@ -206,15 +206,16 @@ try {
                 'type' => $_FILES['files']['type'][$i]
             );
         }
-
-        if (!FM_DEBUG_ERROR_MESSAGE) {
+        //kent
+        if (defined('FM_DEBUG_ERROR_MESSAGE') && !FM_DEBUG_ERROR_MESSAGE) {
             dd($e, array("files" => $return));
         }
 
         echo json_encode(array("files" => $return));
         return;
     }
-    if (!FM_DEBUG_ERROR_MESSAGE) {
+    //kent
+    if (defined('FM_DEBUG_ERROR_MESSAGE') && !FM_DEBUG_ERROR_MESSAGE) {
         dd($e);
     }
     echo json_encode(array("error" => $e->getMessage()));

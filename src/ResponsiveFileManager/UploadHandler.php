@@ -316,8 +316,10 @@ class UploadHandler
             }
             $version_path = rawurlencode($version) . '/';
         }
-        return $this->options['upload_url'] . $this->getUserPath()
-            . $version_path . rawurlencode($file_name);
+        //kent
+        return asset('storage/uploads/files').'/'. $this->getUserPath(). $version_path . rawurlencode($file_name);
+//        return $this->options['upload_url'] . $this->getUserPath()
+//            . $version_path . rawurlencode($file_name);
     }
 
     protected function setAdditionalFileProperties($file)
@@ -1607,7 +1609,9 @@ class UploadHandler
         $targetPathThumb = $this->options['storeFolderThumb'];
 
         if (!$this->options['ftp']) {
-            $targetFile =  $targetPath . $res['files'][0]->name;
+            //kent
+            $targetFile =  storage_path('app/public/uploads/images') .'/'. $res['files'][0]->name;
+//            $targetFile =  $targetPath . $res['files'][0]->name;
             $targetFileThumb =  $targetPathThumb . $res['files'][0]->name;
             if (!is_dir($targetPathThumb)) {
                 mkdir($targetPathThumb, $this->options['mkdir_mode'], true);

@@ -40,7 +40,7 @@ $time = time();
 $vendor_path = parse_url(asset('vendor/responsivefilemanager').'/')['path'];
 
 
-if (FM_USE_ACCESS_KEYS == true) {
+if (defined('FM_USE_ACCESS_KEYS') && FM_USE_ACCESS_KEYS == true) {
     if (!isset($_GET['akey'], $config['access_keys']) || empty($config['access_keys'])) {
         die('Access Denied!');
     }
@@ -128,7 +128,8 @@ if (($ftp && !$ftp->isDir($config['ftp_base_folder'] . $config['upload_dir'] . $
     $rfm_subfolder = "";
 }
 
-
+//kent
+$storage_url    = $config['storage_url'].$rfm_subfolder.$subdir;
 $cur_dir        = $config['upload_dir'].$rfm_subfolder.$subdir;
 $cur_dir_thumb  = $config['thumbs_upload_dir'].$rfm_subfolder.$subdir;
 $thumbs_path    = $config['thumbs_base_path'].$rfm_subfolder.$subdir;
@@ -307,7 +308,7 @@ if (!$apply) {
 $get_params = array(
     'editor'        => $editor,
     'type'          => $type_param,
-    'lang'          => session('RF.language'),
+    'lang'          => 'en_EN',
     'popup'         => $popup,
     'crossdomain'   => $crossdomain,
     'extensions'    => ($extensions) ? urlencode(json_encode($extensions)) : null ,
@@ -413,6 +414,7 @@ $get_params = http_build_query($get_params);
     <input type="hidden" id="type_param" value="<?php echo $type_param;?>" />
     <input type="hidden" id="upload_dir" value="<?php echo $config['upload_dir'];?>" />
     <input type="hidden" id="cur_dir" value="<?php echo $cur_dir;?>" />
+    <input type="hidden" id="storage_url" value="<?php echo $storage_url;?>" />
     <input type="hidden" id="cur_dir_thumb" value="<?php echo $cur_dir_thumb;?>" />
     <input type="hidden" id="insert_folder_name" value="<?php echo __('Insert_Folder_Name');?>" />
     <input type="hidden" id="rename_existing_folder" value="<?php echo __('Rename_existing_folder');?>" />
@@ -654,7 +656,8 @@ if ($ftp) {
         die();
     }
 } else {
-    $files = scandir($config['current_path'] . $rfm_subfolder . $subdir);
+    //kent
+    $files = scandir(storage_path( $config['actual_folder'] ) . $rfm_subfolder . $subdir);
 }
 
 $n_files = count($files);
@@ -715,9 +718,12 @@ foreach ($files as $k => $file) {
                 }
             } else {
                 $current_files_number++;
-                $file_path = $config['current_path'] . $rfm_subfolder . $subdir . $file;
-                $date = filemtime($file_path);
-                $size = filesize($file_path);
+                $file_path = storage_path($config['current_path']) . $rfm_subfolder . $subdir . $file;
+                //kent
+                $new_file_path = storage_path($config['actual_folder']). $rfm_subfolder . $subdir . $file;
+                $date = filemtime($new_file_path);
+                
+                $size = filesize($new_file_path);
                 $file_ext = substr(strrchr($file, '.'), 1);
                 $sorted[$k] = array(
                     'is_dir' => false,
@@ -961,7 +967,7 @@ $files = $sorted;
     <!-- breadcrumb div end -->
     <div class="row-fluid ff-container">
     <div class="span12">
-        <?php if (($ftp && !$ftp->isDir($config['ftp_base_folder'].$config['upload_dir'].$rfm_subfolder.$subdir))  || (!$ftp && @opendir($config['current_path'].$rfm_subfolder.$subdir)===false)) { ?>
+        <?php if (($ftp && !$ftp->isDir($config['ftp_base_folder'].$config['upload_dir'].$rfm_subfolder.$subdir))  || (!$ftp && @opendir(storage_path($config['actual_folder']) . $rfm_subfolder . $subdir)===false)) { ?>
         <br/>
         <div class="alert alert-error">There is an error! The upload folder there isn't. Check your config.php file. </div>
         <?php } else { ?>
@@ -1182,19 +1188,21 @@ if (isset($filePermissions[$file])) {
                         $creation_thumb_path = $mini_src = $src_thumb = $thumbs_path. $file;
 
                         if (!file_exists($src_thumb)) {
-                            if (!RFM::createImg($ftp, __DIR__.'/'.$file_path, __DIR__.'/'.$creation_thumb_path, 122, 91, 'crop', $config)) {
+                            if (!RFM::createImg($ftp, storage_path($config['actual_thumbs_folder']).$file, 122, 91, 'crop', $config)) {
                                 $src_thumb = $mini_src = "";
                             }
                         }
                         //check if is smaller than thumb
                         list($img_width, $img_height, $img_type, $attr)=@getimagesize($file_path);
                         if ($img_width<122 && $img_height<91) {
-                            $src_thumb=$file_path;
+                            //kent
+                            $src_thumb=asset($config['storage_url']).'/'.$file;
                             $show_original=true;
                         }
 
                         if ($img_width<45 && $img_height<38) {
-                            $mini_src="/".$config['current_path'].$rfm_subfolder.$subdir.$file;
+                            //kent
+                            $mini_src=asset($config['storage_url']).'/'.$file;
                             $show_original_mini=true;
                         }
                     }

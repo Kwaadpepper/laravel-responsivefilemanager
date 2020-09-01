@@ -53,10 +53,14 @@ if (!defined('FM_DEBUG_ERROR_MESSAGE')) {
 
 // CHANGE HERE FILES AND THUMBS PATH
 // path from public folder !!Accessible to All!!
-$upload_dir = 'uploads/files/';
-$thumbs_upload_dir = 'thumbs/';
-$current_path = 'uploads/files/';
-$thumbs_base_path = 'thumbs/';
+$upload_dir = 'storage/app/public/uploads/images/';
+$thumbs_upload_dir = 'storage/app/public/uploads/images/thumbs/';
+$current_path = 'storage/app/public/uploads/images/';
+$thumbs_base_path = 'storage/app/public/uploads/images/thumbs/';
+//kent
+$storage_url = 'storage/uploads/images/';
+$actual_folder = 'app/public/uploads/images/'; //due to symlink, we have to create a real path if not system unable to detect
+$actual_thumbs_folder = 'app/public/uploads/images/thumbs/';
 
 $config = array(
 
@@ -92,6 +96,36 @@ $config = array(
     |
     */
     'current_path' => $current_path,
+
+    /*
+    |--------------------------------------------------------------------------
+    | relative path from filemanager folder to upload folder
+    |--------------------------------------------------------------------------
+    |
+    | with final /
+    |
+    */
+    'storage_url' => $storage_url,
+
+    /*
+    |--------------------------------------------------------------------------
+    | relative path from filemanager folder to upload folder
+    |--------------------------------------------------------------------------
+    |
+    | with final /
+    |
+    */
+    'actual_folder' => $actual_folder,
+
+    /*
+    |--------------------------------------------------------------------------
+    | relative path from filemanager folder to upload folder
+    |--------------------------------------------------------------------------
+    |
+    | with final /
+    |
+    */
+    'actual_thumbs_folder' => $actual_thumbs_folder,
 
     /*
     |--------------------------------------------------------------------------
@@ -232,7 +266,7 @@ $config = array(
     | default language file name
     |--------------------------------------------------------------------------
     */
-    'default_language' => false,
+    'default_language' => 'en_EN',
 
     /*
     |--------------------------------------------------------------------------

@@ -273,7 +273,7 @@ if (isset($_GET['action'])) {
                     $_GET['file'],
                     $preview_file
                 )) {
-                    if (!FM_DEBUG_ERROR_MESSAGE) {
+                    if (defined('FM_DEBUG_ERROR_MESSAGE') && !FM_DEBUG_ERROR_MESSAGE) {
                         throw new NotFoundHttpException();
                     }
                     RFM::response(__('FTP ftpDownloadFile error') . RFM::addErrorLocation(), 400)->send();
@@ -688,7 +688,8 @@ if (isset($_GET['action'])) {
                     $info['basename'],
                     $preview_file
                 )) {
-                    if (!FM_DEBUG_ERROR_MESSAGE) {
+                    //kent
+                    if (defined('FM_DEBUG_ERROR_MESSAGE') && !FM_DEBUG_ERROR_MESSAGE) {
                         throw new NotFoundHttpException();
                     }
                     RFM::response(__('FTP ftpDownloadFile error') . RFM::addErrorLocation(), 400)->send();
