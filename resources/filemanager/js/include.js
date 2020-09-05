@@ -77,7 +77,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 show_animation();
                 $.ajax({
                     type: "POST",
-                    url: "ajax_calls.php?action=extract",
+                    url: "ajax_calls?action=extract",
                     data: {
                         path: m,
                         _token: jQuery('meta[name="csrf-token"]').attr('content')
@@ -529,7 +529,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                         });
 
                         $.ajax({
-                            url: "ajax_calls.php?action=filter&type=" + val
+                            url: "ajax_calls?action=filter&type=" + val
                         }).done(function (msg) {
                             if (msg != "") {
                                 bootbox.alert(msg);
@@ -567,7 +567,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             jQuery('#fileupload').fileupload({
                 // Uncomment the following to send cross-domain cookies:
                 //xhrFields: {withCredentials: true},
-                url: 'upload.php',
+                url: 'upload',
                 maxChunkSize: 2 * 1024 * 1024, // 2 MB
             });
             jQuery('#fileupload').bind('fileuploaddrop', function (e, data) {
@@ -613,7 +613,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 show_animation();
                 $.ajax({
                     type: "POST",
-                    url: "upload.php",
+                    url: "upload",
                     data: {
                         fldr: fldr,
                         url: url,
@@ -679,7 +679,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
                 if (js_script) {
                     $.ajax({
-                        url: "ajax_calls.php?action=sort&sort_by=" + _this.attr('data-sort') + "&descending=" + (sortDescending ? 1 : 0)
+                        url: "ajax_calls?action=sort&sort_by=" + _this.attr('data-sort') + "&descending=" + (sortDescending ? 1 : 0)
                     });
                     sortUnorderedList(sortDescending, "." + _this.attr('data-sort'));
                     jQuery(' a.sorter').removeClass('descending').removeClass('ascending');
@@ -796,7 +796,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     var folder_path = jQuery('#sub_folder').val() + jQuery('#fldr_value').val();
                     $.ajax({
                         type: "POST",
-                        url: "execute.php?action=create_folder",
+                        url: "execute?action=create_folder",
                         data: {
                             path: folder_path,
                             name: name,
@@ -825,7 +825,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             _this.find('i').addClass('icon-white');
 
             $.ajax({
-                url: "ajax_calls.php?action=view&type=" + _this.attr('data-value')
+                url: "ajax_calls?action=view&type=" + _this.attr('data-value')
             }).done(function (msg) {
                 if (msg != "") {
                     bootbox.alert(msg);
@@ -1035,7 +1035,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
         $.ajax({
             type: "GET",
-            url: "ajax_calls.php?action=new_file_form"
+            url: "ajax_calls?action=new_file_form"
         }).done(function (status_msg) {
             bootbox.dialog(
                 status_msg,
@@ -1056,7 +1056,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                                 // post ajax
                                 $.ajax({
                                     type: "POST",
-                                    url: "execute.php?action=create_file",
+                                    url: "execute?action=create_file",
                                     data: {
                                         path: folder_path,
                                         name: newFileName,
@@ -1092,7 +1092,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
         $.ajax({
             type: "POST",
-            url: "ajax_calls.php?action=get_file&sub_action=edit&preview_mode=text",
+            url: "ajax_calls?action=get_file&sub_action=edit&preview_mode=text",
             data: { path: full_path, _token: jQuery('meta[name="csrf-token"]').attr('content') }
         }).done(function (init_content) {
             bootbox.dialog(
@@ -1112,7 +1112,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                             // post ajax
                             $.ajax({
                                 type: "POST",
-                                url: "execute.php?action=save_text_file",
+                                url: "execute?action=save_text_file",
                                 data: {
                                     path: full_path,
                                     new_content: newContent,
@@ -1137,7 +1137,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
     {
         $.ajax({
             type: "POST",
-            url: "ajax_calls.php?action=get_lang",
+            url: "ajax_calls?action=get_lang",
             data: { _token: jQuery('meta[name="csrf-token"]').attr('content') }
         }).done(function (init_msg) {
             bootbox.dialog(
@@ -1155,7 +1155,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                             // post ajax
                             $.ajax({
                                 type: "POST",
-                                url: "ajax_calls.php?action=change_lang",
+                                url: "ajax_calls?action=change_lang",
                                 data: { choosen_lang: newLang, _token: jQuery('meta[name="csrf-token"]').attr('content') }
                             }).done(function (error_msg) {
                                 if (error_msg != "") {
@@ -1189,7 +1189,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         // ajax -> box -> ajax -> box -> mind blown
         $.ajax({
             type: "POST",
-            url: "ajax_calls.php?action=chmod",
+            url: "ajax_calls?action=chmod",
             data: {
                 path: full_path,
                 permissions: permissions,
@@ -1266,7 +1266,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                                 // post ajax
                                 $.ajax({
                                     type: "POST",
-                                    url: "execute.php?action=chmod",
+                                    url: "execute?action=chmod",
                                     data: {
                                         path: full_path,
                                         new_mode: newPerm,
@@ -1359,7 +1359,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             if (result == true) {
                 $.ajax({
                     type: "POST",
-                    url: "ajax_calls.php?action=clear_clipboard",
+                    url: "ajax_calls?action=clear_clipboard",
                     data: { _token: jQuery('meta[name="csrf-token"]').attr('content') }
                 }).done(function (msg) {
                     if (msg != "") {
@@ -1385,7 +1385,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
         $.ajax({
             type: "POST",
-            url: "ajax_calls.php?action=copy_cut",
+            url: "ajax_calls?action=copy_cut",
             data: {
                 path: full_path,
                 sub_action: atype,
@@ -1414,7 +1414,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
                 $.ajax({
                     type: "POST",
-                    url: "execute.php?action=paste_clipboard",
+                    url: "execute?action=paste_clipboard",
                     data: {
                         path: folder_path,
                         _token: jQuery('meta[name="csrf-token"]').attr('content')
@@ -1452,7 +1452,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
         $.ajax({
             type: "POST",
-            url: "ajax_calls.php?action=copy_cut",
+            url: "ajax_calls?action=copy_cut",
             data: {
                 path: full_path,
                 sub_action: 'cut',
@@ -1475,7 +1475,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
                     $.ajax({
                         type: "POST",
-                        url: "execute.php?action=paste_clipboard",
+                        url: "execute?action=paste_clipboard",
                         data: {
                             path: folder_path,
                             _token: jQuery('meta[name="csrf-token"]').attr('content')
@@ -2046,7 +2046,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             name = fix_filename(name);
             $.ajax({
                 type: "POST",
-                url: "execute.php?action=" + action,
+                url: "execute?action=" + action,
                 data: {
                     path: file,
                     name: name.replace('/', ''),
@@ -2072,7 +2072,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             name = fix_filename(name);
             $.ajax({
                 type: "POST",
-                url: "execute.php?action=" + action,
+                url: "execute?action=" + action,
                 data: {
                     path: files[0],
                     paths: files,

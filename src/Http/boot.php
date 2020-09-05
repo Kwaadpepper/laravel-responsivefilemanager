@@ -26,7 +26,7 @@ date_default_timezone_set('Europe/Rome');
 setlocale(LC_CTYPE, 'en_US'); //correct transliteration
 
 // No Pre output if force download file
-if (basename(request()->server('REQUEST_URI')) == "dialog.php") {
+if (basename(request()->server('REQUEST_URI')) == "dialog") {
     // ALLOW Crossscript for resource load
     header("content-type: text/html; charset=UTF-8");
     header("Access-Control-Allow-Origin: https://code.jquery.com");

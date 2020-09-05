@@ -908,7 +908,7 @@ $files = $sorted;
 
     <div class="row-fluid">
     <?php
-    $link = "dialog.php?" . $get_params;
+    $link = "dialog?" . $get_params;
     ?>
     <ul class="breadcrumb">
     <li class="pull-left"><a href="<?php echo $link?>/"><i class="icon-home"></i></a></li>
@@ -932,7 +932,7 @@ $files = $sorted;
     <?php if ($config['show_language_selection']) { ?>
     <li class="pull-right"><a class="btn-small" href="javascript:void('')" id="change_lang_btn"><i class="icon-globe"></i></a></li>
     <?php } ?>
-    <li class="pull-right"><a id="refresh" class="btn-small" href="dialog.php?<?php echo $get_params.$subdir."&".uniqid() ?>"><i class="icon-refresh"></i></a></li>
+    <li class="pull-right"><a id="refresh" class="btn-small" href="dialog?<?php echo $get_params.$subdir."&".uniqid() ?>"><i class="icon-refresh"></i></a></li>
 
     <li class="pull-right">
         <div class="btn-group">
@@ -1056,7 +1056,7 @@ if (isset($filePermissions[$file])) {
                     <input type="hidden" class="path" value="<?php echo str_replace('.', '', dirname($rfm_subfolder.$subdir));?>"/>
                     <input type="hidden" class="path_thumb" value="<?php echo dirname($thumbs_path)."/";?>"/>
                 <?php } ?>
-                <a class="folder-link" href="dialog.php?<?php echo $get_params.rawurlencode($src)."&".($callback?'callback='.$callback."&":'').uniqid() ?>">
+                <a class="folder-link" href="dialog?<?php echo $get_params.rawurlencode($src)."&".($callback?'callback='.$callback."&":'').uniqid() ?>">
                     <div class="img-precontainer">
                             <div class="img-container directory"><span></span>
                             <img class="directory-img" data-src="<?php echo $vendor_path; ?>img/<?php echo $config['icon_theme'];?>/folder<?php if ($file=="..") {
@@ -1083,7 +1083,7 @@ if (isset($filePermissions[$file])) {
                     <div class="box">
                     <h4 class="<?php if ($config['ellipsis_title_after_first_row']) {
                         echo "ellipsis";
-                               } ?>"><a class="folder-link" data-file="<?php echo $file ?>" href="dialog.php?<?php echo $get_params.rawurlencode($src)."&".uniqid() ?>"><?php echo $file;?></a></h4>
+                               } ?>"><a class="folder-link" data-file="<?php echo $file ?>" href="dialog?<?php echo $get_params.rawurlencode($src)."&".uniqid() ?>"><?php echo $file;?></a></h4>
                     </div>
                     <input type="hidden" class="name" value="<?php echo $file_array['file_lcase'];?>"/>
                     <input type="hidden" class="date" value="<?php echo $file_array['date'];?>"/>
@@ -1161,7 +1161,7 @@ if (isset($filePermissions[$file])) {
                         $file_path=$file_path1;
                     }
                 } else {
-                    $file_path = route('FMfview.php').'?ox='.encrypt(['path' => $config['upload_dir'].$rfm_subfolder.$subdir.$file, 'name' => $file]);
+                    $file_path = route('FMfview').'?ox='.encrypt(['path' => $config['upload_dir'].$rfm_subfolder.$subdir.$file, 'name' => $file]);
                 }
 
                 $is_img=false;
@@ -1182,7 +1182,7 @@ if (isset($filePermissions[$file])) {
                          * disabling for now
                          * TODO: cache FTP thumbnails for preview
                          */
-                        $mini_src = $src_thumb = route('FMfview.php').'?ox='.encrypt(['path' => $config['ftp_thumbs_dir'].$subdir. $file, 'name' => $file]);
+                        $mini_src = $src_thumb = route('FMfview').'?ox='.encrypt(['path' => $config['ftp_thumbs_dir'].$subdir. $file, 'name' => $file]);
                         $creation_thumb_path = "/".$config['ftp_base_folder'].$config['ftp_thumbs_dir'].$subdir. $file;
                     } else {
                         $creation_thumb_path = $mini_src = $src_thumb = $thumbs_path. $file;
@@ -1260,7 +1260,7 @@ if (isset($filePermissions[$file])) {
     $file_prevent_delete = isset($filePermissions[$file]['prevent_delete']) && $filePermissions[$file]['prevent_delete'];
 }
 ?>
-            <figure data-name="<?php echo $file ?>" data-path="<?php echo($ftp?route('FMfview.php').'?ox='.encrypt(['path' => $config['upload_dir'].$rfm_subfolder.$subdir.$file, 'name' => $file]):$rfm_subfolder.$subdir.$file);?>" data-type="<?php if ($is_img) {
+            <figure data-name="<?php echo $file ?>" data-path="<?php echo($ftp?route('FMfview').'?ox='.encrypt(['path' => $config['upload_dir'].$rfm_subfolder.$subdir.$file, 'name' => $file]):$rfm_subfolder.$subdir.$file);?>" data-type="<?php if ($is_img) {
                 echo "img";
                                } else {
                                    echo "file";
@@ -1319,7 +1319,7 @@ if (isset($filePermissions[$file])) {
                                            } ?></div>
                 <div class='file-extension'><?php echo $file_array['extension'];?></div>
                 <figcaption>
-                    <form action="force_download.php" method="post" class="download-form" id="form<?php echo $nu;?>">
+                    <form action="force_download" method="post" class="download-form" id="form<?php echo $nu;?>">
                     <input type="hidden" name="path" value="<?php echo $rfm_subfolder.$subdir?>"/>
                     <input type="hidden" class="name_download" name="name" value="<?php echo $file?>"/>
                     <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>"/>
@@ -1338,16 +1338,16 @@ if (isset($filePermissions[$file])) {
                                                 } else {
                                                     echo "video";
                                                 } ?>"
-                    title="<?php echo __('Preview')?>" data-url="ajax_calls.php?action=media_preview&title=<?php echo $filename;?>&file=<?php echo $rfm_subfolder.$subdir.$file;?>"
+                    title="<?php echo __('Preview')?>" data-url="ajax_calls?action=media_preview&title=<?php echo $filename;?>&file=<?php echo $rfm_subfolder.$subdir.$file;?>"
                     href="javascript:void('');" ><i class=" icon-eye-open"></i></a>
                     <?php } elseif (in_array($file_array['extension'], $config['cad_exts'])) { ?>
-                    <a class="tip-right file-preview-btn" title="<?php echo __('Preview')?>" data-url="ajax_calls.php?action=cad_preview&title=<?php echo $filename;?>&file=<?php echo $rfm_subfolder.$subdir.$file;?>"
+                    <a class="tip-right file-preview-btn" title="<?php echo __('Preview')?>" data-url="ajax_calls?action=cad_preview&title=<?php echo $filename;?>&file=<?php echo $rfm_subfolder.$subdir.$file;?>"
                     href="javascript:void('');" ><i class=" icon-eye-open"></i></a>
                     <?php } elseif ($config['preview_text_files'] && in_array($file_array['extension'], $config['previewable_text_file_exts'])) { ?>
-                    <a class="tip-right file-preview-btn" title="<?php echo __('Preview')?>" data-url="ajax_calls.php?action=get_file&sub_action=preview&preview_mode=text&title=<?php echo $filename;?>&file=<?php echo $rfm_subfolder.$subdir.$file;?>"
+                    <a class="tip-right file-preview-btn" title="<?php echo __('Preview')?>" data-url="ajax_calls?action=get_file&sub_action=preview&preview_mode=text&title=<?php echo $filename;?>&file=<?php echo $rfm_subfolder.$subdir.$file;?>"
                     href="javascript:void('');" ><i class=" icon-eye-open"></i></a>
                     <?php } elseif ($config['googledoc_enabled'] && in_array($file_array['extension'], $config['googledoc_file_exts'])) { ?>
-                    <a class="tip-right file-preview-btn" title="<?php echo __('Preview')?>" data-url="ajax_calls.php?action=get_file&sub_action=preview&preview_mode=google&title=<?php echo $filename;?>&file=<?php echo $rfm_subfolder.$subdir.$file;?>"
+                    <a class="tip-right file-preview-btn" title="<?php echo __('Preview')?>" data-url="ajax_calls?action=get_file&sub_action=preview&preview_mode=google&title=<?php echo $filename;?>&file=<?php echo $rfm_subfolder.$subdir.$file;?>"
                     href="docs.google.com;" ><i class=" icon-eye-open"></i></a>
                     <?php } else { ?>
                     <a class="preview disabled"><i class="icon-eye-open icon-white"></i></a>
@@ -1487,7 +1487,7 @@ if (isset($filePermissions[$file])) {
                 newURL = imageEditor.toDataURL();
                 $.ajax({
                     type: "POST",
-                    url: "ajax_calls.php?action=save_img",
+                    url: "ajax_calls?action=save_img",
                     data: { url: newURL, path:$('#sub_folder').val()+$('#fldr_value').val(), name:$('#tui-image-editor').attr('data-name'), _token: jQuery('meta[name="csrf-token"]').attr('content') }
                 }).done(function( msg ) {
                     exitTUI();
