@@ -6,7 +6,7 @@
  * @version  GIT:
  * @link     https://github.com/Kwaadpepper/laravel-responsivefilemanager/blob/master/src/routes.php
  */
-$FM_ROUTE_PREFIX = "/filemanager/";
+$FM_ROUTE_PREFIX = "admin/filemanager/";
 $FM_ROUTES =    ['ajax_calls.php' => ['get', 'post'],
                 'dialog.php' => ['get'],
                 'execute.php' => ['post'],
