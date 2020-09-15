@@ -384,6 +384,10 @@ $get_params = http_build_query($get_params);
 </head>
 
 <body>
+    <!-- Add polyfill for ie -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript-canvas-to-blob/3.28.0/js/canvas-to-blob.min.js" integrity="sha512-Q0RYciuNUJLzUgA9T0A0yj1A5wR+rM7MDr3hKBJuNBaSW5O2TqRyBMMLswe7Z/M9czXRnD/5mh1/xQpDpxFZaA==" crossorigin="anonymous"></script>
+    <!-- Add polyfill for ie -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/promise-polyfill/8.1.3/polyfill.min.js" integrity="sha512-jVOsf4v+eYZr+IkABBHh0mBbBn4BZn6t0W6yah9aKXgHK0tw++HH2yX8XObYImtg+B2Cytx/X3fFkiPums57BQ==" crossorigin="anonymous"></script>
     <!-- The Templates plugin is included to render the upload/download listings -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-JavaScript-Templates/3.19.0/js/tmpl.min.js" integrity="sha512-62X328c9VQQkWxrLMccNyRISbwvqQDjvF/HFuvHBMGtZJbNvTG30k1M2O+PYLyWUrcHFKIPvr2OkgmUmcaiccw==" crossorigin="anonymous"></script>
     <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
@@ -1043,19 +1047,19 @@ $get_params = http_build_query($get_params);
                                                                         } ?> <?php if (!$config['multiple_selection']) {
                                                                                 ?>no-selector<?php
                                                                                             } ?>" <?php if (($filter != '' && stripos($file, $filter) === false)) {
-                                                                                            echo ' style="display:none;"';
-                                                                                        } ?>><?php
-                                                    $file_prevent_rename = false;
-                                                    $file_prevent_delete = false;
-                                                    if (isset($filePermissions[$file])) {
-                                                        $file_prevent_rename = isset($filePermissions[$file]['prevent_rename']) && $filePermissions[$file]['prevent_rename'];
-                                                        $file_prevent_delete = isset($filePermissions[$file]['prevent_delete']) && $filePermissions[$file]['prevent_delete'];
-                                                    }
-                                                    ?><figure data-name="<?php echo $file ?>" data-path="<?php echo ($ftp ? route('FMfview.php') . '?ox=' . encrypt(['path' => $config['upload_dir'] . $rfm_subfolder . $subdir . $file, 'name' => $file]) : $rfm_subfolder . $subdir . $file); ?>" class="<?php if ($file == "..") {
-                                                                                                                                                                                                                                                                                                            echo "back-";
-                                                                                                                                                                                                                                                                                                        } ?>directory" data-type="<?php if ($file != "..") {
-                                                                                                                                                                                                                                                                                                                            echo "dir";
-                                                                                                                                                                                                                                                                                                                        } ?>">
+                                                                                                        echo ' style="display:none;"';
+                                                                                                    } ?>><?php
+                                                                                                            $file_prevent_rename = false;
+                                                                                                            $file_prevent_delete = false;
+                                                                                                            if (isset($filePermissions[$file])) {
+                                                                                                                $file_prevent_rename = isset($filePermissions[$file]['prevent_rename']) && $filePermissions[$file]['prevent_rename'];
+                                                                                                                $file_prevent_delete = isset($filePermissions[$file]['prevent_delete']) && $filePermissions[$file]['prevent_delete'];
+                                                                                                            }
+                                                                                                            ?><figure data-name="<?php echo $file ?>" data-path="<?php echo ($ftp ? route('FMfview.php') . '?ox=' . encrypt(['path' => $config['upload_dir'] . $rfm_subfolder . $subdir . $file, 'name' => $file]) : $rfm_subfolder . $subdir . $file); ?>" class="<?php if ($file == "..") {
+                                                                                                                                                                                                                                                                                                                                                                        echo "back-";
+                                                                                                                                                                                                                                                                                                                                                                    } ?>directory" data-type="<?php if ($file != "..") {
+                                                                                                                                                                                                                                                                                                                                                                                                    echo "dir";
+                                                                                                                                                                                                                                                                                                                                                                                                } ?>">
                                     <?php if ($file == "..") { ?>
                                         <input type="hidden" class="path" value="<?php echo str_replace('.', '', dirname($rfm_subfolder . $subdir)); ?>" />
                                         <input type="hidden" class="path_thumb" value="<?php echo dirname($thumbs_path) . "/"; ?>" />
@@ -1252,16 +1256,16 @@ $get_params = http_build_query($get_params);
                                                                                                     } ?>" data-name="<?php echo $file; ?>" <?php if (($filter != '' && stripos($file, $filter) === false)) {
                                                                                                                                                 echo ' style="display:none;"';
                                                                                                                                             } ?>><?php
-                                                                                                                                        $file_prevent_rename = false;
-                                                                                                                                        $file_prevent_delete = false;
-                                                                                                                                        if (isset($filePermissions[$file])) {
-                                                                                                                                            if (isset($filePermissions[$file]['prevent_duplicate']) && $filePermissions[$file]['prevent_duplicate']) {
-                                                                                                                                                $files_prevent_duplicate[] = $file;
-                                                                                                                                            }
-                                                                                                                                            $file_prevent_rename = isset($filePermissions[$file]['prevent_rename']) && $filePermissions[$file]['prevent_rename'];
-                                                                                                                                            $file_prevent_delete = isset($filePermissions[$file]['prevent_delete']) && $filePermissions[$file]['prevent_delete'];
-                                                                                                                                        }
-                                                                                                                                        ?>
+                                                                                                                                                    $file_prevent_rename = false;
+                                                                                                                                                    $file_prevent_delete = false;
+                                                                                                                                                    if (isset($filePermissions[$file])) {
+                                                                                                                                                        if (isset($filePermissions[$file]['prevent_duplicate']) && $filePermissions[$file]['prevent_duplicate']) {
+                                                                                                                                                            $files_prevent_duplicate[] = $file;
+                                                                                                                                                        }
+                                                                                                                                                        $file_prevent_rename = isset($filePermissions[$file]['prevent_rename']) && $filePermissions[$file]['prevent_rename'];
+                                                                                                                                                        $file_prevent_delete = isset($filePermissions[$file]['prevent_delete']) && $filePermissions[$file]['prevent_delete'];
+                                                                                                                                                    }
+                                                                                                                                                    ?>
                                     <figure data-name="<?php echo $file ?>" data-path="<?php echo ($ftp ? route('FMfview.php') . '?ox=' . encrypt(['path' => $config['upload_dir'] . $rfm_subfolder . $subdir . $file, 'name' => $file]) : $rfm_subfolder . $subdir . $file); ?>" data-type="<?php if ($is_img) {
                                                                                                                                                                                                                                                                                                     echo "img";
                                                                                                                                                                                                                                                                                                 } else {
