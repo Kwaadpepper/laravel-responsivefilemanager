@@ -385,11 +385,11 @@ $get_params = http_build_query($get_params);
 
 <body>
     <!-- The Templates plugin is included to render the upload/download listings -->
-    <script src="//blueimp.github.io/JavaScript-Templates/js/tmpl.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-JavaScript-Templates/3.19.0/js/tmpl.min.js" integrity="sha512-62X328c9VQQkWxrLMccNyRISbwvqQDjvF/HFuvHBMGtZJbNvTG30k1M2O+PYLyWUrcHFKIPvr2OkgmUmcaiccw==" crossorigin="anonymous"></script>
     <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-    <script src="//blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/5.14.0/load-image.all.min.js" integrity="sha512-HZg0q8NV+VTxnU6hdkK0rL+fSmTGCbXZ3mHjqCCi87St5QRdvXENfRxkMK692inskRsCPee07d7VwcKNWaByCQ==" crossorigin="anonymous"></script>
     <!-- The Canvas to Blob plugin is included for image resizing functionality -->
-    <script src="//blueimp.github.io/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript-canvas-to-blob/3.28.0/js/canvas-to-blob.min.js" integrity="sha512-Q0RYciuNUJLzUgA9T0A0yj1A5wR+rM7MDr3hKBJuNBaSW5O2TqRyBMMLswe7Z/M9czXRnD/5mh1/xQpDpxFZaA==" crossorigin="anonymous"></script>
     <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
     <script src="<?php echo $vendor_path; ?>js/jquery.iframe-transport.js"></script>
     <!-- The basic File Upload plugin -->
