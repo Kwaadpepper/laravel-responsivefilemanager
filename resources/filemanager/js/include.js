@@ -148,7 +148,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                             '*'
                         );
                     } else {
-                        var target = jQuery('#' + external, windowParent.document);
+                        var target = windowParent.jQuery('#' + external, windowParent.document);
                         target.val(url).trigger('change');
                         if (typeof windowParent.responsive_filemanager_callback == 'function') {
                             windowParent.responsive_filemanager_callback(external);
@@ -1621,7 +1621,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     '*'
                 );
             } else {
-                var target = jQuery('#' + external, windowParent.document);
+                var target = windowParent.jQuery('#' + external, windowParent.document);
 
                 target.val(res).trigger('change');
                 if (callback == 0) {
@@ -1713,7 +1713,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     '*'
                 );
             } else {
-                var target = jQuery('#' + external, windowParent.document);
+                var target = windowParent.jQuery('#' + external, windowParent.document);
                 target.val(res).trigger('change');
                 if (callback == 0) {
                     if (typeof windowParent.responsive_filemanager_callback == 'function') {
@@ -1755,7 +1755,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     '*'
                 );
             } else {
-                var target = jQuery('#' + external, windowParent.document);
+                var target = windowParent.jQuery('#' + external, windowParent.document);
                 target.val(res).trigger('change');
                 if (callback == 0) {
                     if (typeof windowParent.responsive_filemanager_callback == 'function') {
@@ -1801,7 +1801,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     '*'
                 );
             } else {
-                var target = jQuery('#' + external, windowParent.document);
+                var target = windowParent.jQuery('#' + external, windowParent.document);
                 target.val(res).trigger('change');
                 if (callback == 0) {
                     if (typeof windowParent.responsive_filemanager_callback == 'function') {
