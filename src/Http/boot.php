@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author Alberto Peripolli https://responsivefilemanager.com/#contact-section
  * @source https://github.com/trippo/ResponsiveFilemanager
@@ -22,8 +23,8 @@ mb_http_input('UTF-8');
 mb_language('uni');
 mb_regex_encoding('UTF-8');
 // ob_start('mb_output_handler');
-date_default_timezone_set('Europe/Rome');
-setlocale(LC_CTYPE, 'en_US'); //correct transliteration
+date_default_timezone_set(config('app.timezone'));
+setlocale(LC_CTYPE, config('app.locale')); //correct transliteration
 
 // No Pre output if force download file
 if (basename(request()->server('REQUEST_URI')) == "dialog.php") {
@@ -41,7 +42,7 @@ if (basename(request()->server('REQUEST_URI')) == "dialog.php") {
         }
 
         if (request()->server('HTTP_ACCESS_CONTROL_REQUEST_HEADERS')) {
-            header("Access-Control-Allow-Headers:        ".request()->server('HTTP_ACCESS_CONTROL_REQUEST_HEADERS'));
+            header("Access-Control-Allow-Headers:        " . request()->server('HTTP_ACCESS_CONTROL_REQUEST_HEADERS'));
         }
 
         exit(0);
@@ -56,7 +57,7 @@ if (basename(request()->server('REQUEST_URI')) == "dialog.php") {
     date_default_timezone_set(FM_date_default_timezone_set);
 }
 
-$availableLangs = include __DIR__.'/../I18N/languages.php';
+$availableLangs = include __DIR__ . '/../I18N/languages.php';
 
 $preferredLang = RFM::getPreferredLanguage($availableLangs);
 app()->setLocale($preferredLang);
