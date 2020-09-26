@@ -176,6 +176,7 @@ ___
     en_EN      English
     es         Español
     fa         فارسی
+    fi_FI      Finnish
     fr_FR      Français
     he_IL      Hebrew (Israel)
     hr         Hrvatski jezik

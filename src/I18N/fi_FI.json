@@ -2,7 +2,7 @@
     "Select": "Valitse",
     "Deselect_All": "Poista kaikki valinnat",
     "Select_All": "Valitse kaikki",
-    "Erase": "Pyyhi",
+    "Erase": "Poista",
     "Open": "Avaa",
     "Confirm_del": "Oletko varma, että haluat poistaa?",
     "All": "Kaikki",
@@ -38,7 +38,7 @@
     "Text_filter": "tekstisuodin",
     "Swipe_help": "Pyyhkäise tiedoston/hakemiston nimeä nähdäksesi valinnat",
     "Upload_base": "Peruslähetys", 
-    "Upload_base_help": "Raahaa ja pudota tiedostoja (modernit selaimet) tai klikkaa Lisää tiedosto(ja) ja Aloita lähetys. Kun lähetys on valmis, klikkaa "Palaa tiedostolistaan" -painiketta.",
+    "Upload_base_help": "Raahaa ja pudota tiedostoja (modernit selaimet) tai klikkaa Lisää tiedosto(ja) ja Aloita lähetys. Kun lähetys on valmis, klikkaa \"Palaa tiedostolistaan\" -painiketta.",
     "Upload_add_files": "Lisää tiedosto(ja)",
     "Upload_start": "Aloita lähetys",
     "Upload_error_messages":{
@@ -64,7 +64,7 @@
     "Upload_url": "URL:sta",
     "Type_dir": "hakemisto",
     "Type": "Tyyppi",
-    "Dimension": "Ulottuvuus",
+    "Dimension": "Koko",
     "Size": "Koko",
     "Date": "Päivämäärä",
     "Filename": "Tiedostonimi",
@@ -82,25 +82,25 @@
     "Copy": "Kopioi",
     "Cut": "Leikkaa",
     "Paste": "Liitä",
-    "CB": "LP", // clipboard
+    "CB": "LP",
     "Paste_Here": "Liitä tähän hakemistoon",
     "Paste_Confirm": "Oletko varma, että haluat liittää tähän hakemistoon? Tämä ylikirjoittaa mahdollisesti löytyvät tiedostot/hakemistot",
     "Paste_Failed": "Tiedostojen liittäminen epäonnistui",
     "Clear_Clipboard": "Tyhjennä leikepöytä",
     "Clear_Clipboard_Confirm": "Oletko varma, että haluat tyhjentää leikepöydän?",
     "Files_ON_Clipboard": "Leikepöydällä on tiedostoja.",
-    "Copy_Cut_Size_Limit": "Valitut tiedostot/hakemistot ovat liian suuria %1$s. Rajoitus: %2$d MB/toimenpide", // %1$s = cut or copy, %2$d = max size
-    "Copy_Cut_Count_Limit": "Valitsit liian monta tiedostoa/hakemistoa %1$s. Rajoitus: %2$d tiedostoa/toimenpide", // %1$s = cut or copy, %2$d = max count
-    "Copy_Cut_Not_Allowed": "Sinulla ei ole oikeutta %1$s %2$s.", // %12$s = cut or copy, %2$s = files or folders
+    "Copy_Cut_Size_Limit": "Valitut tiedostot/hakemistot ovat liian suuria %1$s. Rajoitus: %2$d MB/toimenpide",
+    "Copy_Cut_Count_Limit": "Valitsit liian monta tiedostoa/hakemistoa %1$s. Rajoitus: %2$d tiedostoa/toimenpide",
+    "Copy_Cut_Not_Allowed": "Sinulla ei ole oikeutta %1$s %2$s.",
     "Image_Editor_No_Save": "Kuvaa ei voitu tallentaa",
     "Image_Editor_Exit": "Poistu",
     "Image_Editor_Save": "Tallenna",
     "Zip_No_Extract": "Ei voitu purkaa. Tiedosto voi olla korruptoitunut.",
     "Zip_Invalid": "Tämä tiedostopääte ei ole tuettu. Hyväksyttyjä: zip, gz, tar.",
     "Dir_No_Write": "Valitsemaasi hakemistoon ei voida kirjoittaa.", 
-    "Function_Disabled": "%s-toiminto palvelimella on kytketty pois päältä.", // %s = cut or copy
+    "Function_Disabled": "%s-toiminto palvelimella on kytketty pois päältä.",
     "File_Permission": "Tiedoston oikeus",
-    "File_Permission_Not_Allowed": "%s oikeuksien muuttaminen ei ole sallittua.", // %s = files or folders
+    "File_Permission_Not_Allowed": "%s oikeuksien muuttaminen ei ole sallittua.",
     "File_Permission_Recursive": "Käytä rekursiivisesti?",
     "File_Permission_Wrong_Mode": "Syötetty oikeusmoodi on väärä.",
     "User": "Käyttäjä",
@@ -110,14 +110,14 @@
     "Lang_Not_Found": "Kieltä ei löytynyt.",
     "Lang_Change": "Vaihda kieltä",
     "File_Not_Found": "Tiedostoa ei löydetty.",
-    "File_Open_Edit_Not_Allowed": "Et voi %s tätä tiedostoa.", // %s = open or edit
+    "File_Open_Edit_Not_Allowed": "Et voi %s tätä tiedostoa.",
     "Edit": "Muokkaa",
     "Edit_File": "Muokkaa tiedoston sisältöä",
     "File_Save_OK": "Tiedosto tallennettu onnistuneesti.",
     "File_Save_Error": "Virhe tiedostoa tallennettaessa.",
     "New_File": "Uusi tiedosto",
     "No_Extension": "Sinun täytyy lisätä tiedostopääte.",
-    "Valid_Extensions": "Hyväksyttyjä tiedostopäätteitä: %s", // %s = txt,log etc.
+    "Valid_Extensions": "Hyväksyttyjä tiedostopäätteitä: %s",
 
     "SERVER ERROR": "PALVELINVIRHE",
     "forbidden": "Kielletty",
@@ -133,7 +133,7 @@
     "no file": "Ei tiedostoa",
     "view type number missing": "Näyttötyypin numero puuttuu",
     "Not enough Memory": "Muistia ei ole riittävästi",
-    "max_size_reached": "Kuvahakemistosi on saavuttanut suurimman mahdollisen koon %d MB.", //%d = max overall size
+    "max_size_reached": "Kuvahakemistosi on saavuttanut suurimman mahdollisen koon %d MB.",
     "B": "B",
     "KB": "KB",
     "MB": "MB",
