@@ -16,3 +16,7 @@ storage/
 
 .phpunit.result.cache
 composer.lock
+resources/filemanager/css/*
+resources/filemanager/js/*
+resources/filemanager/plugin.min.js
+resources/tinymce

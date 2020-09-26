@@ -1,0 +1,34 @@
+{
+    "name": "laravel-responsive-file-manager",
+    "devDependencies": {
+        "gulp": "^3.9.1",
+        "laravel-elixir": "*",
+        "tinymce": "^5.0.4"
+    },
+    "scripts": {
+        "build": "yarn clean && ./node_modules/.bin/gulp && yarn cleanTemp",
+        "dist": "yarn clean && ./node_modules/.bin/gulp --production && yarn cleanTemp",
+        "cleanTemp": "rm -rf ./resources/tmp/*",
+        "clean": "yarn cleanTemp && rm -rf ./resources/filemanager/css/* && rm -rf ./resources/filemanager/js/* && rm -f ./resources/filemanager/plugin.min.js && rm -f ./resources/tinymce/plugins/responsivefilemanager/plugin.min.js"
+    },
+    "dependencies": {
+        "blueimp-file-upload": "^9.22.0",
+        "bootbox.js": "github:makeusabrew/bootbox#v3.3.0",
+        "bootstrap": "github:twbs/bootstrap#v2.3.2",
+        "bootstrap-lightbox": "github:jbutz/bootstrap-lightbox#0.6.1",
+        "bootstrap-modal": "github:jschr/bootstrap-modal#2.2.6",
+        "clipboard": "^1.7.1",
+        "fabric": "1.7.22",
+        "html5shiv": "^3.7.3",
+        "jquery": "^3.0.0",
+        "jquery-contextmenu": "^1.11.0",
+        "jquery-scrollstop": "^1.2.0",
+        "jquery-touchswipe": "^1.6.18",
+        "jquery-ui": "^1.10.5",
+        "jquery-ui-touch-punch": "^0.2.3",
+        "tui-code-snippet": "^1.5.1",
+        "tui-color-picker": "^2.2.3",
+        "tui-image-editor": "^3.5.2",
+        "vanilla-lazyload": "^10.14.0"
+      }
+}

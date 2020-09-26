@@ -1,17 +1,3 @@
-/**
- * @author Alberto Peripolli https://responsivefilemanager.com/#contact-section
- * @source https://github.com/trippo/ResponsiveFilemanager
- *
- * Licenced under Attribution-NonCommercial 3.0 Unported (CC BY-NC 3.0)
- * https://creativecommons.org/licenses/by-nc/3.0/
- *
- * This work is licensed under the Creative Commons
- * Attribution-NonCommercial 3.0 Unported License.
- * To view a copy of this license, visit
- * http://creativecommons.org/licenses/by-nc/3.0/ or send a
- * letter to Creative Commons, 444 Castro Street, Suite 900,
- * Mountain View, California, 94041, USA.
- */
 var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, apply_any, apply_video, apply_link, apply_file_rename, apply_file_duplicate, apply_folder_rename;
 (function ($, Modernizr, image_editor) {
     "use strict";
@@ -224,8 +210,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     };
                     // extract
                     if (($trigger.find('.img-precontainer-mini .filetype').hasClass('zip') ||
-                            $trigger.find('.img-precontainer-mini .filetype').hasClass('tar') ||
-                            $trigger.find('.img-precontainer-mini .filetype').hasClass('gz')) &&
+                        $trigger.find('.img-precontainer-mini .filetype').hasClass('tar') ||
+                        $trigger.find('.img-precontainer-mini .filetype').hasClass('gz')) &&
                         jQuery('#extract_files').val() == 1) {
                         options.items.unzip = {
                             name: jQuery('#lang_extract').val(),
@@ -475,8 +461,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 });
             });
 
-            function handleFileLink($el)
-            {
+            function handleFileLink($el) {
                 var fun = $el.attr('data-function');
                 if (fun == "apply_multiple") {
                     $el.find('.selection:visible').trigger('click');
@@ -573,7 +558,8 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             jQuery('#fileupload').bind('fileuploaddrop', function (e, data) {
                 jQuery('.uploader').show(200);
                 setTimeout(function () {
-                    jQuery('#fileupload > div > div.fileupload-buttonbar > div.text-center > button').click(); }, 200);
+                    jQuery('#fileupload > div > div.fileupload-buttonbar > div.text-center > button').click();
+                }, 200);
             });
             jQuery('#fileupload').bind('fileuploadsubmit', function (e, data) {
                 // The example input, doesn't have to be part of the upload form:
@@ -653,14 +639,14 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                     } else {
                         window.location.href = jQuery('#current_url').val() + "&sort_by=" + jQuery('#sort_by').val() + "&descending=" + (sortDescending ? 1 : 0);
                     }
-                    if (typeof(Storage) !== "undefined") {
+                    if (typeof (Storage) !== "undefined") {
                         localStorage.setItem("sort", '');
                     }
                 } else {
                     if (jQuery(this).is(':checked')) {
                         jQuery('.grid li').not('.' + li).hide(300);
                         jQuery('.grid li.' + li).show(300);
-                        if (typeof(Storage) !== "undefined") {
+                        if (typeof (Storage) !== "undefined") {
                             localStorage.setItem("sort", li);
                         }
                     }
@@ -707,7 +693,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             FileManager.makeContextMenu();
         }
 
-        if (typeof(Storage) !== "undefined" && jQuery('#type_param').val() != 1 && jQuery('#type_param').val() != 3) {
+        if (typeof (Storage) !== "undefined" && jQuery('#type_param').val() != 1 && jQuery('#type_param').val() != 3) {
             var li = localStorage.getItem("sort");
             if (li) {
                 var liElement = jQuery('#' + li);
@@ -763,7 +749,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 </p></div>\
                 <div class="text-center">\
                 <p><strong>Laravel adpatation&nbsp;<a href="https://jeremydev.ovh">Jérémy Munsch</a></strong><br>\
-                <a href="https://github.com/Kwaadpepper/laravel-responsivefilemanager">Laravel Responsive Filemanager</a><strong>&nbsp;v.'+$('#version').text()+'</strong><br>\
+                <a href="https://github.com/Kwaadpepper/laravel-responsivefilemanager">Laravel Responsive Filemanager</a><strong>&nbsp;v.'+ $('#version').text() + '</strong><br>\
                 <a href="https://github.com/Kwaadpepper/laravel-responsivefilemanager/blob/master/LICENSE">Licence MIT</a></p>\
                 </div > ');
         });
@@ -1018,8 +1004,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         clipboard = new Clipboard('.btn');
     });
 
-    function preview_loading_animation(url)
-    {
+    function preview_loading_animation(url) {
         show_animation();
         var tmpImg = new Image();
         tmpImg.src = url;
@@ -1028,8 +1013,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         });
     }
 
-    function create_text_file()
-    {
+    function create_text_file() {
         // remove to prevent duplicates
         jQuery('#textfile_create_area').parent().parent().remove();
 
@@ -1042,39 +1026,39 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 [{
                     "label": jQuery('#cancel').val(),
                     "class": "btn"
-                    },
-                    {
-                        "label": jQuery('#ok').val(),
-                        "class": "btn-inverse",
-                        "callback": function () {
-                            var newFileName = jQuery('#create_text_file_name').val() + jQuery('#create_text_file_extension').val();
-                            var newContent = jQuery('#textfile_create_area').val();
+                },
+                {
+                    "label": jQuery('#ok').val(),
+                    "class": "btn-inverse",
+                    "callback": function () {
+                        var newFileName = jQuery('#create_text_file_name').val() + jQuery('#create_text_file_extension').val();
+                        var newContent = jQuery('#textfile_create_area').val();
 
-                            if (newFileName !== null) {
-                                newFileName = fix_filename(newFileName);
-                                var folder_path = jQuery('#sub_folder').val() + jQuery('#fldr_value').val();
-                                // post ajax
-                                $.ajax({
-                                    type: "POST",
-                                    url: "execute.php?action=create_file",
-                                    data: {
-                                        path: folder_path,
-                                        name: newFileName,
-                                        new_content: newContent,
-                                        _token: jQuery('meta[name="csrf-token"]').attr('content')
-                                    }
-                                }).done(function (status_msg) {
-                                    if (status_msg != "") {
-                                        bootbox.alert(status_msg, function ( /*result*/ ) {
-                                            setTimeout(function () {
-                                                window.location.href = jQuery('#refresh').attr('href') + '&' + new Date().getTime();
-                                            }, 500);
-                                        });
-                                    }
-                                });
-                            }
+                        if (newFileName !== null) {
+                            newFileName = fix_filename(newFileName);
+                            var folder_path = jQuery('#sub_folder').val() + jQuery('#fldr_value').val();
+                            // post ajax
+                            $.ajax({
+                                type: "POST",
+                                url: "execute.php?action=create_file",
+                                data: {
+                                    path: folder_path,
+                                    name: newFileName,
+                                    new_content: newContent,
+                                    _token: jQuery('meta[name="csrf-token"]').attr('content')
+                                }
+                            }).done(function (status_msg) {
+                                if (status_msg != "") {
+                                    bootbox.alert(status_msg, function ( /*result*/) {
+                                        setTimeout(function () {
+                                            window.location.href = jQuery('#refresh').attr('href') + '&' + new Date().getTime();
+                                        }, 500);
+                                    });
+                                }
+                            });
                         }
                     }
+                }
                 ],
                 {
                     "header": jQuery('#lang_new_file').val()
@@ -1083,8 +1067,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         });
     }
 
-    function edit_text_file($trigger)
-    {
+    function edit_text_file($trigger) {
         // remove to prevent duplicates
         jQuery('#textfile_edit_area').parent().parent().remove();
 
@@ -1100,31 +1083,31 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 [{
                     "label": jQuery('#cancel').val(),
                     "class": "btn"
-                    },
-                    {
-                        "label": jQuery('#ok').val(),
-                        "class": "btn-inverse",
-                        "callback": function () {
-                            var newContent = jQuery('#textfile_edit_area').val();
-                            if (window.editor && typeof window.editor.getData === "function") {
-                                newContent = window.editor.getData();
-                            }
-                            // post ajax
-                            $.ajax({
-                                type: "POST",
-                                url: "execute.php?action=save_text_file",
-                                data: {
-                                    path: full_path,
-                                    new_content: newContent,
-                                    _token: jQuery('meta[name="csrf-token"]').attr('content')
-                                }
-                            }).done(function (status_msg) {
-                                if (status_msg != "") {
-                                    bootbox.alert(status_msg);
-                                }
-                            });
+                },
+                {
+                    "label": jQuery('#ok').val(),
+                    "class": "btn-inverse",
+                    "callback": function () {
+                        var newContent = jQuery('#textfile_edit_area').val();
+                        if (window.editor && typeof window.editor.getData === "function") {
+                            newContent = window.editor.getData();
                         }
+                        // post ajax
+                        $.ajax({
+                            type: "POST",
+                            url: "execute.php?action=save_text_file",
+                            data: {
+                                path: full_path,
+                                new_content: newContent,
+                                _token: jQuery('meta[name="csrf-token"]').attr('content')
+                            }
+                        }).done(function (status_msg) {
+                            if (status_msg != "") {
+                                bootbox.alert(status_msg);
+                            }
+                        });
                     }
+                }
                 ],
                 {
                     "header": $trigger.find('.name_download').val()
@@ -1133,8 +1116,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         });
     }
 
-    function change_lang()
-    {
+    function change_lang() {
         $.ajax({
             type: "POST",
             url: "ajax_calls.php?action=get_lang",
@@ -1145,29 +1127,29 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 [{
                     "label": jQuery('#cancel').val(),
                     "class": "btn"
-                    },
-                    {
-                        "label": jQuery('#ok').val(),
-                        "class": "btn-inverse",
-                        "callback": function () {
-                            // get new lang
-                            var newLang = jQuery('#new_lang_select').val();
-                            // post ajax
-                            $.ajax({
-                                type: "POST",
-                                url: "ajax_calls.php?action=change_lang",
-                                data: { choosen_lang: newLang, _token: jQuery('meta[name="csrf-token"]').attr('content') }
-                            }).done(function (error_msg) {
-                                if (error_msg != "") {
-                                    bootbox.alert(error_msg);
-                                } else {
-                                    setTimeout(function () {
-                                        window.location.href = jQuery('#refresh').attr('href').replace(/lang=[\w]*&/i, 'lang=' + newLang + "&") + '&' + new Date().getTime();
-                                    }, 100);
-                                }
-                            });
-                        }
+                },
+                {
+                    "label": jQuery('#ok').val(),
+                    "class": "btn-inverse",
+                    "callback": function () {
+                        // get new lang
+                        var newLang = jQuery('#new_lang_select').val();
+                        // post ajax
+                        $.ajax({
+                            type: "POST",
+                            url: "ajax_calls.php?action=change_lang",
+                            data: { choosen_lang: newLang, _token: jQuery('meta[name="csrf-token"]').attr('content') }
+                        }).done(function (error_msg) {
+                            if (error_msg != "") {
+                                bootbox.alert(error_msg);
+                            } else {
+                                setTimeout(function () {
+                                    window.location.href = jQuery('#refresh').attr('href').replace(/lang=[\w]*&/i, 'lang=' + newLang + "&") + '&' + new Date().getTime();
+                                }, 100);
+                            }
+                        });
                     }
+                }
                 ],
                 {
                     "header": jQuery('#lang_lang_change').val()
@@ -1176,8 +1158,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         });
     }
 
-    function chmod($trigger)
-    {
+    function chmod($trigger) {
         // remove to prevent duplicates
         jQuery('#files_permission_start').parent().parent().remove();
 
@@ -1202,100 +1183,100 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 [{
                     "label": jQuery('#cancel').val(),
                     "class": "btn"
-                    },
-                    {
-                        "label": jQuery('#ok').val(),
-                        "class": "btn-inverse",
-                        "callback": function () {
-                            var info = "-";
-                            if (jQuery('#u_4').is(':checked')) {
-                                info += "r";
-                            } else {
-                                info += "-";
-                            }
-                            if (jQuery('#u_2').is(':checked')) {
-                                info += "w";
-                            } else {
-                                info += "-";
-                            }
-                            if (jQuery('#u_1').is(':checked')) {
-                                info += "x";
-                            } else {
-                                info += "-";
-                            }
-                            if (jQuery('#g_4').is(':checked')) {
-                                info += "r";
-                            } else {
-                                info += "-";
-                            }
-                            if (jQuery('#g_2').is(':checked')) {
-                                info += "w";
-                            } else {
-                                info += "-";
-                            }
-                            if (jQuery('#g_1').is(':checked')) {
-                                info += "x";
-                            } else {
-                                info += "-";
-                            }
-                            if (jQuery('#a_4').is(':checked')) {
-                                info += "r";
-                            } else {
-                                info += "-";
-                            }
-                            if (jQuery('#a_2').is(':checked')) {
-                                info += "w";
-                            } else {
-                                info += "-";
-                            }
-                            if (jQuery('#a_1').is(':checked')) {
-                                info += "x";
-                            } else {
-                                info += "-";
+                },
+                {
+                    "label": jQuery('#ok').val(),
+                    "class": "btn-inverse",
+                    "callback": function () {
+                        var info = "-";
+                        if (jQuery('#u_4').is(':checked')) {
+                            info += "r";
+                        } else {
+                            info += "-";
+                        }
+                        if (jQuery('#u_2').is(':checked')) {
+                            info += "w";
+                        } else {
+                            info += "-";
+                        }
+                        if (jQuery('#u_1').is(':checked')) {
+                            info += "x";
+                        } else {
+                            info += "-";
+                        }
+                        if (jQuery('#g_4').is(':checked')) {
+                            info += "r";
+                        } else {
+                            info += "-";
+                        }
+                        if (jQuery('#g_2').is(':checked')) {
+                            info += "w";
+                        } else {
+                            info += "-";
+                        }
+                        if (jQuery('#g_1').is(':checked')) {
+                            info += "x";
+                        } else {
+                            info += "-";
+                        }
+                        if (jQuery('#a_4').is(':checked')) {
+                            info += "r";
+                        } else {
+                            info += "-";
+                        }
+                        if (jQuery('#a_2').is(':checked')) {
+                            info += "w";
+                        } else {
+                            info += "-";
+                        }
+                        if (jQuery('#a_1').is(':checked')) {
+                            info += "x";
+                        } else {
+                            info += "-";
+                        }
+
+                        // get new perm
+                        var newPerm = jQuery('#chmod_form #chmod_value').val();
+                        if (newPerm != '' && typeof newPerm !== "undefined") {
+                            // get recursive option if any
+                            var recOpt = jQuery('#chmod_form input[name=apply_recursive]:checked').val();
+                            if (recOpt == '' || typeof recOpt === "undefined") {
+                                recOpt = 'none';
                             }
 
-                            // get new perm
-                            var newPerm = jQuery('#chmod_form #chmod_value').val();
-                            if (newPerm != '' && typeof newPerm !== "undefined") {
-                                // get recursive option if any
-                                var recOpt = jQuery('#chmod_form input[name=apply_recursive]:checked').val();
-                                if (recOpt == '' || typeof recOpt === "undefined") {
-                                    recOpt = 'none';
+                            // post ajax
+                            $.ajax({
+                                type: "POST",
+                                url: "execute.php?action=chmod",
+                                data: {
+                                    path: full_path,
+                                    new_mode: newPerm,
+                                    is_recursive: recOpt,
+                                    folder: folder,
+                                    _token: jQuery('meta[name="csrf-token"]').attr('content')
                                 }
-
-                                // post ajax
-                                $.ajax({
-                                    type: "POST",
-                                    url: "execute.php?action=chmod",
-                                    data: {
-                                        path: full_path,
-                                        new_mode: newPerm,
-                                        is_recursive: recOpt,
-                                        folder: folder,
-                                        _token: jQuery('meta[name="csrf-token"]').attr('content')
-                                    }
-                                }).done(function (status_msg) {
-                                    if (status_msg != "") {
-                                        bootbox.alert(status_msg);
-                                    } else {
-                                        obj.attr('data-permissions', info);
-                                    }
-                                });
-                            }
+                            }).done(function (status_msg) {
+                                if (status_msg != "") {
+                                    bootbox.alert(status_msg);
+                                } else {
+                                    obj.attr('data-permissions', info);
+                                }
+                            });
                         }
                     }
+                }
                 ],
                 {
                     "header": jQuery('#lang_file_permission').val()
                 }
             );
             setTimeout(function () {
-                chmod_logic(false); }, 100);
+                chmod_logic(false);
+            }, 100);
         });
     }
 
-    function chmod_logic(is_text)
-    {
+    function chmod_logic(is_text) {
         var perm = [];
         perm['user'] = 0;
         perm['group'] = 0;
@@ -1340,8 +1321,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function chmod_logic_helper(perm, val)
-    {
+    function chmod_logic_helper(perm, val) {
         var valid = [];
         valid[1] = [1, 3, 5, 7];
         valid[2] = [2, 3, 6, 7];
@@ -1353,8 +1333,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return ($.inArray(perm, valid[val]) != -1);
     }
 
-    function clear_clipboard()
-    {
+    function clear_clipboard() {
         bootbox.confirm(jQuery('#lang_clear_clipboard_confirm').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function (result) {
             if (result == true) {
                 $.ajax({
@@ -1373,8 +1352,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         });
     }
 
-    function copy_cut_clicked($trigger, atype)
-    {
+    function copy_cut_clicked($trigger, atype) {
         if (atype != 'copy' && atype != 'cut') {
             return;
         }
@@ -1401,8 +1379,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         });
     }
 
-    function paste_to_this_dir(dnd)
-    {
+    function paste_to_this_dir(dnd) {
         bootbox.confirm(jQuery('#lang_paste_confirm').val(), jQuery('#cancel').val(), jQuery('#ok').val(), function (result) {
             if (result == true) {
                 var folder_path;
@@ -1436,8 +1413,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
     // Had to separate from copy_cut_clicked & paste_to_this_dir func
     // because of feedback and on error bahhhhh...
-    function drag_n_drop_paste($trigger, dnd)
-    {
+    function drag_n_drop_paste($trigger, dnd) {
         var obj;
 
         if (!$trigger.hasClass('directory')) {
@@ -1458,47 +1434,46 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
                 sub_action: 'cut',
                 _token: jQuery('meta[name="csrf-token"]').attr('content')
             }
-            }).done(function (msg) {
-                if (msg != "") {
-                    bootbox.alert(msg);
-                } else {
-                    var folder_path;
-                    if (typeof dnd != 'undefined') {
-                        if (dnd.hasClass('back-directory')) {
-                            folder_path = dnd.find('.path').val();
-                        } else {
-                            folder_path = dnd.closest('figure').attr('data-path');
-                        }
+        }).done(function (msg) {
+            if (msg != "") {
+                bootbox.alert(msg);
+            } else {
+                var folder_path;
+                if (typeof dnd != 'undefined') {
+                    if (dnd.hasClass('back-directory')) {
+                        folder_path = dnd.find('.path').val();
                     } else {
-                        folder_path = jQuery('#sub_folder').val() + jQuery('#fldr_value').val();
+                        folder_path = dnd.closest('figure').attr('data-path');
                     }
-
-                    $.ajax({
-                        type: "POST",
-                        url: "execute.php?action=paste_clipboard",
-                        data: {
-                            path: folder_path,
-                            _token: jQuery('meta[name="csrf-token"]').attr('content')
-                        }
-                    }).done(function (msg) {
-                        if (msg != "") {
-                            bootbox.alert(msg);
-                            $trigger.parent().show(100);
-                        } else {
-                            jQuery('#clipboard').val('0');
-                            toggle_clipboard(false);
-                            $trigger.parent().remove();
-                        }
-                    });
+                } else {
+                    folder_path = jQuery('#sub_folder').val() + jQuery('#fldr_value').val();
                 }
-            })
-            .error(function ( /*err*/ ) {
+
+                $.ajax({
+                    type: "POST",
+                    url: "execute.php?action=paste_clipboard",
+                    data: {
+                        path: folder_path,
+                        _token: jQuery('meta[name="csrf-token"]').attr('content')
+                    }
+                }).done(function (msg) {
+                    if (msg != "") {
+                        bootbox.alert(msg);
+                        $trigger.parent().show(100);
+                    } else {
+                        jQuery('#clipboard').val('0');
+                        toggle_clipboard(false);
+                        $trigger.parent().remove();
+                    }
+                });
+            }
+        })
+            .error(function ( /*err*/) {
                 $trigger.parent().show(100);
             });
     }
 
-    function toggle_clipboard(lever)
-    {
+    function toggle_clipboard(lever) {
         if (lever == true) {
             jQuery('.paste-here-btn, .clear-clipboard-btn').removeClass('disabled');
         } else {
@@ -1506,8 +1481,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function fix_colums(adding)
-    {
+    function fix_colums(adding) {
         var width = jQuery('.breadcrumb').width() + adding;
 
         var viewElement = jQuery('#view');
@@ -1533,8 +1507,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function swipe_reaction( /*event, direction, distance, duration, fingerCount*/ )
-    {
+    function swipe_reaction( /*event, direction, distance, duration, fingerCount*/) {
         var _this = jQuery(this);
 
         if (jQuery('#view').val() == 0) {
@@ -1554,8 +1527,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function returnUrls(files)
-    {
+    function returnUrls(files) {
         var path = jQuery('#cur_dir').val();
         path = path.replace('\\', '/');
         var sub_folder = jQuery('#sub_folder').val();
@@ -1577,8 +1549,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return urls;
     }
 
-    function returnWindowParent()
-    {
+    function returnWindowParent() {
         if (jQuery('#popup').val() == 1) {
             return window.opener;
         } else {
@@ -1826,8 +1797,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         jQuery('.tip-right').tooltip('hide');
     }
 
-    function getUrlParam(paramName)
-    {
+    function getUrlParam(paramName) {
         var reParam = new RegExp('(?:[\?&]|&)' + paramName + '=([^&]+)', 'i');
         var match = window.location.search.match(reParam);
 
@@ -1860,8 +1830,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function close_window()
-    {
+    function close_window() {
         if (jQuery('#popup').val() == 1) {
             window.close();
         } else {
@@ -1988,14 +1957,12 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
 
     }
 
-    function replace_last(str, find, replace)
-    {
+    function replace_last(str, find, replace) {
         var re = new RegExp(find + "$");
         return str.replace(re, replace);
     }
 
-    function replaceDiacritics(s)
-    {
+    function replaceDiacritics(s) {
         var s;
 
         var diacritics = [
@@ -2017,8 +1984,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return s;
     }
 
-    function fix_filename(stri)
-    {
+    function fix_filename(stri) {
         if (stri != null) {
             if (jQuery('#transliteration').val() == "true") {
                 stri = replaceDiacritics(stri);
@@ -2040,8 +2006,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return null;
     }
 
-    function execute_action(action, file, name, container, function_name)
-    {
+    function execute_action(action, file, name, container, function_name) {
         if (name !== null) {
             name = fix_filename(name);
             $.ajax({
@@ -2066,8 +2031,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         }
     }
 
-    function execute_multiple_action(action, files, names, container, function_name)
-    {
+    function execute_multiple_action(action, files, names, container, function_name) {
         if (name !== null) {
             name = fix_filename(name);
             $.ajax({
@@ -2094,8 +2058,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
     }
 
 
-    function sortUnorderedList(sortDescending, sort_field)
-    {
+    function sortUnorderedList(sortDescending, sort_field) {
         var lis_dir = jQuery('li.dir', 'ul.grid').filter(':visible');
         var lis_file = jQuery('li.file', 'ul.grid').filter(':visible');
         checked = 0;
@@ -2106,7 +2069,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         var vals_file = [];
         var values_file = [];
 
-        lis_dir.each(function ( /*index*/ ) {
+        lis_dir.each(function ( /*index*/) {
             var _this = jQuery(this);
             var value = _this.find(sort_field).val();
             if ($.isNumeric(value)) {
@@ -2121,7 +2084,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
             values_dir.push(value);
         });
 
-        lis_file.each(function ( /*index*/ ) {
+        lis_file.each(function ( /*index*/) {
 
             var _this = jQuery(this);
             var value = _this.find(sort_field).val();
@@ -2177,8 +2140,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         jQuery('#loading_container').fadeOut();
     }
 
-    function launchEditor(id, src)
-    {
+    function launchEditor(id, src) {
         //load image into cropper. Set heights and refresh cropper.
         imageEditor.loadImageFromURL(src, "SampleImage").then(result => {
             imageEditor.ui.resizeEditor({
@@ -2191,8 +2153,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return false;
     }
 
-    function lazyLoad()
-    {
+    function lazyLoad() {
         myLazyLoad.update();
     }
 
@@ -2204,8 +2165,7 @@ var encodeURL, show_animation, hide_animation, apply, apply_none, apply_img, app
         return false;
     }
 
-    function CustomEvent(event, params)
-    {
+    function CustomEvent(event, params) {
         params = params || { bubbles: false, cancelable: false, detail: undefined };
         var evt = document.createEvent("CustomEvent");
         evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
