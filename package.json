@@ -1,13 +1,20 @@
 {
     "name": "laravel-responsive-file-manager",
     "devDependencies": {
-        "gulp": "^3.9.1",
-        "laravel-elixir": "*",
+        "cross-env": "^7.0",
+        "laravel-mix": "^5.0.1",
+        "less": "^3.12.2",
+        "less-loader": "^7.0.1",
         "tinymce": "^5.0.4"
     },
     "scripts": {
-        "build": "yarn clean && ./node_modules/.bin/gulp && yarn cleanTemp",
-        "dist": "yarn clean && ./node_modules/.bin/gulp --production && yarn cleanTemp",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch": "yarn development -- --watch",
+        "watch-poll": "yarn watch -- --watch-poll",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "dist": "yarn clean && yarn production && yarn cleanTemp",
+        "build": "yarn clean && yarn development && yarn cleanTemp",
         "cleanTemp": "rm -rf ./resources/tmp/*",
         "clean": "yarn cleanTemp && rm -rf ./resources/filemanager/css/* && rm -rf ./resources/filemanager/js/* && rm -f ./resources/filemanager/plugin.min.js && rm -f ./resources/tinymce/plugins/responsivefilemanager/plugin.min.js"
     },
@@ -30,5 +37,5 @@
         "tui-color-picker": "^2.2.3",
         "tui-image-editor": "^3.5.2",
         "vanilla-lazyload": "^10.14.0"
-      }
+    }
 }

@@ -1,0 +1,13 @@
+{
+    "/resources/tmp/css/style.css": "/resources/tmp/css/style.css",
+    "/resources/tmp/css/lib.css": "/resources/tmp/css/lib.css",
+    "/resources/filemanager/css/style.css": "/resources/filemanager/css/style.css",
+    "/resources/filemanager/css/rtl-style.css": "/resources/filemanager/css/rtl-style.css",
+    "/resources/filemanager/js/plugins.js": "/resources/filemanager/js/plugins.js",
+    "/resources/filemanager/js/tui-image-editor.js": "/resources/filemanager/js/tui-image-editor.js",
+    "/resources/filemanager/js/include.js": "/resources/filemanager/js/include.js",
+    "/resources/filemanager/plugin.min.js": "/resources/filemanager/plugin.min.js",
+    "/resources/tinymce/plugins/responsivefilemanager/plugin.min.js": "/resources/tinymce/plugins/responsivefilemanager/plugin.min.js",
+    "/resources/filemanager/js/modernizr.custom.js": "/resources/filemanager/js/modernizr.custom.js",
+    "/resources/filemanager/js/load_more.js": "/resources/filemanager/js/load_more.js"
+}
