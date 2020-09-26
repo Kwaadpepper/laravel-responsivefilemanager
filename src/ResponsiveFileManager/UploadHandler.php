@@ -61,6 +61,7 @@ class UploadHandler
     const IMAGETYPE_GIF = 1;
     const IMAGETYPE_JPEG = 2;
     const IMAGETYPE_PNG = 3;
+    const IMAGETYPE_WEBP = 4;
 
     protected $image_objects = array();
 
@@ -578,7 +579,7 @@ class UploadHandler
         // Add missing file extension for known image types:
         if (
             strpos($name, '.') === false &&
-            preg_match('/^image\/(gif|jpe?g|png)/', $type, $matches)
+            preg_match('/^image\/(gif|jpe?g|png|webp)/', $type, $matches)
         ) {
             $name .= '.' . $matches[1];
         }
@@ -592,6 +593,9 @@ class UploadHandler
                     break;
                 case self::IMAGETYPE_GIF:
                     $extensions = array('gif');
+                    break;
+                case self::IMAGETYPE_WEBP:
+                    $extensions = array('webp');
                     break;
             }
             // Adjust incorrect image file extensions:
@@ -839,6 +843,12 @@ class UploadHandler
                 $write_func = 'imagepng';
                 $image_quality = isset($options['png_quality']) ?
                     $options['png_quality'] : 9;
+                break;
+            case 'webp':
+                $src_func = 'imagecreatefromwebp';
+                $write_func = 'imagewebp';
+                $image_quality = isset($options['webp_quality']) ?
+                    $options['webp_quality'] : 75;
                 break;
             default:
                 return false;
@@ -1207,6 +1217,9 @@ class UploadHandler
         // PNG: 89 50 4E 47
         if (bin2hex(@$data[0]) . substr($data, 1, 4) === '89PNG') {
             return self::IMAGETYPE_PNG;
+        }
+        if ($data === 'RIFF') {
+            return self::IMAGETYPE_WEBP;
         }
         return false;
     }

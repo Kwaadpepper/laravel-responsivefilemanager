@@ -1,4 +1,5 @@
 <?php
+
 namespace Kwaadpepper\ResponsiveFileManager;
 
 /**
@@ -45,7 +46,8 @@ class RFM
 
     private static function checkRelativePathPartial($path)
     {
-        if (strpos($path, '../') !== false
+        if (
+            strpos($path, '../') !== false
             || strpos($path, './') !== false
             || strpos($path, '/..') !== false
             || strpos($path, '..\\') !== false
@@ -68,11 +70,11 @@ class RFM
         }
         return true;
     }
-    
-    
+
+
     private static function tempdir()
     {
-        $tempfile=tempnam(sys_get_temp_dir(), '');
+        $tempfile = tempnam(sys_get_temp_dir(), '');
         if (file_exists($tempfile)) {
             unlink($tempfile);
         }
@@ -108,7 +110,7 @@ class RFM
     public static function ftpIsDir($ftp, $path)
     {
         try {
-            return $ftp->chdir("/".RFM::cleanPath(config('rfm.ftp_base_folder').$path));
+            return $ftp->chdir("/" . RFM::cleanPath(config('rfm.ftp_base_folder') . $path));
         } catch (\Throwable $th) {
             return false;
         }
@@ -120,7 +122,7 @@ class RFM
             if (($local_file_path_to_download = RFM::tempdir()) == null) {
                 return false;
             }
-            $local_file_path_to_download .= '/'.$filename;
+            $local_file_path_to_download .= '/' . $filename;
             $fhandle = fopen($local_file_path_to_download, 'w+');
             if (!$fhandle) {
                 return false;
@@ -145,30 +147,30 @@ class RFM
             return $str;
         }
     }
-    
+
     /**
-    * Response construction helper
-    *
-    * @static
-    * @param string $content
-    * @param int    $statusCode
-    * @param array  $headers
-    *
-    * @return \Response|\Illuminate\Http\Response
-    */
+     * Response construction helper
+     *
+     * @static
+     * @param string $content
+     * @param int    $statusCode
+     * @param array  $headers
+     *
+     * @return \Response|\Illuminate\Http\Response
+     */
     public static function response($content = '', $statusCode = 200, $headers = array())
     {
         return new Response($content, $statusCode, $headers);
     }
 
     /**
-    * Check relative path
-    *
-    * @static
-    * @param  string  $path
-    *
-    * @return boolean is it correct?
-    */
+     * Check relative path
+     *
+     * @static
+     * @param  string  $path
+     *
+     * @return boolean is it correct?
+     */
     public static function checkRelativePath($path)
     {
         $path_correct = self::checkRelativePathPartial($path);
@@ -180,14 +182,14 @@ class RFM
     }
 
     /**
-    * Check if the given path is an upload dir based on config
-    *
-    * @static
-    * @param  string  $path
-    * @param  array $config
-    *
-    * @return boolean is it an upload dir?
-    */
+     * Check if the given path is an upload dir based on config
+     *
+     * @static
+     * @param  string  $path
+     * @param  array $config
+     *
+     * @return boolean is it an upload dir?
+     */
     public static function isUploadDir($path, $config)
     {
         $upload_dir = $config['current_path'];
@@ -199,23 +201,23 @@ class RFM
     }
 
     /**
-    * Delete file
-    *
-    * @static
-    * @param  string  $path
-    * @param  string $path_thumb
-    * @param  array $config
-    *
-    * @return null
-    */
+     * Delete file
+     *
+     * @static
+     * @param  string  $path
+     * @param  string $path_thumb
+     * @param  array $config
+     *
+     * @return null
+     */
     public static function deleteFile($path, $path_thumb, $config)
     {
         if ($config['delete_files']) {
             $ftp = self::ftpCon($config);
             if ($ftp) {
                 try {
-                    $ftp->delete("/".$path);
-                    @$ftp->delete("/".$path_thumb);
+                    $ftp->delete("/" . $path);
+                    @$ftp->delete("/" . $path_thumb);
                 } catch (FtpException $e) {
                     return;
                 }
@@ -228,21 +230,21 @@ class RFM
                 }
             }
 
-            $info=pathinfo($path);
+            $info = pathinfo($path);
             if (!$ftp && $config['relative_image_creation']) {
                 foreach ($config['relative_path_from_current_pos'] as $k => $path) {
-                    if ($path!="" && $path[strlen($path)-1]!="/") {
-                        $path.="/";
+                    if ($path != "" && $path[strlen($path) - 1] != "/") {
+                        $path .= "/";
                     }
 
                     if (file_exists(
-                        $info['dirname']."/".$path.$config['relative_image_creation_name_to_prepend'][$k].
-                        $info['filename'].$config['relative_image_creation_name_to_append'][$k].".".$info['extension']
+                        $info['dirname'] . "/" . $path . $config['relative_image_creation_name_to_prepend'][$k] .
+                            $info['filename'] . $config['relative_image_creation_name_to_append'][$k] . "." . $info['extension']
                     )) {
                         unlink(
-                            $info['dirname']."/".$path.$config['relative_image_creation_name_to_prepend'][$k]
-                            .$info['filename'].$config['relative_image_creation_name_to_append'][$k].
-                            ".".$info['extension']
+                            $info['dirname'] . "/" . $path . $config['relative_image_creation_name_to_prepend'][$k]
+                                . $info['filename'] . $config['relative_image_creation_name_to_append'][$k] .
+                                "." . $info['extension']
                         );
                     }
                 }
@@ -250,18 +252,18 @@ class RFM
 
             if (!$ftp && $config['fixed_image_creation']) {
                 foreach ($config['fixed_path_from_filemanager'] as $k => $path) {
-                    if ($path!="" && $path[strlen($path)-1] != "/") {
-                        $path.="/";
+                    if ($path != "" && $path[strlen($path) - 1] != "/") {
+                        $path .= "/";
                     }
 
-                    $base_dir=$path.substr_replace($info['dirname']."/", '', 0, strlen($config['current_path']));
+                    $base_dir = $path . substr_replace($info['dirname'] . "/", '', 0, strlen($config['current_path']));
                     if (file_exists(
-                        $base_dir.$config['fixed_image_creation_name_to_prepend'][$k].$info['filename'].
-                        $config['fixed_image_creation_to_append'][$k].".".$info['extension']
+                        $base_dir . $config['fixed_image_creation_name_to_prepend'][$k] . $info['filename'] .
+                            $config['fixed_image_creation_to_append'][$k] . "." . $info['extension']
                     )) {
                         unlink(
-                            $base_dir.$config['fixed_image_creation_name_to_prepend'][$k].$info['filename'].
-                            $config['fixed_image_creation_to_append'][$k].".".$info['extension']
+                            $base_dir . $config['fixed_image_creation_name_to_prepend'][$k] . $info['filename'] .
+                                $config['fixed_image_creation_to_append'][$k] . "." . $info['extension']
                         );
                     }
                 }
@@ -270,18 +272,18 @@ class RFM
     }
 
     /**
-    * Delete directory
-    *
-    * @static
-    * @param  string  $dir
-    *
-    * @return  bool
-    */
+     * Delete directory
+     *
+     * @static
+     * @param  string  $dir
+     *
+     * @return  bool
+     */
     public static function deleteDir($dir, $ftp = null, $config = null)
     {
         if ($ftp) {
             try {
-                $ftp->rmdir('/'.config('rfm.ftp_base_folder').'/'.$dir);
+                $ftp->rmdir('/' . config('rfm.ftp_base_folder') . '/' . $dir);
                 return true;
             } catch (\Exception $e) {
                 if (!FM_DEBUG_ERROR_MESSAGE) {
@@ -291,17 +293,17 @@ class RFM
                 exit;
             }
         } else {
-            if (! file_exists($dir) || self::isUploadDir($dir, $config)) {
+            if (!file_exists($dir) || self::isUploadDir($dir, $config)) {
                 return false;
             }
-            if (! is_dir($dir)) {
+            if (!is_dir($dir)) {
                 return unlink($dir);
             }
             foreach (scandir($dir) as $item) {
                 if ($item == '.' || $item == '..') {
                     continue;
                 }
-                if (! self::deleteDir($dir . DIRECTORY_SEPARATOR . $item)) {
+                if (!self::deleteDir($dir . DIRECTORY_SEPARATOR . $item)) {
                     return false;
                 }
             }
@@ -311,24 +313,24 @@ class RFM
     }
 
     /**
-    * Make a file copy
-    *
-    * @static
-    * @param  string  $old_path
-    * @param  string  $name      New file name without extension
-    *
-    * @return  bool
-    */
+     * Make a file copy
+     *
+     * @static
+     * @param  string  $old_path
+     * @param  string  $name      New file name without extension
+     *
+     * @return  bool
+     */
     public static function duplicateFile($old_path, $name, $ftp = null, $config = null)
     {
         $info = pathinfo($old_path);
         $new_path = $info['dirname'] . "/" . $name . "." . $info['extension'];
         if ($ftp) {
             try {
-                $tmp = self::tempdir().'/'.time().$name . "." . $info['extension'];
+                $tmp = self::tempdir() . '/' . time() . $name . "." . $info['extension'];
                 // dd($tmp, "/".$old_path);
-                $ftp->get($tmp, "/".$old_path, FTP_BINARY);
-                $ftp->put("/".$new_path, $tmp, FTP_BINARY);
+                $ftp->get($tmp, "/" . $old_path, FTP_BINARY);
+                $ftp->put("/" . $new_path, $tmp, FTP_BINARY);
                 unlink($tmp);
                 return true;
             } catch (\Exception $e) {
@@ -346,15 +348,15 @@ class RFM
     }
 
     /**
-    * Rename file
-    *
-    * static
-    * @param  string  $old_path         File to rename
-    * @param  string  $name             New file name without extension
-    * @param  bool    $transliteration
-    *
-    * @return bool
-    */
+     * Rename file
+     *
+     * static
+     * @param  string  $old_path         File to rename
+     * @param  string  $name             New file name without extension
+     * @param  bool    $transliteration
+     *
+     * @return bool
+     */
     public static function renameFile($old_path, $name, $ftp = null, $config = null)
     {
         $name = self::fixFilename($name, $config);
@@ -363,14 +365,14 @@ class RFM
         if ($ftp) {
             try {
                 return $ftp->rename(
-                    "/".RFM::cleanPath(config('rfm.ftp_base_folder').$old_path),
-                    "/".RFM::cleanPath(config('rfm.ftp_base_folder').$new_path)
+                    "/" . RFM::cleanPath(config('rfm.ftp_base_folder') . $old_path),
+                    "/" . RFM::cleanPath(config('rfm.ftp_base_folder') . $new_path)
                 );
             } catch (\Exception $e) {
                 if (!FM_DEBUG_ERROR_MESSAGE) {
                     return false;
                 }
-                self::response(__('ftp_failure') . self::addErrorLocation(). ' ' . dump($e), 400)->send();
+                self::response(__('ftp_failure') . self::addErrorLocation() . ' ' . dump($e), 400)->send();
                 exit;
             }
         } else {
@@ -386,34 +388,34 @@ class RFM
     }
 
     /**
-    * Rename directory
-    *
-    * @static
-    * @param  string  $old_path         Directory to rename
-    * @param  string  $name             New directory name
-    * @param  bool    $transliteration
-    *
-    * @return bool
-    */
+     * Rename directory
+     *
+     * @static
+     * @param  string  $old_path         Directory to rename
+     * @param  string  $name             New directory name
+     * @param  bool    $transliteration
+     *
+     * @return bool
+     */
     public static function renameFolder($old_path, $name, $ftp = null, $config = null)
     {
         $name = self::fixFilename($name, $config, true);
         $new_path = self::fixDirname($old_path) . "/" . $name;
         if ($ftp) {
-            if ($ftp->chdir("/".RFM::cleanPath(config('rfm.ftp_base_folder').$old_path))) {
-                if (@$ftp->chdir("/".RFM::cleanPath(config('rfm.ftp_base_folder').$new_path))) {
+            if ($ftp->chdir("/" . RFM::cleanPath(config('rfm.ftp_base_folder') . $old_path))) {
+                if (@$ftp->chdir("/" . RFM::cleanPath(config('rfm.ftp_base_folder') . $new_path))) {
                     return false;
                 }
                 try {
                     return $ftp->rename(
-                        "/".RFM::cleanPath(config('rfm.ftp_base_folder').$old_path),
-                        "/".RFM::cleanPath(config('rfm.ftp_base_folder').$new_path)
+                        "/" . RFM::cleanPath(config('rfm.ftp_base_folder') . $old_path),
+                        "/" . RFM::cleanPath(config('rfm.ftp_base_folder') . $new_path)
                     );
                 } catch (\Exception $e) {
                     if (!FM_DEBUG_ERROR_MESSAGE) {
                         return false;
                     }
-                    self::response(__('ftp_failure') . self::addErrorLocation(). ' ' . dump($e), 400)->send();
+                    self::response(__('ftp_failure') . self::addErrorLocation() . ' ' . dump($e), 400)->send();
                     exit;
                 }
             }
@@ -428,18 +430,18 @@ class RFM
     }
 
     /**
-    * Create new image from existing file
-    *
-    * @static
-    * @param  string  $imgfile    Source image file name
-    * @param  string  $imgthumb   Thumbnail file name
-    * @param  int     $newwidth   Thumbnail width
-    * @param  int     $newheight  Optional thumbnail height
-    * @param  string  $option     Type of resize
-    *
-    * @return bool
-    * @throws \Exception
-    */
+     * Create new image from existing file
+     *
+     * @static
+     * @param  string  $imgfile    Source image file name
+     * @param  string  $imgthumb   Thumbnail file name
+     * @param  int     $newwidth   Thumbnail width
+     * @param  int     $newheight  Optional thumbnail height
+     * @param  string  $option     Type of resize
+     *
+     * @return bool
+     * @throws \Exception
+     */
     public static function createImg(
         $ftp,
         $imgfile,
@@ -454,17 +456,17 @@ class RFM
             if (self::urlExists($imgfile)) {
                 $temp = tempnam('/tmp', 'RF');
                 unlink($temp);
-                $temp .=".".substr(strrchr($imgfile, '.'), 1);
+                $temp .= "." . substr(strrchr($imgfile, '.'), 1);
                 $handle = fopen($temp, "w");
                 fwrite($handle, file_get_contents($imgfile));
                 fclose($handle);
-                $imgfile= $temp;
+                $imgfile = $temp;
                 $save_ftp = $imgthumb;
                 $imgthumb = $temp;
             }
         }
-        if (file_exists($imgfile) || strpos($imgfile, 'http')===0) {
-            if (strpos($imgfile, 'http')===0 || self::imageCheckMemoryUsage($imgfile, $newwidth, $newheight)) {
+        if (file_exists($imgfile) || strpos($imgfile, 'http') === 0) {
+            if (strpos($imgfile, 'http') === 0 || self::imageCheckMemoryUsage($imgfile, $newwidth, $newheight)) {
                 try {
                     $magicianObj = new ImageLib($imgfile);
                     $magicianObj->resizeImage($newwidth, $newheight, $option);
@@ -484,33 +486,33 @@ class RFM
     }
 
     /**
-    * Convert convert size in bytes to human readable
-    *
-    * @static
-    * @param  int  $size
-    *
-    * @return  string
-    */
+     * Convert convert size in bytes to human readable
+     *
+     * @static
+     * @param  int  $size
+     *
+     * @return  string
+     */
     public static function makeSize($size)
     {
-        $units = array( 'B', 'KB', 'MB', 'GB', 'TB' );
+        $units = array('B', 'KB', 'MB', 'GB', 'TB');
         $u = 0;
         while ((round($size / 1024) > 0) && ($u < 4)) {
             $size = $size / 1024;
             $u++;
         }
 
-        return (number_format($size, 0) . " " . __($units[ $u ]));
+        return (number_format($size, 0) . " " . __($units[$u]));
     }
 
     /**
-    * Determine directory size
-    *
-    * @static
-    * @param  string  $path
-    *
-    * @return  int
-    */
+     * Determine directory size
+     *
+     * @static
+     * @param  string  $path
+     *
+     * @return  int
+     */
     public static function folderInfo($path, $count_hidden = true)
     {
         $config = config('rfm');
@@ -521,12 +523,12 @@ class RFM
         $folders_count = 0;
         foreach ($files as $t) {
             if ($t != "." && $t != "..") {
-                if ($count_hidden || !(in_array($t, $config['hidden_folders']) or in_array($t, $config['hidden_files']))) {//phpcs:ignore
+                if ($count_hidden || !(in_array($t, $config['hidden_folders']) or in_array($t, $config['hidden_files']))) { //phpcs:ignore
                     $currentFile = $cleanPath . $t;
                     if (is_dir($currentFile)) {
-                        list($size,$tmp,$tmp1) = self::folderInfo($currentFile);
+                        list($size, $tmp, $tmp1) = self::folderInfo($currentFile);
                         $total_size += $size;
-                        $folders_count ++;
+                        $folders_count++;
                     } else {
                         $size = filesize($currentFile);
                         $total_size += $size;
@@ -536,17 +538,17 @@ class RFM
             }
         }
 
-        return array($total_size,$files_count,$folders_count);
+        return array($total_size, $files_count, $folders_count);
     }
 
     /**
-    * Get number of files in a directory
-    *
-    * @static
-    * @param  string  $path
-    *
-    * @return  int
-    */
+     * Get number of files in a directory
+     *
+     * @static
+     * @param  string  $path
+     *
+     * @return  int
+     */
     public static function filescount($path, $count_hidden = true)
     {
         $config = config('rfm');
@@ -556,9 +558,7 @@ class RFM
 
         foreach ($files as $t) {
             if ($t != "." && $t != "..") {
-                if ($count_hidden || !(
-                    in_array($t, $config['hidden_folders']) || in_array($t, $config['hidden_files'])
-                )) {
+                if ($count_hidden || !(in_array($t, $config['hidden_folders']) || in_array($t, $config['hidden_files']))) {
                     $currentFile = $cleanPath . $t;
                     if (is_dir($currentFile)) {
                         $size = self::filescount($currentFile);
@@ -574,19 +574,19 @@ class RFM
     }
 
     /**
-    * check if the current folder size plus the added size is over the overall size limite
-    *
-    * @static
-    * @param  int  $sizeAdded
-    *
-    * @return  bool
-    */
+     * check if the current folder size plus the added size is over the overall size limite
+     *
+     * @static
+     * @param  int  $sizeAdded
+     *
+     * @return  bool
+     */
     public static function checkresultingsize($sizeAdded)
     {
         $config = config('rfm');
 
         if ($config['MaxSizeTotal'] !== false && is_int($config['MaxSizeTotal'])) {
-            list($sizeCurrentFolder,$fileCurrentNum,$foldersCurrentCount) = self::folderInfo(
+            list($sizeCurrentFolder, $fileCurrentNum, $foldersCurrentCount) = self::folderInfo(
                 $config['current_path'],
                 false
             );
@@ -599,16 +599,16 @@ class RFM
     }
 
     /**
-    * Create directory for images and/or thumbnails
-    *
-    * @static
-    * @param  string  $path
-    * @param  string  $path_thumbs
-    */
+     * Create directory for images and/or thumbnails
+     *
+     * @static
+     * @param  string  $path
+     * @param  string  $path_thumbs
+     */
     public static function createFolder($path = null, $path_thumbs = null, $ftp = null, $config = null)
     {
         if ($ftp) {
-            return $ftp->mkdir('/'.config('rfm.ftp_base_folder').'/'.$path) && $ftp->mkdir('/'.config('rfm.ftp_base_folder').'/'.$path_thumbs);
+            return $ftp->mkdir('/' . config('rfm.ftp_base_folder') . '/' . $path) && $ftp->mkdir('/' . config('rfm.ftp_base_folder') . '/' . $path_thumbs);
         } else {
             if (file_exists($path) || file_exists($path_thumbs)) {
                 return false;
@@ -630,12 +630,12 @@ class RFM
     }
 
     /**
-    * Check file extension
-    *
-    * @static
-    * @param  string  $extension
-    * @param  array   $config
-    */
+     * Check file extension
+     *
+     * @static
+     * @param  string  $extension
+     * @param  array   $config
+     */
     public static function checkFileExtension($extension, $config)
     {
         $check = false;
@@ -657,14 +657,14 @@ class RFM
     }
 
     /**
-    * Get file extension present in PHAR file
-    *
-    * @static
-    * @param  string  $phar
-    * @param  array   $files
-    * @param  string  $basepath
-    * @param  string  $ext
-    */
+     * Get file extension present in PHAR file
+     *
+     * @static
+     * @param  string  $phar
+     * @param  array   $files
+     * @param  string  $basepath
+     * @param  string  $ext
+     */
     public static function checkFilesExtensionsOnPhar($phar, &$files, $basepath, $config)
     {
         foreach ($phar as $file) {
@@ -687,19 +687,20 @@ class RFM
     }
 
     /**
-    * Cleanup input
-    *
-    * @static
-    * @param  string  $str
-    *
-    * @return  string
-    */
+     * Cleanup input
+     *
+     * @static
+     * @param  string  $str
+     *
+     * @return  string
+     */
     public static function fixGetParams($str)
     {
         return static::filter_filename($str);
     }
 
-    private static function filter_filename($filename, $beautify = true) {
+    private static function filter_filename($filename, $beautify = true)
+    {
         // sanitize filename
         $filename = preg_replace(
             '~
@@ -709,7 +710,9 @@ class RFM
             [#\[\]@!$&\'()+,;=]|     # URI reserved https://tools.ietf.org/html/rfc3986#section-2.2
             [{}^\~`]                 # URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
             ~x',
-            '-', $filename);
+            '-',
+            $filename
+        );
         // avoids ".", ".." or ".hiddenFiles"
         $filename = ltrim($filename, '.-');
         // optional beautification
@@ -720,7 +723,8 @@ class RFM
         return $filename;
     }
 
-    private static function beautify_filename($filename) {
+    private static function beautify_filename($filename)
+    {
         // reduce consecutive characters
         $filename = preg_replace(array(
             // "file   name.zip" becomes "file-name.zip"
@@ -744,49 +748,50 @@ class RFM
     }
 
     /**
-    * Check extension
-    *
-    * @static
-    * @param  string  $extension
-    * @param  array   $config
-    *
-    * @return bool
-    */
+     * Check extension
+     *
+     * @static
+     * @param  string  $extension
+     * @param  array   $config
+     *
+     * @return bool
+     */
     public static function checkExtension($extension, $config)
     {
         $extension = self::fixStrtolower($extension);
         if ((!$config['ext_blacklist'] && !in_array($extension, $config['ext'])) ||
-        ($config['ext_blacklist'] && in_array($extension, $config['ext_blacklist']))) {
+            ($config['ext_blacklist'] && in_array($extension, $config['ext_blacklist']))
+        ) {
             return false;
         }
         return true;
     }
-    
+
     /**
-    * Sanitize filename
-    *
-    * @static
-    * @param  string  $str
-    *
-    * @return string
-    */
+     * Sanitize filename
+     *
+     * @static
+     * @param  string  $str
+     *
+     * @return string
+     */
     public static function sanitize($str)
     {
         return strip_tags(htmlspecialchars($str));
     }
 
     /**
-    * Cleanup filename
-    *
-    * @static
-    * @param  string  $str
-    * @param  bool    $transliteration
-    * @param  bool    $convert_spaces
-    * @param  string  $replace_with
-    * @param  bool    $is_folder
-    *
-    * @return string
-    */
+     * Cleanup filename
+     *
+     * @static
+     * @param  string  $str
+     * @param  bool    $transliteration
+     * @param  bool    $convert_spaces
+     * @param  string  $replace_with
+     * @param  bool    $is_folder
+     *
+     * @return string
+     */
     public static function fixFilename($str, $config, $is_folder = false)
     {
         $str = self::sanitize($str);
@@ -807,7 +812,7 @@ class RFM
             $str = preg_replace("/[^a-zA-Z0-9\.\[\]_| -]/", '', $str);
         }
 
-        $str = str_replace(array( '"', "'", "/", "\\" ), "", $str);
+        $str = str_replace(array('"', "'", "/", "\\"), "", $str);
         $str = strip_tags($str);
 
         // Empty or incorrectly transliterated filename.
@@ -821,26 +826,26 @@ class RFM
     }
 
     /**
-    * Cleanup directory name
-    *
-    * @static
-    * @param  string  $str
-    *
-    * @return  string
-    */
+     * Cleanup directory name
+     *
+     * @static
+     * @param  string  $str
+     *
+     * @return  string
+     */
     public static function fixDirname($str)
     {
         return str_replace('~', ' ', dirname(str_replace(' ', '~', $str)));
     }
 
     /**
-    * Correct strtoupper handling
-    *
-    * @static
-    * @param  string  $str
-    *
-    * @return  string
-    */
+     * Correct strtoupper handling
+     *
+     * @static
+     * @param  string  $str
+     *
+     * @return  string
+     */
     public static function fixStrtoupper($str)
     {
         if (function_exists('mb_strtoupper')) {
@@ -851,16 +856,16 @@ class RFM
     }
 
     /**
-    * Correct strtolower handling
-    *
-    * @static
-    * @param  string  $str
-    *
-    * @return  string
-    */
+     * Correct strtolower handling
+     *
+     * @static
+     * @param  string  $str
+     *
+     * @return  string
+     */
     public static function fixStrtolower($str)
     {
-        if (function_exists('mb_strtoupper')) {
+        if (function_exists('mb_strtolower')) {
             return mb_strtolower($str);
         } else {
             return strtolower($str);
@@ -868,15 +873,15 @@ class RFM
     }
 
     /**
-    * Check if memory is enough to process image
-    *
-    * @static
-    * @param  string  $img
-    * @param  int     $max_breedte
-    * @param  int     $max_hoogte
-    *
-    * @return bool
-    */
+     * Check if memory is enough to process image
+     *
+     * @static
+     * @param  string  $img
+     * @param  int     $max_breedte
+     * @param  int     $max_hoogte
+     *
+     * @return bool
+     */
     public static function imageCheckMemoryUsage($img, $max_breedte, $max_hoogte)
     {
         if (file_exists($img)) {
@@ -891,7 +896,7 @@ class RFM
                 if (strpos($mem, 'G') !== false) {
                     $memory_limit = abs(intval(str_replace(array('G'), '', $mem) * 1024 * 1024 * 1024));
                 }
-                
+
                 $image_properties = getimagesize($img);
                 $image_width = $image_properties[0];
                 $image_height = $image_properties[1];
@@ -914,45 +919,45 @@ class RFM
     }
 
     /**
-    * Check is string is ended with needle
-    *
-    * @static
-    * @param  string  $haystack
-    * @param  string  $needle
-    *
-    * @return  bool
-    */
+     * Check is string is ended with needle
+     *
+     * @static
+     * @param  string  $haystack
+     * @param  string  $needle
+     *
+     * @return  bool
+     */
     public static function endsWith($haystack, $needle)
     {
         return $needle === "" || substr($haystack, -strlen($needle)) === $needle;
     }
 
     /**
-    * TODO REFACTOR THIS!
-    *
-    * @static
-    * @param $targetPath
-    * @param $targetFile
-    * @param $name
-    * @param $current_path
-    * @param $config
-    *   relative_image_creation
-    *   relative_path_from_current_pos
-    *   relative_image_creation_name_to_prepend
-    *   relative_image_creation_name_to_append
-    *   relative_image_creation_width
-    *   relative_image_creation_height
-    *   relative_image_creation_option
-    *   fixed_image_creation
-    *   fixed_path_from_filemanager
-    *   fixed_image_creation_name_to_prepend
-    *   fixed_image_creation_to_append
-    *   fixed_image_creation_width
-    *   fixed_image_creation_height
-    *   fixed_image_creation_option
-    *
-    * @return bool
-    */
+     * TODO REFACTOR THIS!
+     *
+     * @static
+     * @param $targetPath
+     * @param $targetFile
+     * @param $name
+     * @param $current_path
+     * @param $config
+     *   relative_image_creation
+     *   relative_path_from_current_pos
+     *   relative_image_creation_name_to_prepend
+     *   relative_image_creation_name_to_append
+     *   relative_image_creation_width
+     *   relative_image_creation_height
+     *   relative_image_creation_option
+     *   fixed_image_creation
+     *   fixed_path_from_filemanager
+     *   fixed_image_creation_name_to_prepend
+     *   fixed_image_creation_to_append
+     *   fixed_image_creation_width
+     *   fixed_image_creation_height
+     *   fixed_image_creation_option
+     *
+     * @return bool
+     */
     public static function newThumbnailsCreation($ftp, $targetPath, $targetFile, $name, $current_path, $config)
     {
         //create relative thumbs
@@ -962,22 +967,22 @@ class RFM
         $info['filename'] = self::fixFilename($info['filename'], $config);
         if ($config['relative_image_creation']) {
             foreach ($config['relative_path_from_current_pos'] as $k => $path) {
-                if ($path != "" && $path[ strlen($path) - 1 ] != "/") {
+                if ($path != "" && $path[strlen($path) - 1] != "/") {
                     $path .= "/";
                 }
-                if (! file_exists($targetPath . $path)) {
+                if (!file_exists($targetPath . $path)) {
                     self::createFolder($targetPath . $path, false);
                 }
-                if (! self::endsWith($targetPath, $path)) {
-                    if (! self::createImg(
+                if (!self::endsWith($targetPath, $path)) {
+                    if (!self::createImg(
                         $ftp,
                         $targetFile,
-                        $targetPath . $path . $config['relative_image_creation_name_to_prepend'][ $k ] .
-                        $info['filename'] . $config['relative_image_creation_name_to_append'][ $k ] .
-                        "." . $info['extension'],
-                        $config['relative_image_creation_width'][ $k ],
-                        $config['relative_image_creation_height'][ $k ],
-                        $config['relative_image_creation_option'][ $k ]
+                        $targetPath . $path . $config['relative_image_creation_name_to_prepend'][$k] .
+                            $info['filename'] . $config['relative_image_creation_name_to_append'][$k] .
+                            "." . $info['extension'],
+                        $config['relative_image_creation_width'][$k],
+                        $config['relative_image_creation_height'][$k],
+                        $config['relative_image_creation_option'][$k]
                     )) {
                         $all_ok = false;
                     }
@@ -988,21 +993,21 @@ class RFM
         //create fixed thumbs
         if ($config['fixed_image_creation']) {
             foreach ($config['fixed_path_from_filemanager'] as $k => $path) {
-                if ($path != "" && $path[ strlen($path) - 1 ] != "/") {
+                if ($path != "" && $path[strlen($path) - 1] != "/") {
                     $path .= "/";
                 }
                 $base_dir = $path . substr_replace($targetPath, '', 0, strlen($current_path));
-                if (! file_exists($base_dir)) {
+                if (!file_exists($base_dir)) {
                     self::createFolder($base_dir, false);
                 }
-                if (! self::createImg(
+                if (!self::createImg(
                     $ftp,
                     $targetFile,
-                    $base_dir . $config['fixed_image_creation_name_to_prepend'][ $k ] . $info['filename'] .
-                    $config['fixed_image_creation_to_append'][ $k ] . "." . $info['extension'],
-                    $config['fixed_image_creation_width'][ $k ],
-                    $config['fixed_image_creation_height'][ $k ],
-                    $config['fixed_image_creation_option'][ $k ]
+                    $base_dir . $config['fixed_image_creation_name_to_prepend'][$k] . $info['filename'] .
+                        $config['fixed_image_creation_to_append'][$k] . "." . $info['extension'],
+                    $config['fixed_image_creation_width'][$k],
+                    $config['fixed_image_creation_height'][$k],
+                    $config['fixed_image_creation_option'][$k]
                 )) {
                     $all_ok = false;
                 }
@@ -1013,13 +1018,13 @@ class RFM
     }
 
     /**
-    * test for dir/file writability properly
-    *
-    * @static
-    * @param  string  $dir
-    *
-    * @return  bool
-    */
+     * test for dir/file writability properly
+     *
+     * @static
+     * @param  string  $dir
+     *
+     * @return  bool
+     */
     public static function isReallyWritable($dir)
     {
         $dir = rtrim($dir, '/');
@@ -1041,7 +1046,7 @@ class RFM
             @unlink($dir);
 
             return true;
-        } elseif (! is_file($dir) || ($fp = @fopen($dir, 'ab')) === false) {
+        } elseif (!is_file($dir) || ($fp = @fopen($dir, 'ab')) === false) {
             return false;
         }
 
@@ -1051,14 +1056,14 @@ class RFM
     }
 
     /**
-    * Check if a function is callable.
-    * Some servers disable copy,rename etc.
-    *
-    * @static
-    * @param  string  $name
-    *
-    * @return  bool
-    */
+     * Check if a function is callable.
+     * Some servers disable copy,rename etc.
+     *
+     * @static
+     * @param  string  $name
+     *
+     * @return  bool
+     */
     public static function isFunctionCallable($name)
     {
         if (function_exists($name) === false) {
@@ -1066,17 +1071,17 @@ class RFM
         }
         $disabled = explode(',', ini_get('disable_functions'));
 
-        return ! in_array($name, $disabled);
+        return !in_array($name, $disabled);
     }
 
     /**
-    * recursivly copies everything
-    *
-    * @static
-    * @param  string  $source
-    * @param  string  $destination
-    * @param  bool    $is_rec
-    */
+     * recursivly copies everything
+     *
+     * @static
+     * @param  string  $source
+     * @param  string  $destination
+     * @param  bool    $is_rec
+     */
     public static function rcopy($source, $destination, $is_rec = false)
     {
         if (is_dir($source)) {
@@ -1113,17 +1118,17 @@ class RFM
     }
 
     /**
-    * recursivly renames everything
-    *
-    * I know copy and rename could be done with just one function
-    * but i split the 2 because sometimes rename fails on windows
-    * Need more feedback from users and refactor if needed
-    *
-    * @static
-    * @param  string  $source
-    * @param  string  $destination
-    * @param  bool    $is_rec
-    */
+     * recursivly renames everything
+     *
+     * I know copy and rename could be done with just one function
+     * but i split the 2 because sometimes rename fails on windows
+     * Need more feedback from users and refactor if needed
+     *
+     * @static
+     * @param  string  $source
+     * @param  string  $destination
+     * @param  bool    $is_rec
+     */
     public static function rrename($source, $destination, $is_rec = false)
     {
         if (is_dir($source)) {
@@ -1180,13 +1185,13 @@ class RFM
     }
 
     /**
-    * Recursive chmod
-    * @static
-    * @param  string  $source
-    * @param  int     $mode
-    * @param  string  $rec_option
-    * @param  bool    $is_rec
-    */
+     * Recursive chmod
+     * @static
+     * @param  string  $source
+     * @param  int     $mode
+     * @param  string  $rec_option
+     * @param  bool    $is_rec
+     */
     public static function rchmod($source, $mode, $rec_option = "none", $is_rec = false)
     {
         if ($rec_option == "none") {
@@ -1216,10 +1221,10 @@ class RFM
     }
 
     /**
-    * @param  string  $input
-    * @param  bool    $trace
-    * @param  bool    $halt
-    */
+     * @param  string  $input
+     * @param  bool    $trace
+     * @param  bool    $halt
+     */
     public static function debugger($input, $trace = false, $halt = false)
     {
         ob_start();
@@ -1256,35 +1261,35 @@ class RFM
     }
 
     /**
-    * @static
-    * @param  string  $version
-    *
-    * @return  bool
-    */
+     * @static
+     * @param  string  $version
+     *
+     * @return  bool
+     */
     public static function isPhp($version = '5.0.0')
     {
         static $phpVer;
         $version = (string) $version;
 
-        if (! isset($phpVer[ $version ])) {
-            $phpVer[ $version ] = (version_compare(PHP_VERSION, $version) < 0) ? false : true;
+        if (!isset($phpVer[$version])) {
+            $phpVer[$version] = (version_compare(PHP_VERSION, $version) < 0) ? false : true;
         }
 
-        return $phpVer[ $version ];
+        return $phpVer[$version];
     }
 
     /**
-    * Return the caller location if set in config.php
-    * @static
-    * @param  string  $version
-    *
-    * @return  bool
-    */
+     * Return the caller location if set in config.php
+     * @static
+     * @param  string  $version
+     *
+     * @return  bool
+     */
     public static function addErrorLocation()
     {
         if (defined('FM_DEBUG_ERROR_MESSAGE') and FM_DEBUG_ERROR_MESSAGE) {
-            $pile=debug_backtrace();
-            return " (@".$pile[0]["file"]."#".$pile[0]["line"].")";
+            $pile = debug_backtrace();
+            return " (@" . $pile[0]["file"] . "#" . $pile[0]["line"] . ")";
         }
         return "";
     }
@@ -1297,7 +1302,7 @@ class RFM
      * @param array $availableLangs
      * @return string
      */
-    public static function getPreferredLanguage(array $availableLangs) : string
+    public static function getPreferredLanguage(array $availableLangs): string
     {
         /**
          * Check local availability: get first in order
@@ -1324,9 +1329,9 @@ class RFM
             if ($preferredLang === $lang) {
                 return true;
             }
-        
+
             $superLang = false;
-        
+
             if (false !== $position = strpos($lang, '_')) {
                 $superLang = substr($lang, 0, $position);
                 if ($preferredLang === $superLang) {
@@ -1347,7 +1352,7 @@ class RFM
      * @return string
      * @throws NotFoundHttpException
      */
-    public static function getLocalFileFromEncrypted(string $oX) : string
+    public static function getLocalFileFromEncrypted(string $oX): string
     {
         /**
          * Public FTP file viewer
@@ -1370,11 +1375,11 @@ class RFM
          */
 
         $param = self::decrypt($oX);
-        
+
         if (strpos($param['path'], '/') === 0) {
             $param['path'] = substr($param['path'], 1);
         }
-        
+
         if (!self::checkRelativePath($param['path'])) {
             if (!FM_DEBUG_ERROR_MESSAGE) {
                 throw new NotFoundHttpException();
@@ -1382,7 +1387,7 @@ class RFM
             self::response(__('path is wrong') . self::addErrorLocation(), 400)->send();
             exit;
         }
-        
+
         if (strpos($param['name'], '/') !== false) {
             if (!FM_DEBUG_ERROR_MESSAGE) {
                 throw new NotFoundHttpException();
@@ -1390,7 +1395,7 @@ class RFM
             self::response(__('name includes a forbidden \'/\' char') . self::addErrorLocation(), 400)->send();
             exit;
         }
-        
+
         if (!($ftp = self::ftpCon(config('rfm')))) {
             if (!FM_DEBUG_ERROR_MESSAGE) {
                 throw new NotFoundHttpException();
@@ -1419,7 +1424,7 @@ class RFM
                 throw new NotFoundHttpException();
             }
             self::response(
-                __('failed to fetch ftp file '.$name.' in '.$file_path).self::addErrorLocation(),
+                __('failed to fetch ftp file ' . $name . ' in ' . $file_path) . self::addErrorLocation(),
                 400
             )->send();
             exit;
@@ -1459,8 +1464,8 @@ class RFM
         // REPLACING ":" AGAINST "://" MAKES AN EMPTY ELEMENT TO ALLOW FOR CORRECT x:/../<path> USE (which, in principle is faulty)
 
         // 1.) "normalize" TO "slashed" AND MAKE SOME SPECIALS, ALSO DUMMY ELEMENTS AT BEGIN & END
-        $_s = array( "\\", ":", ":./", ":../");
-        $_r = array( "/", "://", ":/", ":/" );
+        $_s = array("\\", ":", ":./", ":../");
+        $_r = array("/", "://", ":/", ":/");
         $_p['sr'] = "/" . str_replace($_s, $_r, $_p[0]) . "/";
         $_p['arr'] = explode('/', $_p['sr']);
         if ($A_echo) {
@@ -1469,7 +1474,7 @@ class RFM
         // 2.) GET KEYS OF ".." ELEMENTS, REMOVE THEM AND THE ONE BEFORE (!) AS THAT MEANS "UP" AND THAT DISABLES STEP BEFORE
         $_p['pp'] = array_keys($_p['arr'], '..');
         foreach ($_p['pp'] as $_pos) {
-            $_p['arr'][ $_pos-1 ] = $_p['arr'][ $_pos ] ="";
+            $_p['arr'][$_pos - 1] = $_p['arr'][$_pos] = "";
         }
         if ($A_echo) {
             $_p['arr2'] = $_p['arr'];
@@ -1477,7 +1482,7 @@ class RFM
         // 3.) REMOVE ALL "/./" PARTS AS THEY ARE SIMPLY OVERFLUENT
         $_p['p'] = array_keys($_p['arr'], '.');
         foreach ($_p['p'] as $_pos) {
-            unset($_p['arr'][ $_pos ]);
+            unset($_p['arr'][$_pos]);
         }
         if ($A_echo) {
             $_p['arr3'] = $_p['arr'];

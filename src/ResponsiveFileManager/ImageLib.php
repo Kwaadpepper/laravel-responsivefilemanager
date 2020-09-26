@@ -2127,6 +2127,9 @@ class ImageLib
             case 'bmp':
                 $img = @$this->imagecreatefrombmp($file);
                 break;
+            case 'webp':
+                $img = @\imagecreatefromwebp($file);
+                break;
             case 'psd':
             case 'vnd.adobe.photoshop':
                 $img = @$this->imagecreatefrompsd($file);
@@ -2189,7 +2192,13 @@ class ImageLib
                     $error = 'jpg';
                 }
                 break;
-
+            case '.webp':
+                if (imagetypes() & IMG_WEBP) {
+                    imagewebp($this->imageResized, $savePath, $imageQuality);
+                } else {
+                    $error = 'webp';
+                }
+                break;
             case '.gif':
                 $this->checkInterlaceImage($this->isInterlace);
                 if (imagetypes() & IMG_GIF) {
@@ -2257,6 +2266,10 @@ class ImageLib
             case 'gif':
                 header('Content-type: image/gif');
                 imagegif($this->imageResized);
+                break;
+            case 'webp':
+                header('Content-type: image/webp');
+                imagewebp($this->imageResized, '', $imageQuality);
                 break;
             case 'png':
                 header('Content-type: image/png');

@@ -1,4 +1,5 @@
 <?php
+
 namespace Kwaadpepper\ResponsiveFileManager;
 
 /**
@@ -36,6 +37,7 @@ class RfmMimeTypesLib
         "application/mac-compactpro" => "cpt",
         "application/x-csh" => "csh",
         "text/css" => "css",
+        "text/csv" => "csv",
         "application/x-director" => "dxr",
         "image/vnd.djvu" => "djvu",
         "application/x-dvi" => "dvi",
@@ -152,6 +154,8 @@ class RfmMimeTypesLib
         "audio/x-ms-wax" => "wax",
         "image/vnd.wap.wbmp" => "wbmp",
         "application/vnd.wap.wbxml" => "wbxml",
+        "video/webm" => "webm",
+        "image/webp" => "webp",
         "video/x-ms-wm" => "wm",
         "audio/x-ms-wma" => "wma",
         "text/vnd.wap.wml" => "wml",
@@ -197,7 +201,7 @@ class RfmMimeTypesLib
      */
     public static function getExtensionFromMime($mime)
     {
-        if (strpos($mime, ';')!==false) {
+        if (strpos($mime, ';') !== false) {
             $mime = substr($mime, 0, strpos($mime, ';'));
         }
         if (isset(self::$mime_types[$mime])) {
@@ -213,9 +217,9 @@ class RfmMimeTypesLib
             $mime_type = finfo_file($fileinfo, $filename);
             finfo_close($fileinfo);
 
-            if (! empty($mime_type)) {
+            if (!empty($mime_type)) {
                 if (true === $debug) {
-                    return array( 'mime_type' => $mime_type, 'method' => 'fileinfo' );
+                    return array('mime_type' => $mime_type, 'method' => 'fileinfo');
                 }
 
                 return $mime_type;
@@ -225,9 +229,9 @@ class RfmMimeTypesLib
         if (function_exists('mime_content_type')) {
             $mime_type = mime_content_type($filename);
 
-            if (! empty($mime_type)) {
+            if (!empty($mime_type)) {
                 if (true === $debug) {
-                    return array( 'mime_type' => $mime_type, 'method' => 'mime_content_type' );
+                    return array('mime_type' => $mime_type, 'method' => 'mime_content_type');
                 }
 
                 return $mime_type;
@@ -239,16 +243,16 @@ class RfmMimeTypesLib
         $tmp_array = explode('.', $filename);
         $ext = strtolower(array_pop($tmp_array));
 
-        if (! empty($mime_types[ $ext ])) {
+        if (!empty($mime_types[$ext])) {
             if (true === $debug) {
-                return array( 'mime_type' => $mime_types[ $ext ], 'method' => 'from_array' );
+                return array('mime_type' => $mime_types[$ext], 'method' => 'from_array');
             }
 
-            return $mime_types[ $ext ];
+            return $mime_types[$ext];
         }
 
         if (true === $debug) {
-            return array( 'mime_type' => 'application/octet-stream', 'method' => 'last_resort' );
+            return array('mime_type' => 'application/octet-stream', 'method' => 'last_resort');
         }
 
         return 'application/octet-stream';
