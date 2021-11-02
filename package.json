@@ -5,7 +5,7 @@
         "laravel-mix": "^5.0.1",
         "less": "^3.12.2",
         "less-loader": "^7.0.1",
-        "tinymce": "^5.9.0"
+        "tinymce": "^5.10.0"
     },
     "scripts": {
         "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
