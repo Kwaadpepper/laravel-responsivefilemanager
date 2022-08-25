@@ -1,3 +1,6 @@
+# This repo is not maintenaned anymore please consider using something else like https://github.com/UniSharp/laravel-filemanager
+
+
 # Laravel-ResponsiveFileManager
 
 [![GitHub issues](https://img.shields.io/github/issues/Kwaadpepper/laravel-responsivefilemanager)](https://github.com/Kwaadpepper/laravel-responsivefilemanager/issues)
